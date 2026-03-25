@@ -1,0 +1,23 @@
+<svg width="800" height="500" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b1220"/>
+      <stop offset="0.45" stop-color="#111827"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="400" y1="120" x2="400" y2="380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d4af37" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0.08"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect x="2" y="2" width="796" height="496" rx="32" stroke="#253247" stroke-width="2"/>
+  <circle cx="400" cy="220" r="120" stroke="url(#ring)" stroke-width="2" fill="#d4af37" fill-opacity="0.06"/>
+  <circle cx="400" cy="220" r="88" stroke="#d4af37" stroke-opacity="0.5" stroke-width="3" fill="none"/>
+  <path d="M352 180v80l64-40-64-40z" fill="#d4af37" fill-opacity="0.85"/>
+  <rect x="280" y="340" width="240" height="5" rx="2.5" fill="#d4af37" fill-opacity="0.55"/>
+  <rect x="220" y="364" width="360" height="5" rx="2.5" fill="#cbd5e1" fill-opacity="0.22"/>
+  <rect x="260" y="388" width="280" height="5" rx="2.5" fill="#cbd5e1" fill-opacity="0.12"/>
+  <text x="400" y="440" text-anchor="middle" fill="#f8fafc" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="26" font-weight="600" letter-spacing="0.04em">Deep Well Audio</text>
+  <text x="400" y="468" text-anchor="middle" fill="#d4af37" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" font-weight="500" letter-spacing="0.35em" opacity="0.85">CURATED TEACHING</text>
+</svg>

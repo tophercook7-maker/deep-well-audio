@@ -1,0 +1,233 @@
+-- Deep Well Audio — run this in the Supabase SQL Editor (new project).
+-- Adjust nothing unless you know you need it.
+--
+-- If CREATE TRIGGER fails on "execute function", try replacing with:
+--   EXECUTE PROCEDURE public.set_updated_at();
+--   EXECUTE PROCEDURE public.handle_new_user();
+-- (PostgreSQL treats FUNCTION and PROCEDURE the same for triggers in supported versions.)
+
+-- Extensions
+create extension if not exists "pgcrypto";
+
+-- ---------------------------------------------------------------------------
+-- profiles
+-- ---------------------------------------------------------------------------
+create table public.profiles (
+  id uuid primary key references auth.users (id) on delete cascade,
+  email text,
+  display_name text,
+  avatar_url text,
+  created_at timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------------
+-- shows
+-- ---------------------------------------------------------------------------
+create table public.shows (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  host text not null,
+  summary text not null default '',
+  description text,
+  artwork_url text,
+  source_type text not null,
+  official_url text,
+  rss_url text,
+  youtube_channel_id text,
+  apple_url text,
+  spotify_url text,
+  category text not null,
+  tags text[] not null default '{}',
+  meaty_score integer not null default 0,
+  featured boolean not null default false,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index shows_category_idx on public.shows (category);
+create index shows_featured_idx on public.shows (featured) where is_active = true;
+create index shows_source_type_idx on public.shows (source_type);
+
+-- ---------------------------------------------------------------------------
+-- episodes
+-- ---------------------------------------------------------------------------
+create table public.episodes (
+  id uuid primary key default gen_random_uuid(),
+  show_id uuid not null references public.shows (id) on delete cascade,
+  external_id text,
+  title text not null,
+  slug text not null,
+  description text,
+  published_at timestamptz,
+  duration_seconds integer,
+  audio_url text,
+  video_url text,
+  episode_url text,
+  source_type text not null,
+  scripture_tags text[] not null default '{}',
+  topic_tags text[] not null default '{}',
+  meaty_score integer not null default 0,
+  artwork_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (show_id, slug)
+);
+
+create unique index episodes_show_external_id_key on public.episodes (show_id, external_id)
+  where external_id is not null;
+
+create index episodes_show_id_idx on public.episodes (show_id);
+create index episodes_published_at_idx on public.episodes (published_at desc nulls last);
+
+-- ---------------------------------------------------------------------------
+-- favorites
+-- ---------------------------------------------------------------------------
+create table public.favorites (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  episode_id uuid not null references public.episodes (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (user_id, episode_id)
+);
+
+create index favorites_user_id_idx on public.favorites (user_id);
+
+-- ---------------------------------------------------------------------------
+-- saved_shows
+-- ---------------------------------------------------------------------------
+create table public.saved_shows (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  show_id uuid not null references public.shows (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique (user_id, show_id)
+);
+
+create index saved_shows_user_id_idx on public.saved_shows (user_id);
+
+-- ---------------------------------------------------------------------------
+-- source_feeds (optional DB mirror; MVP ingestion uses data/source-feeds.ts)
+-- ---------------------------------------------------------------------------
+create table public.source_feeds (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  source_type text not null,
+  category text not null,
+  rss_url text,
+  youtube_channel_id text,
+  official_url text,
+  tags text[] not null default '{}',
+  active boolean not null default true,
+  featured boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------------
+-- updated_at
+-- ---------------------------------------------------------------------------
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create trigger shows_set_updated_at
+  before update on public.shows
+  for each row
+  execute function public.set_updated_at();
+
+create trigger episodes_set_updated_at
+  before update on public.episodes
+  for each row
+  execute function public.set_updated_at();
+
+-- ---------------------------------------------------------------------------
+-- Auto profile on signup
+-- ---------------------------------------------------------------------------
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (id, email, display_name)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'display_name', split_part(new.email, '@', 1))
+  );
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row
+  execute function public.handle_new_user();
+
+-- ---------------------------------------------------------------------------
+-- Row Level Security
+-- ---------------------------------------------------------------------------
+alter table public.profiles enable row level security;
+alter table public.shows enable row level security;
+alter table public.episodes enable row level security;
+alter table public.favorites enable row level security;
+alter table public.saved_shows enable row level security;
+alter table public.source_feeds enable row level security;
+
+-- profiles
+create policy "profiles_select_own"
+  on public.profiles for select
+  using (auth.uid() = id);
+
+create policy "profiles_update_own"
+  on public.profiles for update
+  using (auth.uid() = id);
+
+-- shows & episodes: public read for active / nested active show
+create policy "shows_select_public"
+  on public.shows for select
+  using (is_active = true);
+
+create policy "episodes_select_public"
+  on public.episodes for select
+  using (
+    exists (
+      select 1 from public.shows s
+      where s.id = episodes.show_id and s.is_active = true
+    )
+  );
+
+-- source_feeds: no client access (ingestion uses service role)
+-- favorites
+create policy "favorites_select_own"
+  on public.favorites for select
+  using (auth.uid() = user_id);
+
+create policy "favorites_insert_own"
+  on public.favorites for insert
+  with check (auth.uid() = user_id);
+
+create policy "favorites_delete_own"
+  on public.favorites for delete
+  using (auth.uid() = user_id);
+
+-- saved_shows
+create policy "saved_shows_select_own"
+  on public.saved_shows for select
+  using (auth.uid() = user_id);
+
+create policy "saved_shows_insert_own"
+  on public.saved_shows for insert
+  with check (auth.uid() = user_id);
+
+create policy "saved_shows_delete_own"
+  on public.saved_shows for delete
+  using (auth.uid() = user_id);
