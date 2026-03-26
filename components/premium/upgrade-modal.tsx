@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback } from "react";
-import Link from "next/link";
 import type { Route } from "next";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 import { X } from "lucide-react";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 
@@ -98,12 +98,22 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
             <button type="button" onClick={close} className={`${btnGhost} order-2 sm:order-1`}>
               Maybe later
             </button>
-            <Link href={"/join" as Route} onClick={close} className={`${btnGhost} order-3 whitespace-normal text-center sm:order-2 sm:whitespace-nowrap`}>
+            <FunnelLink
+              href={"/join" as Route}
+              funnelEvent="join_list_click"
+              onClick={close}
+              className={`${btnGhost} order-3 whitespace-normal text-center sm:order-2 sm:whitespace-nowrap`}
+            >
               Join the Deep Well list
-            </Link>
-            <Link href={"/pricing#subscribe" as Route} onClick={close} className={`${btnGhost} order-1 text-center sm:order-3`}>
+            </FunnelLink>
+            <FunnelLink
+              href={"/pricing#subscribe" as Route}
+              funnelEvent="view_plans_click"
+              onClick={close}
+              className={`${btnGhost} order-1 text-center sm:order-3`}
+            >
               View plans
-            </Link>
+            </FunnelLink>
           </div>
         </div>
       </div>

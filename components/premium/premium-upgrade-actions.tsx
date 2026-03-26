@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import type { Route } from "next";
+import { FunnelLink } from "@/components/analytics/funnel-link";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { useAccountPlanOptional } from "@/components/plan/plan-context";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 
@@ -30,21 +31,32 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
   return (
     <div className={className.trim()}>
       <div className={`flex flex-wrap gap-3 ${justify}`}>
-        <button type="button" onClick={() => ctx?.openUpgradeModal()} className={btnGhost}>
+        <button
+          type="button"
+          onClick={() => {
+            trackFunnelEvent("premium_feature_click", { intent: "upgrade_modal" });
+            ctx?.openUpgradeModal();
+          }}
+          className={btnGhost}
+        >
           See what&apos;s included
         </button>
         <StartCheckoutButton interval="monthly" disabled={!publishable} className={btnPrimary}>
           Subscribe — $5/mo
         </StartCheckoutButton>
-        <Link href={"/pricing#subscribe" as Route} className={btnGhost}>
+        <FunnelLink href={"/pricing#subscribe" as Route} funnelEvent="view_plans_click" className={btnGhost}>
           View plans
-        </Link>
+        </FunnelLink>
       </div>
       {showJoinLink ? (
         <p className={`mt-3 max-w-md text-xs leading-relaxed text-muted ${hintAlign}`}>
-          <Link href={"/join" as Route} className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline">
+          <FunnelLink
+            href={"/join" as Route}
+            funnelEvent="join_list_click"
+            className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
+          >
             Join the Deep Well list
-          </Link>
+          </FunnelLink>
           <span className="text-slate-500"> — stay in the loop; your email stays private.</span>
         </p>
       ) : null}

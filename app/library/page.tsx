@@ -16,6 +16,7 @@ import { BackButton } from "@/components/buttons/back-button";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
 import { RecentlyPlayedSection } from "@/components/listening/recently-played";
 import { LibraryCheckoutSuccess } from "@/components/library/library-checkout-success";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 
 export default async function LibraryPage() {
   const authConfigured = hasPublicSupabaseEnv();
@@ -164,12 +165,13 @@ export default async function LibraryPage() {
           >
             Bookmarks &amp; notes
           </Link>
-          <Link
+          <FunnelLink
             href={"/pricing" as Route}
+            funnelEvent="view_plans_click"
             className="rounded-full border border-accent/30 px-4 py-2 text-amber-100/85 transition hover:border-accent/45"
           >
-            Plans
-          </Link>
+            View plans
+          </FunnelLink>
         </div>
       </div>
 
@@ -184,18 +186,20 @@ export default async function LibraryPage() {
               layer on top of listening.
             </p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
-              <Link
+              <FunnelLink
                 href={"/pricing" as Route}
+                funnelEvent="view_plans_click"
                 className="rounded-full border border-accent/35 px-4 py-2 font-medium text-amber-100/90 transition hover:border-accent/50"
               >
                 View plans
-              </Link>
-              <Link
+              </FunnelLink>
+              <FunnelLink
                 href={"/join" as Route}
+                funnelEvent="join_list_click"
                 className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
               >
                 Join the Deep Well list
-              </Link>
+              </FunnelLink>
             </div>
           </div>
           <UpgradeCard showJoinLink={false} />
@@ -243,12 +247,13 @@ export default async function LibraryPage() {
                 >
                   Bookmarks
                 </Link>
-                <Link
+                <FunnelLink
                   href={"/pricing" as Route}
+                  funnelEvent="view_plans_click"
                   className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
                 >
-                  Plan details
-                </Link>
+                  View plans
+                </FunnelLink>
               </div>
             </div>
           </div>

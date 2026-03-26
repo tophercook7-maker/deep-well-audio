@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import type { Route } from "next";
+import { FunnelLink } from "@/components/analytics/funnel-link";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { useAccountPlanOptional } from "@/components/plan/plan-context";
 
 const SCORES = [0, 5, 6, 7, 8, 9, 10] as const;
@@ -51,7 +52,10 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
       {openUpgradeModal ? (
         <button
           type="button"
-          onClick={() => openUpgradeModal()}
+          onClick={() => {
+            trackFunnelEvent("premium_feature_click", { intent: "meaty_filter" });
+            openUpgradeModal();
+          }}
           className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
         >
           <span>Any — Meaty score filters with Premium</span>
@@ -60,15 +64,16 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
           </span>
         </button>
       ) : (
-        <Link
+        <FunnelLink
           href={"/join" as Route}
+          funnelEvent="join_list_click"
           className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
         >
           <span>Any — Join the Deep Well list</span>
           <span className="text-accent" aria-hidden>
             →
           </span>
-        </Link>
+        </FunnelLink>
       )}
       {showStrippedNotice ? (
         <p className="mt-2 text-xs text-amber-200/80">

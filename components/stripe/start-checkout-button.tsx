@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 
 type Interval = "monthly" | "yearly";
 
@@ -19,6 +20,7 @@ export function StartCheckoutButton({ interval, children, className, disabled = 
 
   const onClick = useCallback(async () => {
     if (disabled || busyRef.current) return;
+    trackFunnelEvent("premium_feature_click", { intent: "checkout", interval });
     busyRef.current = true;
     setError(null);
     setLoading(true);

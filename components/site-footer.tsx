@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type { Route } from "next";
 import { InstallHint } from "@/components/pwa/install-hint";
+import { FooterJoinLink } from "@/components/analytics/footer-join-link";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -21,9 +21,7 @@ export function SiteFooter() {
             Library
           </Link>
           {" · "}
-          <Link href={"/join" as Route} className="text-muted transition hover:text-amber-100/80">
-            Join the Deep Well list
-          </Link>
+          <FooterJoinLink className="text-muted transition hover:text-amber-100/80">Join the Deep Well list</FooterJoinLink>
         </p>
       </div>
     </footer>

@@ -20,6 +20,7 @@ import type { EpisodeWithShow, ShowWithMeta } from "@/lib/types";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
 import { RecentlyPlayedSection } from "@/components/listening/recently-played";
 import { getDiscoverTopicCards } from "@/lib/topics";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 
 const HOMEPAGE_FEATURED_LIMIT = 6;
 const HOMEPAGE_RECENT_EPISODES = 8;
@@ -81,14 +82,15 @@ export default async function HomePage() {
           <div>
             <span className="tag">Curated Bible audio</span>
             <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-              Serious Bible teaching, <span className="text-amber-200">without the noise.</span>
+              Find real Bible teaching{" "}
+              <span className="text-amber-200">without the noise.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-              One calm directory of hand-picked sermons, Bible teaching, and apologetics—curated sources only, no random scraping. Less
-              hunting, more listening. Stream free anytime; sign in when you&apos;re ready to save favorites and shows.
+              Deep Well Audio gathers trusted sermons, podcasts, and Bible teaching in one place—sources we choose on purpose, not an endless
+              sweep of the web. Less searching, more listening. Stream free; sign in when you want favorites and saved shows to stay with you.
             </p>
-            <p className="mt-3 max-w-2xl text-xs leading-relaxed text-slate-500">
-              Curated sources only · No open-web scraping · Focused on meaningful teaching
+            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+              Curated sources · No random feeds · Calm, trustworthy listening
             </p>
 
             {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
@@ -106,36 +108,38 @@ export default async function HomePage() {
             ) : null}
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/explore"
+              <FunnelLink
+                href={"/explore" as Route}
+                funnelEvent="start_listening_click"
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)]"
               >
                 Start listening
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </FunnelLink>
               <Link
                 href={"/explore" as Route}
                 className="inline-flex items-center gap-2 rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
               >
                 Explore the directory
               </Link>
-              <Link
-                href="/library"
-                className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm font-medium text-muted transition hover:border-line/90 hover:text-white"
-              >
-                Your library
-              </Link>
             </div>
-            <p className="mt-4 max-w-xl text-xs text-slate-500">Listening is free—no account required to press play.</p>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">
-              <span className="text-slate-400">Get notified:</span>{" "}
-              <Link
+            <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-500">
+              Listening is free—no account needed to press play.{" "}
+              <Link href={"/library" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
+                Your library
+              </Link>{" "}
+              when you sign in.
+            </p>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+              <span className="text-slate-500">Optional:</span>{" "}
+              <FunnelLink
                 href={"/join" as Route}
+                funnelEvent="join_list_click"
                 className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
               >
-                Join the Deep Well list
-              </Link>{" "}
-              for Premium and study-tool updates. Your email stays private.
+                Get updates
+              </FunnelLink>{" "}
+              on Premium and study tools—one short form, no inbox noise, your email stays private.
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -166,7 +170,7 @@ export default async function HomePage() {
           <div className="card p-6">
             <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Topics</p>
             <p className="mt-2 text-sm text-muted">
-              We&apos;re growing the list thoughtfully—more teachers and ministries are being added as feeds are verified.
+              New teachers and ministries join as feeds are verified—no rush, no filler.
             </p>
             <div className="mt-5 grid gap-4">
               {CATEGORY_OPTIONS.map((category) => (
@@ -223,11 +227,16 @@ export default async function HomePage() {
               key={t.slug}
               className="group card border-line/90 p-5 transition hover:border-accent/35 hover:bg-accent/[0.04]"
             >
-              <Link href={`/topics/${t.slug}` as Route} className="block no-underline">
+              <FunnelLink
+                href={`/topics/${t.slug}` as Route}
+                funnelEvent="topic_card_click"
+                funnelData={{ slug: t.slug }}
+                className="block no-underline"
+              >
                 <p className="text-lg font-semibold text-white group-hover:text-amber-100">{t.label}</p>
                 <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{t.description}</p>
                 <p className="mt-4 text-xs font-medium text-amber-200/80">Open topic hub →</p>
-              </Link>
+              </FunnelLink>
               <p className="mt-2 text-xs">
                 <Link
                   href={`/explore?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}

@@ -5,6 +5,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Loader2, Mail } from "lucide-react";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -69,6 +70,7 @@ export function JoinListForm() {
           setMessage(body.error ?? "Something went wrong. Try again later.");
           return;
         }
+        trackFunnelEvent("waitlist_submit");
         setStatus("ok");
         setMessage(null);
         setEmail("");

@@ -15,6 +15,8 @@ import { getShowDisplayLabel } from "@/lib/display";
 import type { EpisodeWithShow } from "@/lib/types";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { TopicPackSection } from "@/components/topics/topic-pack-section";
+import { getTopicPack } from "@/lib/topic-packs";
+import { resolveTopicPackSections } from "@/lib/topic-pack-resolve";
 
 const EP_PAGE_LIMIT = 80;
 
@@ -94,6 +96,8 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
 
   const related = getRelatedTopicCards(meta.relatedSlugs).filter((t) => t.slug !== meta.slug);
   const sources = uniqueSources(episodes);
+  const packDef = getTopicPack(meta.slug);
+  const resolvedPackSections = packDef?.sections?.length ? resolveTopicPackSections(packDef, episodes) : null;
   const listed = episodes.length;
   const countLine =
     totalCount > 0 ? (totalCount > listed ? `${listed} recent of ${totalCount} episodes` : `${totalCount} episode${totalCount === 1 ? "" : "s"}`) : "No episodes yet";
@@ -149,7 +153,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         ) : null}
       </header>
 
-      <TopicPackSection topicSlug={meta.slug} />
+      <TopicPackSection topicSlug={meta.slug} resolvedSections={resolvedPackSections} />
 
       {sources.length > 0 ? (
         <section className="mt-8">

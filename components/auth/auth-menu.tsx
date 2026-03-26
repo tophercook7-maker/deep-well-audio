@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 import type { User } from "@supabase/supabase-js";
 import { LogoutButton } from "@/components/auth/logout-button";
 import type { UserPlan } from "@/lib/permissions";
@@ -11,9 +12,9 @@ export function AuthMenu({ user, plan }: { user: User | null; plan: UserPlan }) 
   if (!user) {
     return (
       <div className="flex flex-wrap items-center gap-2">
-        <Link href={"/pricing" as Route} className={subtleLink}>
+        <FunnelLink href={"/pricing" as Route} funnelEvent="view_plans_click" className={subtleLink}>
           Pricing
-        </Link>
+        </FunnelLink>
         <Link
           href="/login"
           className="rounded-full border border-line px-4 py-2 text-sm text-muted transition hover:border-accent/40 hover:text-text"
@@ -40,12 +41,13 @@ export function AuthMenu({ user, plan }: { user: User | null; plan: UserPlan }) 
           Premium
         </Link>
       ) : plan === "free" ? (
-        <Link
+        <FunnelLink
           href={"/pricing" as Route}
+          funnelEvent="view_plans_click"
           className="rounded-full border border-accent/35 bg-accent/10 px-3 py-1 text-xs font-semibold text-amber-100/90 transition hover:border-accent/50 hover:bg-accent/15"
         >
           Upgrade
-        </Link>
+        </FunnelLink>
       ) : null}
       <span className="hidden max-w-[10rem] truncate text-sm text-muted md:inline">{user.email}</span>
       <Link href="/library" className="text-sm text-amber-200 hover:text-white">
