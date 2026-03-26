@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { UserPlan } from "@/lib/permissions";
+import { UpgradeModal } from "@/components/premium/upgrade-modal";
 
 export type AccountPlanContextValue = {
   plan: UserPlan;
@@ -20,15 +21,7 @@ export function useAccountPlanOptional() {
   return useContext(PlanContext);
 }
 
-export function AccountPlanProvider({
-  initialPlan,
-  children,
-  modalSlot,
-}: {
-  initialPlan: UserPlan;
-  children: ReactNode;
-  modalSlot: (controls: { open: boolean; setOpen: (v: boolean) => void }) => ReactNode;
-}) {
+export function AccountPlanProvider({ initialPlan, children }: { initialPlan: UserPlan; children: ReactNode }) {
   const [plan, setPlan] = useState<UserPlan>(initialPlan);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
 
@@ -49,7 +42,7 @@ export function AccountPlanProvider({
   return (
     <PlanContext.Provider value={value}>
       {children}
-      {modalSlot({ open: upgradeOpen, setOpen: setUpgradeOpen })}
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </PlanContext.Provider>
   );
 }

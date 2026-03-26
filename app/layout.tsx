@@ -4,7 +4,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { AccountPlanProvider } from "@/components/plan/plan-context";
-import { UpgradeModal } from "@/components/premium/upgrade-modal";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { getSafeAbsoluteSiteUrl } from "@/lib/env";
 
@@ -99,10 +98,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         }}
       >
         <PlayerProvider>
-          <AccountPlanProvider
-            initialPlan={plan}
-            modalSlot={({ open, setOpen }) => <UpgradeModal open={open} onOpenChange={setOpen} />}
-          >
+          <AccountPlanProvider initialPlan={plan}>
             <SiteHeader user={user} plan={plan} />
             <div className="flex min-h-0 flex-1 flex-col">{children}</div>
             <SiteFooter />
