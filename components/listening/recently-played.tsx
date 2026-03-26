@@ -13,7 +13,13 @@ import {
   trackWithResume,
 } from "@/lib/listening-progress";
 
-export function RecentlyPlayedSection({ className = "" }: { className?: string }) {
+export function RecentlyPlayedSection({
+  className = "",
+  enabled = true,
+}: {
+  className?: string;
+  enabled?: boolean;
+}) {
   const { playTrack } = usePlayer();
   const [entries, setEntries] = useState<ListeningProgressEntry[]>([]);
 
@@ -27,6 +33,7 @@ export function RecentlyPlayedSection({ className = "" }: { className?: string }
     return () => window.removeEventListener(LISTENING_PROGRESS_EVENT, load);
   }, []);
 
+  if (!enabled) return null;
   if (entries.length === 0) return null;
 
   return (

@@ -24,6 +24,7 @@ import {
   saveListeningProgress,
   touchRecentPlayback,
 } from "@/lib/listening-progress";
+import { PlayerBookmarkControl } from "@/components/premium/player-bookmark-control";
 
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
@@ -384,6 +385,8 @@ export function GlobalPlayer() {
 
           <div className="flex flex-[2] flex-col gap-2">
             <div className="flex items-center justify-center gap-3 sm:justify-center">
+              <PlayerBookmarkControl />
+
               <button
                 type="button"
                 onClick={() => dispatch({ type: "TOGGLE_PLAY" })}

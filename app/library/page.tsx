@@ -1,24 +1,34 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Headphones, Heart, ListMusic, LockKeyhole, NotebookPen, UserRound } from "lucide-react";
-import { getSessionUser } from "@/lib/auth";
+import { Suspense } from "react";
+import { CheckCircle2, Headphones, Heart, ListMusic, LockKeyhole, NotebookPen, Sparkles, UserRound } from "lucide-react";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
+import { canUseFeature } from "@/lib/permissions";
+import { UpgradeCard } from "@/components/premium/upgrade-card";
 import { getLibraryFavorites, getLibrarySavedShows } from "@/lib/queries";
+import { getRecentBookmarkEpisodes } from "@/lib/bookmarks";
 import { hasPublicSupabaseEnv } from "@/lib/env";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { FavoritesList } from "@/components/library/favorites-list";
 import { SavedShowsList } from "@/components/library/saved-shows-list";
+import { EpisodeRow } from "@/components/episode-row";
 import { BackButton } from "@/components/buttons/back-button";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
 import { RecentlyPlayedSection } from "@/components/listening/recently-played";
+import { LibraryCheckoutSuccess } from "@/components/library/library-checkout-success";
 
 export default async function LibraryPage() {
   const authConfigured = hasPublicSupabaseEnv();
   let user = null;
+  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   try {
-    user = await getSessionUser();
-  } catch {
+    [user, plan] = await Promise.all([getSessionUser(), getUserPlan()]);
+  } catch (e) {
+    if (isNextDynamicUsageError(e)) throw e;
     user = null;
+    plan = "guest";
   }
+  const showSessionListening = canUseFeature("continue_listening", plan);
 
   const features = [
     { icon: Heart, title: "Favorites", text: "Episodes you want one tap away." },
@@ -34,8 +44,9 @@ export default async function LibraryPage() {
           <BackButton fallbackHref="/" label="Back" />
         </div>
 
-        <ContinueListeningSection />
-        <RecentlyPlayedSection />
+        <Suspense fallback={null}>
+          <LibraryCheckoutSuccess />
+        </Suspense>
 
         {!authConfigured ? (
           <div className="card border-amber-400/25 bg-amber-500/5 p-5 text-sm leading-7 text-amber-100/90">
@@ -103,8 +114,13 @@ export default async function LibraryPage() {
 
   let favoriteRows: Awaited<ReturnType<typeof getLibraryFavorites>> = [];
   let savedRows: Awaited<ReturnType<typeof getLibrarySavedShows>> = [];
+  let recentBookmarkEpisodes: Awaited<ReturnType<typeof getRecentBookmarkEpisodes>> = [];
   try {
-    [favoriteRows, savedRows] = await Promise.all([getLibraryFavorites(user.id), getLibrarySavedShows(user.id)]);
+    [favoriteRows, savedRows, recentBookmarkEpisodes] = await Promise.all([
+      getLibraryFavorites(user.id),
+      getLibrarySavedShows(user.id),
+      plan === "premium" ? getRecentBookmarkEpisodes(user.id, 6) : Promise.resolve([]),
+    ]);
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
     console.error("page library lists:", e instanceof Error ? e.message : e);
@@ -116,8 +132,12 @@ export default async function LibraryPage() {
         <BackButton fallbackHref="/" label="Back" />
       </div>
 
-      <ContinueListeningSection />
-      <RecentlyPlayedSection />
+      <Suspense fallback={null}>
+        <LibraryCheckoutSuccess />
+      </Suspense>
+
+      <ContinueListeningSection enabled={showSessionListening} />
+      <RecentlyPlayedSection enabled={showSessionListening} />
 
       {!authConfigured ? (
         <div className="card border-amber-400/25 bg-amber-500/5 p-5 text-sm text-amber-100/90">
@@ -131,7 +151,121 @@ export default async function LibraryPage() {
         <p className="mt-3 max-w-2xl text-muted">
           Favorites and saved shows stay here. Remove items from these cards or from individual show pages.
         </p>
+        <div className="mt-5 flex flex-wrap gap-3 text-sm">
+          <Link
+            href={"/library/playlists" as Route}
+            className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+          >
+            Playlists
+          </Link>
+          <Link
+            href={"/library/bookmarks" as Route}
+            className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+          >
+            Bookmarks &amp; notes
+          </Link>
+          <Link
+            href={"/pricing" as Route}
+            className="rounded-full border border-accent/30 px-4 py-2 text-amber-100/85 transition hover:border-accent/45"
+          >
+            Plans
+          </Link>
+        </div>
       </div>
+
+      {plan === "free" ? (
+        <section className="space-y-3" aria-labelledby="library-upgrade-prompt">
+          <h2 id="library-upgrade-prompt" className="sr-only">
+            Premium preview
+          </h2>
+          <p className="text-sm font-medium text-slate-200">Want more control?</p>
+          <UpgradeCard />
+        </section>
+      ) : null}
+
+      {plan === "premium" ? (
+        <section
+          className="card border-accent/30 bg-accent/[0.04] p-6 sm:p-7"
+          aria-labelledby="library-premium-state"
+        >
+          <div className="flex flex-wrap items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">
+              <Sparkles className="h-6 w-6" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
+              <h2 id="library-premium-state" className="mt-1 text-lg font-semibold text-white">
+                Study tools unlocked
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                Playlists, bookmarks, topic packs, and advanced filters are on your plan. We&apos;re still building some surfaces—thanks for
+                going deeper with Deep Well.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-slate-200">
+                <li className="flex gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden />
+                  Topic packs on each hub that has a curated track
+                </li>
+                <li className="flex gap-2">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden />
+                  Meaty score and deeper filters on Explore
+                </li>
+              </ul>
+              <div className="mt-5 flex flex-wrap gap-3 text-sm">
+                <Link
+                  href={"/library/playlists" as Route}
+                  className="rounded-full border border-line/85 px-4 py-2 text-amber-100/90 transition hover:border-accent/40"
+                >
+                  Playlists
+                </Link>
+                <Link
+                  href={"/library/bookmarks" as Route}
+                  className="rounded-full border border-line/85 px-4 py-2 text-amber-100/90 transition hover:border-accent/40"
+                >
+                  Bookmarks
+                </Link>
+                <Link
+                  href={"/pricing" as Route}
+                  className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+                >
+                  Plan details
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {plan === "premium" && recentBookmarkEpisodes.length > 0 ? (
+        <section className="space-y-4" aria-labelledby="library-recent-bookmarks-heading">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/70">Premium</p>
+              <h2 id="library-recent-bookmarks-heading" className="mt-1 text-xl font-semibold text-white">
+                Recently bookmarked
+              </h2>
+              <p className="mt-1 text-sm text-muted">Open an episode to jump to saved times or add notes.</p>
+            </div>
+            <Link
+              href={"/library/bookmarks" as Route}
+              className="text-sm font-medium text-amber-200/85 hover:text-amber-100 hover:underline"
+            >
+              Bookmarks hub →
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {recentBookmarkEpisodes.map(({ episode: ep }) => (
+              <EpisodeRow
+                key={ep.id}
+                episode={ep}
+                showSlug={ep.show?.slug}
+                showOfficialUrl={ep.show?.official_url}
+                showFavorite={false}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="space-y-4">
         <div className="flex items-center gap-3">

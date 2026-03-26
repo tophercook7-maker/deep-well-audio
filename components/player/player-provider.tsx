@@ -56,6 +56,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "PLAY_TRACK", track, mode });
   }, []);
 
+  const seekTo = useCallback(
+    (seconds: number) => {
+      const el = mediaRef.current;
+      if (!el || !Number.isFinite(seconds) || seconds < 0) return;
+      try {
+        el.currentTime = seconds;
+      } catch {
+        return;
+      }
+      dispatch({ type: "SET_CURRENT_TIME", time: seconds });
+    },
+    [dispatch]
+  );
+
   const value = useMemo(
     () => ({
       state,
@@ -63,8 +77,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       mediaRef,
       playTrack,
       currentTrack,
+      seekTo,
     }),
-    [state, playTrack, currentTrack]
+    [state, playTrack, currentTrack, seekTo]
   );
 
   return (

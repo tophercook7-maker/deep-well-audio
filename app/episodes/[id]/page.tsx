@@ -2,8 +2,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
 import { getEpisodeById, getFavoriteEpisodeIds } from "@/lib/queries";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
+import { getEpisodeBookmarks } from "@/lib/bookmarks";
+import { getEpisodeNotes } from "@/lib/notes";
 import { EpisodeRow } from "@/components/episode-row";
+import { EpisodeBookmarksNotesClient } from "@/components/premium/episode-bookmarks-notes-client";
+import { BookmarksNotesLockedPreview } from "@/components/premium/bookmarks-notes-locked-preview";
 import { BackButton } from "@/components/buttons/back-button";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 
@@ -46,11 +50,21 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
   }
 
   let user = null;
+  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   let favoriteIds = new Set<string>();
+  let studyBookmarks: Awaited<ReturnType<typeof getEpisodeBookmarks>> = [];
+  let studyNotes: Awaited<ReturnType<typeof getEpisodeNotes>> = [];
   try {
     user = await getSessionUser();
+    plan = await getUserPlan();
     if (user) {
       favoriteIds = new Set(await getFavoriteEpisodeIds(user.id));
+      if (plan === "premium") {
+        [studyBookmarks, studyNotes] = await Promise.all([
+          getEpisodeBookmarks(user.id, episode.id),
+          getEpisodeNotes(user.id, episode.id),
+        ]);
+      }
     }
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
@@ -75,6 +89,16 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
           layout="page"
         />
       </div>
+
+      {plan === "premium" && user ? (
+        <EpisodeBookmarksNotesClient
+          episodeId={episode.id}
+          initialBookmarks={studyBookmarks}
+          initialNotes={studyNotes}
+        />
+      ) : (
+        <BookmarksNotesLockedPreview />
+      )}
     </main>
   );
 }

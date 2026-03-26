@@ -24,7 +24,14 @@ function rowProgressPct(entry: ListeningProgressEntry): number {
   return Math.min(100, (entry.currentTime / dur) * 100);
 }
 
-export function ContinueListeningSection({ className = "" }: { className?: string }) {
+export function ContinueListeningSection({
+  className = "",
+  enabled = true,
+}: {
+  className?: string;
+  /** When false, section is hidden (e.g. guests — progress is a signed-in feature). */
+  enabled?: boolean;
+}) {
   const { playTrack } = usePlayer();
   const [entries, setEntries] = useState<ListeningProgressEntry[]>([]);
 
@@ -38,6 +45,7 @@ export function ContinueListeningSection({ className = "" }: { className?: strin
     return () => window.removeEventListener(LISTENING_PROGRESS_EVENT, load);
   }, []);
 
+  if (!enabled) return null;
   if (entries.length === 0) return null;
 
   return (

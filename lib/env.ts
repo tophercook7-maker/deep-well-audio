@@ -57,6 +57,42 @@ export function getOptionalYoutubeApiKey(): string | null {
   return trimStr(process.env.YOUTUBE_API_KEY);
 }
 
+/** Server-only Stripe secret API key. */
+export function getStripeSecretKey(): string | null {
+  return trimStr(process.env.STRIPE_SECRET_KEY);
+}
+
+/** Server-only webhook signing secret (`whsec_…`). */
+export function getStripeWebhookSecret(): string | null {
+  return trimStr(process.env.STRIPE_WEBHOOK_SECRET);
+}
+
+/** Safe for client bundles — publishable key for future Elements; checkout uses hosted page. */
+export function getPublicStripePublishableKey(): string | null {
+  return trimStr(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+}
+
+export function getStripePriceMonthly(): string | null {
+  return trimStr(process.env.STRIPE_PRICE_MONTHLY);
+}
+
+export function getStripePriceYearly(): string | null {
+  return trimStr(process.env.STRIPE_PRICE_YEARLY);
+}
+
+/**
+ * True when Stripe Checkout can be created (secrets + price IDs + site URL for redirects).
+ */
+export function hasStripeBillingConfigured(): boolean {
+  return Boolean(
+    getStripeSecretKey() &&
+      getStripeWebhookSecret() &&
+      getStripePriceMonthly() &&
+      getStripePriceYearly() &&
+      getPublicSiteUrl()
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Presence checks (graceful — no throws)
 // ---------------------------------------------------------------------------
@@ -76,6 +112,17 @@ export function hasSyncSecret(): boolean {
 
 export function hasYoutubeKey(): boolean {
   return Boolean(getOptionalYoutubeApiKey());
+}
+
+/**
+ * Optional `mailto:` for the Premium waitlist CTA on `/pricing` (e.g. `hello@yourdomain.com`).
+ * When unset, the page still explains that Premium is not for sale yet.
+ */
+export function getPremiumWaitlistMailto(): string | null {
+  const e = trimStr(process.env.NEXT_PUBLIC_PREMIUM_WAITLIST_EMAIL);
+  if (!e) return null;
+  const subject = encodeURIComponent("Deep Well Audio — Premium waitlist");
+  return `mailto:${e}?subject=${subject}`;
 }
 
 /** True when a debug / setup panel is useful (local dev or Vercel preview). */

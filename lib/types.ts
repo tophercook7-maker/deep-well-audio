@@ -5,6 +5,10 @@ export type ProfileRow = {
   email: string | null;
   display_name: string | null;
   avatar_url: string | null;
+  /** `free` | `premium` — defaults to free for legacy rows */
+  plan: string;
+  stripe_customer_id: string | null;
+  subscription_status: string | null;
   created_at: string;
 };
 

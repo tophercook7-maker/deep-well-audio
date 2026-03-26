@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Headphones, Home, Library, Search, Tags } from "lucide-react";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { AuthMenu } from "@/components/auth/auth-menu";
 
 type NavItem =
@@ -19,7 +19,7 @@ const linkClass =
   "flex min-h-[44px] items-center gap-2 rounded-full border border-line px-3 py-2 text-sm text-muted transition hover:border-accent/40 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:min-h-0 sm:px-4";
 
 export async function SiteHeader() {
-  const user = await getSessionUser();
+  const [user, plan] = await Promise.all([getSessionUser(), getUserPlan()]);
 
   return (
     <header
@@ -80,7 +80,7 @@ export async function SiteHeader() {
             );
           })}
           <div className="sm:ml-1 sm:border-l sm:border-line/80 sm:pl-3">
-            <AuthMenu user={user} />
+            <AuthMenu user={user} plan={plan} />
           </div>
         </nav>
       </div>

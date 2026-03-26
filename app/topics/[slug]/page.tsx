@@ -14,6 +14,7 @@ import {
 import { getShowDisplayLabel } from "@/lib/display";
 import type { EpisodeWithShow } from "@/lib/types";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { TopicPackSection } from "@/components/topics/topic-pack-section";
 
 const EP_PAGE_LIMIT = 80;
 
@@ -147,6 +148,8 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           </div>
         ) : null}
       </header>
+
+      <TopicPackSection topicSlug={meta.slug} />
 
       {sources.length > 0 ? (
         <section className="mt-8">

@@ -17,8 +17,23 @@ create table public.profiles (
   email text,
   display_name text,
   avatar_url text,
+  plan text not null default 'free' check (plan in ('free', 'premium')),
+  stripe_customer_id text,
+  subscription_status text,
   created_at timestamptz not null default now()
 );
+
+-- ---------------------------------------------------------------------------
+-- premium_waitlist (interest signups; server API + service role only)
+-- ---------------------------------------------------------------------------
+create table public.premium_waitlist (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  source text,
+  created_at timestamptz not null default now()
+);
+
+create unique index premium_waitlist_email_lower_key on public.premium_waitlist (lower(email));
 
 -- ---------------------------------------------------------------------------
 -- shows
@@ -108,6 +123,30 @@ create table public.saved_shows (
 create index saved_shows_user_id_idx on public.saved_shows (user_id);
 
 -- ---------------------------------------------------------------------------
+-- episode_bookmarks / episode_notes (Premium — per-user study data)
+-- ---------------------------------------------------------------------------
+create table public.episode_bookmarks (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  episode_id uuid not null references public.episodes (id) on delete cascade,
+  seconds integer not null,
+  label text,
+  created_at timestamptz not null default now()
+);
+
+create table public.episode_notes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  episode_id uuid not null references public.episodes (id) on delete cascade,
+  body text not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index episode_bookmarks_user_episode_idx on public.episode_bookmarks (user_id, episode_id);
+create index episode_notes_user_episode_idx on public.episode_notes (user_id, episode_id);
+
+-- ---------------------------------------------------------------------------
 -- source_feeds (optional DB mirror; MVP ingestion uses data/source-feeds.ts)
 -- ---------------------------------------------------------------------------
 create table public.source_feeds (
@@ -147,6 +186,11 @@ create trigger episodes_set_updated_at
   for each row
   execute function public.set_updated_at();
 
+create trigger episode_notes_set_updated_at
+  before update on public.episode_notes
+  for each row
+  execute function public.set_updated_at();
+
 -- ---------------------------------------------------------------------------
 -- Auto profile on signup
 -- ---------------------------------------------------------------------------
@@ -157,11 +201,12 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email, display_name)
+  insert into public.profiles (id, email, display_name, plan)
   values (
     new.id,
     new.email,
-    coalesce(new.raw_user_meta_data->>'display_name', split_part(new.email, '@', 1))
+    coalesce(new.raw_user_meta_data->>'display_name', split_part(new.email, '@', 1)),
+    'free'
   );
   return new;
 end;
@@ -176,6 +221,9 @@ create trigger on_auth_user_created
 -- Row Level Security
 -- ---------------------------------------------------------------------------
 alter table public.profiles enable row level security;
+alter table public.premium_waitlist enable row level security;
+alter table public.episode_bookmarks enable row level security;
+alter table public.episode_notes enable row level security;
 alter table public.shows enable row level security;
 alter table public.episodes enable row level security;
 alter table public.favorites enable row level security;
@@ -230,4 +278,33 @@ create policy "saved_shows_insert_own"
 
 create policy "saved_shows_delete_own"
   on public.saved_shows for delete
+  using (auth.uid() = user_id);
+
+-- episode_bookmarks / episode_notes (Premium UI; gated in app — DB allows own rows only)
+create policy "episode_bookmarks_select_own"
+  on public.episode_bookmarks for select
+  using (auth.uid() = user_id);
+
+create policy "episode_bookmarks_insert_own"
+  on public.episode_bookmarks for insert
+  with check (auth.uid() = user_id);
+
+create policy "episode_bookmarks_delete_own"
+  on public.episode_bookmarks for delete
+  using (auth.uid() = user_id);
+
+create policy "episode_notes_select_own"
+  on public.episode_notes for select
+  using (auth.uid() = user_id);
+
+create policy "episode_notes_insert_own"
+  on public.episode_notes for insert
+  with check (auth.uid() = user_id);
+
+create policy "episode_notes_update_own"
+  on public.episode_notes for update
+  using (auth.uid() = user_id);
+
+create policy "episode_notes_delete_own"
+  on public.episode_notes for delete
   using (auth.uid() = user_id);

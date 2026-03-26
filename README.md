@@ -27,6 +27,12 @@ The deployable app lives in **`deep-well-audio-starter/`**. Open this folder in 
 | `SUPABASE_SERVICE_ROLE_KEY` | Server | RSS / ingestion (RLS bypass) |
 | `SYNC_API_SECRET` | Server | Protects sync / ingest HTTP endpoints |
 | `YOUTUBE_API_KEY` | Server | Optional; YouTube ingestion only |
+| `NEXT_PUBLIC_PREMIUM_WAITLIST_EMAIL` | Public | Optional `mailto` helper on `/pricing` |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Public | Enables Stripe Checkout buttons in the UI |
+| `STRIPE_SECRET_KEY` | Server | Stripe API secret |
+| `STRIPE_WEBHOOK_SECRET` | Server | Webhook signing secret (`whsec_…`) |
+| `STRIPE_PRICE_MONTHLY` | Server | Price ID for $5/mo |
+| `STRIPE_PRICE_YEARLY` | Server | Price ID for $49/yr |
 
 Accessors live in `lib/env.ts`.
 
@@ -53,11 +59,28 @@ Local dev typically uses `http://localhost:3000` for both, with `http://localhos
 - `npm run dev` — development
 - `npm run build` / `npm start` — production (same as Vercel build)
 
+## Free vs Premium (production-safe)
+
+- **Guest** — Browse, search, play audio, topic hubs. No account required; listening stays free.
+- **Free (signed in)** — Favorites, saved shows, library, continue listening, and recently played.
+- **Premium** — Everything above plus topic packs, playlists and bookmarks (UI surfaces), and advanced Explore filters (e.g. meaty score), when `profiles.plan = 'premium'` in Supabase.
+
+The **Premium UI and gating are live**. **Stripe Checkout** (monthly/yearly) upgrades the account via webhooks into **`profiles.plan`**; configure env vars in `.env.example`. **`/pricing`** also offers a **notify-me** form (`/api/premium-waitlist`, requires `SUPABASE_SERVICE_ROLE_KEY` and the `premium_waitlist` table from `supabase/migrations`). The app does not simulate payment or upgrade without a successful Stripe subscription.
+
+**Bookmarks & notes (Premium)** — Timestamp bookmarks (`episode_bookmarks`) and private episode notes (`episode_notes`) are gated in the UI and enforced in `/api/premium/bookmarks` and `/api/premium/notes`. Apply `supabase/migrations/20260327120000_episode_bookmarks_notes.sql`. Premium users save moments from the bottom player (“Save this moment”) and manage lists on each episode page; the library surfaces recently bookmarked episodes.
+
+## Stripe (Premium subscriptions)
+
+- **Env:** `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY`, plus `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (enables client checkout buttons), and **`NEXT_PUBLIC_SITE_URL`** (absolute URLs for Checkout success/cancel). See `.env.example`.
+- **Checkout:** `POST /api/stripe/create-checkout-session` with `{ "price": "monthly" | "yearly" }` (signed-in users only). Redirects to Stripe Checkout; success returns to `/library?upgraded=true`.
+- **Webhooks:** `POST /api/stripe/webhook` — raw body + signature verification. Uses **`SUPABASE_SERVICE_ROLE_KEY`** to set `profiles.plan` / `subscription_status` / `stripe_customer_id`. Handle **`checkout.session.completed`**, **`invoice.payment_succeeded`**, **`customer.subscription.deleted`**.
+- **Dashboard:** Create product “Deep Well Premium” with $5/mo and $49/yr recurring prices; copy Price IDs into `STRIPE_PRICE_*`. Add webhook endpoint URL (production) with the signing secret as `STRIPE_WEBHOOK_SECRET`. Metadata `user_id` is set on Checkout and subscription for reliable account linking.
+
 ## Persistent global player / background playback
 
 - **Architecture** — One shared media element in `components/player/global-player.tsx` (usually `<audio>`, or `<video playsInline>` for **direct file-like** `video_url` assets), mounted via `PlayerProvider` in `app/layout.tsx`, so **playback survives normal in-site navigation**. State lives in React context (`lib/player/context.tsx`) + `lib/player/reducer.ts`: current track/queue, play/pause, seek, volume/mute, loading/error, `canPlay`, expanded/minimized chrome. Tracks are normalized in `lib/player/build-track.ts` (`lib/player/utils.ts` for URL heuristics). `lib/player/store.ts` re-exports types/defaults (no separate Zustand store).
 - **Starting playback** — `EpisodePlayActions` (wired through `EpisodeRow` on home, explore episode view, topics, show pages, episode detail): priority **`audio_url` → direct playable `video_url`** → otherwise honest **external** actions only (`episode_url`, show `official_url`). No fake in-player URLs for YouTube/embed-only pages.
-- **Continue listening / resume** — Client `localStorage` key **`deepwell:progress`** (`lib/listening-progress.ts`): per-episode position, duration, `lastPlayedAt`, plus a **recently played** id list. Progress saves on an interval while playing, on pause, and on unload/visibility hide. **Resume** applies when stored position is past ~10s and not near the end (`MIN_RESUME_SECONDS`, `NEAR_END_RATIO`). If storage is blocked (private mode), listening still works; history just won’t persist. **Continue listening** / **Recently played** sections: `components/listening/*` on the homepage; library (signed-in and guest) shows the same blocks when data exists.
+- **Continue listening / resume** — Client `localStorage` key **`deepwell:progress`** (`lib/listening-progress.ts`): per-episode position, duration, `lastPlayedAt`, plus a **recently played** id list. Progress saves on an interval while playing, on pause, and on unload/visibility hide. **Resume** applies when stored position is past ~10s and not near the end (`MIN_RESUME_SECONDS`, `NEAR_END_RATIO`). If storage is blocked (private mode), listening still works; history just won’t persist. **Continue listening** / **Recently played** sections (`components/listening/*`): shown on the homepage and library for **signed-in** free/premium users when local data exists; guests are not shown these blocks (listening still works).
 - **Media Session** — `hooks/use-media-session.ts` sets title, artist (show line), album label, artwork where supported, registers **play / pause / seek backward / seek forward** (±15s), and updates **position state** when duration is known—helps lock-screen and Bluetooth controls **on supported OS/browser combos**.
 - **Background playback (web honesty)** — Many browsers keep tab audio running when you **switch tabs, minimize, or use another app**—especially for real media elements started by a user gesture. There is **no OS-wide floating UI** after leaving the browser, and **no playback after the browser process is fully killed**. iOS/Safari and battery/Doze policies vary; treat continuity as best-effort.
 - **Autoplay** — First play may require an extra tap if the browser blocks autoplay until interaction.

@@ -19,6 +19,8 @@ import { EpisodeRow } from "@/components/episode-row";
 import { ExploreEmptyState } from "@/components/explore/empty-state";
 import { BackButton } from "@/components/buttons/back-button";
 import { getDiscoverTopicCards, getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
+import { getUserPlan } from "@/lib/auth";
+import { ExploreMeatyField } from "@/components/premium/explore-meaty-field";
 
 function toInt(v: string | undefined, fallback?: number) {
   if (v == null || v === "") return fallback;
@@ -69,7 +71,17 @@ export default async function ExplorePage({
   const viewParam = typeof sp.view === "string" ? sp.view : "";
   const view =
     viewParam === "episodes" ? "episodes" : viewParam === "shows" ? "shows" : topicSlugResolved ? "episodes" : "shows";
-  const meatyMin = toInt(typeof sp.meaty === "string" ? sp.meaty : undefined);
+  const meatyFromUrl = toInt(typeof sp.meaty === "string" ? sp.meaty : undefined);
+  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
+  try {
+    plan = await getUserPlan();
+  } catch (e) {
+    if (isNextDynamicUsageError(e)) throw e;
+  }
+  const meatyPremium = plan === "premium";
+  const meatyMin = meatyPremium ? meatyFromUrl : undefined;
+  const meatyApplies = meatyPremium && typeof meatyFromUrl === "number";
+  const meatyStripped = !meatyPremium && typeof meatyFromUrl === "number";
 
   const activeTopicMeta = topicSlugResolved ? getTopicDefinition(topicSlugResolved) : null;
 
@@ -85,7 +97,7 @@ export default async function ExplorePage({
     q.trim() ||
       category ||
       (source && source !== "all") ||
-      typeof meatyMin === "number" ||
+      meatyApplies ||
       Boolean(topicSlugResolved)
   );
 
@@ -99,7 +111,7 @@ export default async function ExplorePage({
     const parts: string[] = [];
     if (q.trim()) parts.push(`Search “${q.trim()}”`);
     if (activeCategoryLabel) parts.push(activeCategoryLabel);
-    if (typeof meatyMin === "number") parts.push(`Meaty ${meatyMin}+`);
+    if (meatyApplies && typeof meatyFromUrl === "number") parts.push(`Meaty ${meatyFromUrl}+`);
     if (source && source !== "all") parts.push(source === "rss" ? "RSS" : source === "youtube" ? "YouTube" : "Hybrid");
     if (!parts.length) return null;
     return parts.join(" · ");
@@ -339,21 +351,10 @@ export default async function ExplorePage({
           </select>
         </label>
 
-        <label>
-          <span className="text-xs uppercase tracking-wide text-amber-100/70">Min meaty</span>
-          <select
-            name="meaty"
-            defaultValue={typeof meatyMin === "number" ? String(meatyMin) : ""}
-            className="mt-2 w-full rounded-2xl border border-line bg-soft/40 px-3 py-3 text-sm text-text outline-none ring-accent/30 focus:ring-2"
-          >
-            <option value="">Any</option>
-            {[0, 5, 6, 7, 8, 9, 10].map((n) => (
-              <option key={n} value={n}>
-                {n}+
-              </option>
-            ))}
-          </select>
-        </label>
+        <ExploreMeatyField
+          defaultApplied={meatyPremium && typeof meatyFromUrl === "number" ? String(meatyFromUrl) : ""}
+          showStrippedNotice={meatyStripped}
+        />
 
         <label>
           <span className="text-xs uppercase tracking-wide text-amber-100/70">View</span>

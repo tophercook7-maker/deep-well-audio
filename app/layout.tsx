@@ -3,6 +3,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PlayerProvider } from "@/components/player/player-provider";
+import { AccountPlanBoundary } from "@/components/plan/account-plan-boundary";
 import { getPublicSiteUrl } from "@/lib/env";
 
 const siteUrl = getPublicSiteUrl() ?? "http://localhost:3000";
@@ -78,9 +79,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         }}
       >
         <PlayerProvider>
-          <SiteHeader />
-          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-          <SiteFooter />
+          <AccountPlanBoundary>
+            <SiteHeader />
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+            <SiteFooter />
+          </AccountPlanBoundary>
         </PlayerProvider>
       </body>
     </html>

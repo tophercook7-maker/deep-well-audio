@@ -1,0 +1,70 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+export async function profileSetPremiumActive(
+  admin: SupabaseClient,
+  userId: string,
+  stripeCustomerId: string
+): Promise<{ error: string | null }> {
+  const { error } = await admin
+    .from("profiles")
+    .update({
+      plan: "premium",
+      subscription_status: "active",
+      stripe_customer_id: stripeCustomerId,
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("[stripe-profile] profileSetPremiumActive", error.message);
+    return { error: error.message };
+  }
+  return { error: null };
+}
+
+export async function profileSetFreeCanceled(admin: SupabaseClient, userId: string): Promise<{ error: string | null }> {
+  const { error } = await admin
+    .from("profiles")
+    .update({
+      plan: "free",
+      subscription_status: "canceled",
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("[stripe-profile] profileSetFreeCanceled", error.message);
+    return { error: error.message };
+  }
+  return { error: null };
+}
+
+export async function profileSetFreeCanceledByStripeCustomer(
+  admin: SupabaseClient,
+  stripeCustomerId: string
+): Promise<{ error: string | null }> {
+  const { error } = await admin
+    .from("profiles")
+    .update({
+      plan: "free",
+      subscription_status: "canceled",
+    })
+    .eq("stripe_customer_id", stripeCustomerId);
+
+  if (error) {
+    console.error("[stripe-profile] profileSetFreeCanceledByStripeCustomer", error.message);
+    return { error: error.message };
+  }
+  return { error: null };
+}
+
+export async function profileFindUserIdByStripeCustomer(
+  admin: SupabaseClient,
+  stripeCustomerId: string
+): Promise<string | null> {
+  const { data, error } = await admin.from("profiles").select("id").eq("stripe_customer_id", stripeCustomerId).maybeSingle();
+
+  if (error) {
+    console.error("[stripe-profile] profileFindUserIdByStripeCustomer", error.message);
+    return null;
+  }
+  return data?.id ?? null;
+}

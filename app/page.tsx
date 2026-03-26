@@ -13,6 +13,8 @@ import { ShowCard } from "@/components/show-card";
 import { EpisodeRow } from "@/components/episode-row";
 import { HomeSetupStatusPanel } from "@/components/home-setup-status";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { getUserPlan } from "@/lib/auth";
+import { canUseFeature } from "@/lib/permissions";
 import { ArrowRight, BookOpen, Headphones, Mic2, ShieldCheck, Star } from "lucide-react";
 import type { EpisodeWithShow, ShowWithMeta } from "@/lib/types";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
@@ -53,18 +55,21 @@ export default async function HomePage() {
   let showCount = 0;
   let episodeCount = 0;
   let catalogProbe: Awaited<ReturnType<typeof probeCatalogBackend>> = "missing_env";
+  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   try {
-    [featured, recentPool, showCount, episodeCount, catalogProbe] = await Promise.all([
+    [featured, recentPool, showCount, episodeCount, catalogProbe, plan] = await Promise.all([
       getFeaturedShows(HOMEPAGE_FEATURED_LIMIT),
       getHomeRecentEpisodes(HOMEPAGE_RECENT_POOL),
       getActiveShowCount(),
       getPublicEpisodeCount(),
       hasPublicSupabaseEnv() ? probeCatalogBackend() : Promise.resolve("missing_env" as const),
+      getUserPlan(),
     ]);
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
     console.error("page home:", e instanceof Error ? e.message : e);
   }
+  const showSessionListening = canUseFeature("continue_listening", plan);
   const recentForSection = recentPool.slice(0, HOMEPAGE_RECENT_EPISODES);
   const quickListenEpisodes = pickQuickListenEpisodes(recentPool, featured, HOMEPAGE_QUICK_LIST_MAX);
   const hasContent = featured.length > 0 || recentPool.length > 0;
@@ -180,8 +185,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <ContinueListeningSection />
-      <RecentlyPlayedSection />
+      <ContinueListeningSection enabled={showSessionListening} />
+      <RecentlyPlayedSection enabled={showSessionListening} />
 
       <section id="topics" className="container-shell scroll-mt-28 py-8 sm:py-10">
         <div className="mb-6 max-w-2xl">

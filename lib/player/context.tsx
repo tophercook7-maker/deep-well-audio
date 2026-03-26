@@ -11,6 +11,8 @@ export type PlayerContextValue = {
   mediaRef: React.RefObject<HTMLMediaElement | null>;
   playTrack: (track: PlayerTrack, mode?: "replace" | "queue") => void;
   currentTrack: PlayerTrack | null;
+  /** Seek the active media element and sync player state (Premium bookmarks, etc.) */
+  seekTo: (seconds: number) => void;
 };
 
 export const PlayerContext = createContext<PlayerContextValue | null>(null);
