@@ -94,12 +94,15 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
           {!publishable ? (
             <p className="text-center text-xs text-muted">Add Stripe keys to enable checkout in this environment.</p>
           ) : null}
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
             <button type="button" onClick={close} className={`${btnGhost} order-2 sm:order-1`}>
               Maybe later
             </button>
-            <Link href={"/pricing#subscribe" as Route} onClick={close} className={`${btnGhost} order-1 text-center sm:order-2`}>
-              Pricing page
+            <Link href={"/join" as Route} onClick={close} className={`${btnGhost} order-3 whitespace-normal text-center sm:order-2 sm:whitespace-nowrap`}>
+              Join the Deep Well list
+            </Link>
+            <Link href={"/pricing#subscribe" as Route} onClick={close} className={`${btnGhost} order-1 text-center sm:order-3`}>
+              View plans
             </Link>
           </div>
         </div>

@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import type { Route } from "next";
 import { Sparkles } from "lucide-react";
 import { PremiumUpgradeActions } from "@/components/premium/premium-upgrade-actions";
 
@@ -27,12 +25,6 @@ export function UpgradeCard({ className = "" }: { className?: string }) {
             <span className="text-slate-300">$5/month</span> or <span className="text-slate-300">$49/year</span> via Stripe Checkout.
           </p>
           <PremiumUpgradeActions className="mt-5" align="start" />
-          <Link
-            href={"/pricing#notify" as Route}
-            className="mt-3 inline-block text-xs font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline"
-          >
-            Join interest list (optional) →
-          </Link>
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { BackButton } from "@/components/buttons/back-button";
-import { PremiumWaitlistForm } from "@/components/pricing/premium-waitlist-form";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
 import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env";
 
@@ -81,17 +80,23 @@ export default function PricingPage() {
         className="scroll-mt-28 rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/[0.06] via-soft/12 to-transparent p-8 sm:p-10"
         aria-labelledby="notify-heading"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Stay in touch</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Stay in the loop</p>
         <h2 id="notify-heading" className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-          Get notified
+          Join the Deep Well list
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-          Prefer email only? Leave your name for product updates—separate from billing. No payment through this form.
+          Get notified when Premium and new study tools land. No spam—just thoughtful updates. Your email stays private and is never
+          shown publicly. No payment on this step.
         </p>
-        <PremiumWaitlistForm />
+        <Link
+          href={"/join" as Route}
+          className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+        >
+          Get updates
+        </Link>
         {mailto ? (
           <p className="mt-6 text-sm text-muted">
-            Prefer email?{" "}
+            Prefer to reach out directly?{" "}
             <a href={mailto} className="font-medium text-amber-200/85 underline-offset-2 hover:text-amber-100 hover:underline">
               Send a message
             </a>

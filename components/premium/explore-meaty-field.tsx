@@ -54,17 +54,17 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
           onClick={() => openUpgradeModal()}
           className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
         >
-          <span>Any — See Premium for score filtering</span>
+          <span>Any — See Premium for score filters</span>
           <span className="text-accent" aria-hidden>
             →
           </span>
         </button>
       ) : (
         <Link
-          href={"/pricing#subscribe" as Route}
+          href={"/join" as Route}
           className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
         >
-          <span>Any — See Premium for score filtering</span>
+          <span>Any — Join the Deep Well list</span>
           <span className="text-accent" aria-hidden>
             →
           </span>

@@ -117,6 +117,15 @@ export default async function HomePage() {
                 Your library
               </Link>
             </div>
+            <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted">
+              <Link
+                href={"/join" as Route}
+                className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
+              >
+                Join the Deep Well list
+              </Link>{" "}
+              — stay in the loop for Premium and study-tool updates. No spam; your email stays private.
+            </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {[

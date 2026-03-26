@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { InstallHint } from "@/components/pwa/install-hint";
 
 export function SiteFooter() {
@@ -8,7 +9,7 @@ export function SiteFooter() {
     <footer className="mt-auto border-t border-line/40 bg-[rgba(11,18,32,0.5)]">
       <InstallHint />
       <div className="container-shell py-6 text-center text-xs text-slate-500">
-        <p>
+        <p className="leading-relaxed">
           © {year}{" "}
           <span className="text-slate-400">Deep Well Audio</span>
           {" · "}
@@ -18,6 +19,10 @@ export function SiteFooter() {
           {" · "}
           <Link href="/library" className="text-muted transition hover:text-amber-100/80">
             Library
+          </Link>
+          {" · "}
+          <Link href={"/join" as Route} className="text-muted transition hover:text-amber-100/80">
+            Join the Deep Well list
           </Link>
         </p>
       </div>

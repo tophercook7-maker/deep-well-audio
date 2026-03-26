@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import type { Route } from "next";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 
 const btnPrimary =
@@ -26,6 +28,13 @@ export function PricingPremiumCheckout({ stripeReady }: Props) {
       ) : (
         <p className="text-xs text-muted">Secure payment via Stripe Checkout. You can manage billing from your Stripe customer portal when enabled.</p>
       )}
+      <p className="text-xs leading-relaxed text-muted">
+        Not ready to subscribe?{" "}
+        <Link href={"/join" as Route} className="font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline">
+          Join the Deep Well list
+        </Link>{" "}
+        to stay in the loop—your email stays private.
+      </p>
     </div>
   );
 }
