@@ -1,0 +1,15 @@
+<!-- Source art for favicon: bold mark only, no micro-detail; export to favicon.svg / PNG / ICO -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="dwaFavGold" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ecd078"/>
+      <stop offset="0.55" stop-color="#d4af37"/>
+      <stop offset="1" stop-color="#8a7020"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0b1220"/>
+  <circle cx="32" cy="32" r="22" fill="#0c1424" stroke="url(#dwaFavGold)" stroke-width="2.25"/>
+  <path stroke="url(#dwaFavGold)" stroke-width="2.5" stroke-linecap="round" d="M32 14v14"/>
+  <path stroke="url(#dwaFavGold)" stroke-width="2" stroke-linecap="round" d="M18 24c5-7 23-7 28 0"/>
+  <ellipse cx="32" cy="36" rx="11" ry="7" stroke="url(#dwaFavGold)" stroke-width="1.5" opacity="0.5"/>
+</svg>

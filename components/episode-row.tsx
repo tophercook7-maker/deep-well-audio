@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ExternalLink, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import type { EpisodeRow as Episode, EpisodeWithShow } from "@/lib/types";
 import { FavoriteButton } from "@/components/buttons/favorite-button";
 import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
-import { SimpleAudioPlayer } from "@/components/player/simple-audio";
+import { EpisodePlayActions } from "@/components/player/episode-play-actions";
 import { formatDate, formatDuration } from "@/lib/format";
 import { episodeListDescription } from "@/lib/present";
 
@@ -22,14 +22,6 @@ function showFromEpisode(ep: Episode | EpisodeWithShow): EpisodeWithShow["show"]
   return "show" in ep ? ep.show : undefined;
 }
 
-function outboundClass() {
-  return "inline-flex items-center justify-center gap-2 rounded-full border border-line px-4 py-2 text-sm text-muted transition hover:border-accent/40 hover:text-white";
-}
-
-function listenPrimaryClass() {
-  return "inline-flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90";
-}
-
 export function EpisodeRow({
   episode,
   showSlug,
@@ -38,20 +30,16 @@ export function EpisodeRow({
   showFavorite = true,
   favoriteReturnPath,
 }: Props) {
-  const audio = episode.audio_url?.trim() || null;
-  const video = episode.video_url?.trim() || null;
-  const epLink = episode.episode_url?.trim() || null;
-  const official = showOfficialUrl?.trim() || null;
   const embeddedShow = showFromEpisode(episode);
   const resolvedSlug = showSlug ?? embeddedShow?.slug;
-  const resolvedShowTitle = embeddedShow?.title;
+  const resolvedShowTitle = embeddedShow?.title ?? "Program";
   const descriptionPlain = episodeListDescription(episode.description);
 
   return (
     <div className="card flex flex-col gap-4 p-4 md:flex-row md:items-start md:justify-between">
       <div className="flex flex-1 items-start gap-4">
-        <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-slate-950">
-          <Play className="h-5 w-5 fill-current" aria-hidden />
+        <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent ring-1 ring-accent/35">
+          <Play className="h-5 w-5 fill-current opacity-90" aria-hidden />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -98,61 +86,19 @@ export function EpisodeRow({
               </span>
             ))}
           </div>
-
-          {audio ? <SimpleAudioPlayer src={audio} title={episode.title} /> : null}
         </div>
       </div>
 
       <div className="flex flex-col items-stretch gap-2 md:items-end">
-        <Link href={`/episodes/${episode.id}`} className={listenPrimaryClass()}>
-          <Play className="h-4 w-4 fill-current" aria-hidden />
-          Listen
-        </Link>
-
+        <EpisodePlayActions
+          episode={episode}
+          showTitle={resolvedShowTitle}
+          showSlug={resolvedSlug}
+          showOfficialUrl={showOfficialUrl ?? embeddedShow?.official_url ?? null}
+          showArtworkUrl={embeddedShow?.artwork_url ?? null}
+        />
         {showFavorite ? (
           <FavoriteButton episodeId={episode.id} initial={favorited} returnPath={favoriteReturnPath} />
-        ) : null}
-
-        {video ? (
-          <a href={video} target="_blank" rel="noreferrer noopener" className={outboundClass()}>
-            Watch
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        ) : null}
-
-        {audio && epLink ? (
-          <a href={epLink} target="_blank" rel="noreferrer noopener" className={outboundClass()}>
-            Open episode page
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        ) : null}
-
-        {!video && epLink && !audio ? (
-          <a href={epLink} target="_blank" rel="noreferrer noopener" className={outboundClass()}>
-            Listen / open
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        ) : null}
-
-        {!epLink && !video && audio ? (
-          <a href={audio} target="_blank" rel="noreferrer noopener" className={outboundClass()}>
-            Open audio file
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        ) : null}
-
-        {!video && !epLink && !audio && official ? (
-          <a href={official} target="_blank" rel="noreferrer noopener" className={outboundClass()}>
-            Official source
-            <ExternalLink className="h-4 w-4" />
-          </a>
-        ) : null}
-
-        {showSlug ? (
-          <Link href={`/shows/${showSlug}`} className={outboundClass()}>
-            Show page
-            <ExternalLink className="h-4 w-4" />
-          </Link>
         ) : null}
       </div>
     </div>
