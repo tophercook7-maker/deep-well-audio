@@ -3,15 +3,33 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PlayerProvider } from "@/components/player/player-provider";
-import { AccountPlanBoundary } from "@/components/plan/account-plan-boundary";
+import { AccountPlanProvider } from "@/components/plan/plan-context";
+import { UpgradeModal } from "@/components/premium/upgrade-modal";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { getSafeAbsoluteSiteUrl } from "@/lib/env";
 
-const siteUrl = getSafeAbsoluteSiteUrl();
+function metadataBaseUrl(): string {
+  try {
+    return getSafeAbsoluteSiteUrl();
+  } catch {
+    return "http://localhost:3000";
+  }
+}
+
+const siteUrl = metadataBaseUrl();
+
+const metadataBase: URL = (() => {
+  try {
+    return new URL(siteUrl);
+  } catch {
+    return new URL("http://localhost:3000");
+  }
+})();
 
 const defaultDescription = "Find rich Bible teaching without digging through fluff.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase,
   title: {
     default: "Deep Well Audio",
     template: "%s | Deep Well Audio",
@@ -67,7 +85,9 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [user, plan] = await Promise.all([getSessionUser(), getUserPlan()]);
+
   return (
     <html lang="en" className="h-full" style={{ backgroundColor: "#0b1220", color: "#f8fafc" }}>
       <body
@@ -79,11 +99,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         }}
       >
         <PlayerProvider>
-          <AccountPlanBoundary>
-            <SiteHeader />
+          <AccountPlanProvider
+            initialPlan={plan}
+            modalSlot={({ open, setOpen }) => <UpgradeModal open={open} onOpenChange={setOpen} />}
+          >
+            <SiteHeader user={user} plan={plan} />
             <div className="flex min-h-0 flex-1 flex-col">{children}</div>
             <SiteFooter />
-          </AccountPlanBoundary>
+          </AccountPlanProvider>
         </PlayerProvider>
       </body>
     </html>
