@@ -72,7 +72,7 @@ export default async function LibraryPage() {
                   href={authConfigured ? ("/signup?next=/library" as Route) : ("/explore" as Route)}
                   className="inline-flex items-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950"
                 >
-                  {authConfigured ? "Create account" : "Browse directory"}
+                  {authConfigured ? "Create account" : "Explore"}
                 </Link>
                 {authConfigured ? (
                   <Link
@@ -174,12 +174,31 @@ export default async function LibraryPage() {
       </div>
 
       {plan === "free" ? (
-        <section className="space-y-3" aria-labelledby="library-upgrade-prompt">
-          <h2 id="library-upgrade-prompt" className="sr-only">
-            Premium preview
-          </h2>
-          <p className="text-sm font-medium text-slate-200">Want more control?</p>
-          <UpgradeCard />
+        <section className="space-y-4" aria-labelledby="library-upgrade-prompt">
+          <div>
+            <h2 id="library-upgrade-prompt" className="text-lg font-semibold text-white sm:text-xl">
+              Want more control over your study?
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+              Premium adds bookmarks for key moments, notes on episodes, structured topic packs, and advanced filters—only if you want that
+              layer on top of listening.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3 text-sm">
+              <Link
+                href={"/pricing" as Route}
+                className="rounded-full border border-accent/35 px-4 py-2 font-medium text-amber-100/90 transition hover:border-accent/50"
+              >
+                View plans
+              </Link>
+              <Link
+                href={"/join" as Route}
+                className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+              >
+                Join the Deep Well list
+              </Link>
+            </div>
+          </div>
+          <UpgradeCard showJoinLink={false} />
         </section>
       ) : null}
 
@@ -195,11 +214,11 @@ export default async function LibraryPage() {
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
               <h2 id="library-premium-state" className="mt-1 text-lg font-semibold text-white">
-                Study tools unlocked
+                Your study tools are unlocked
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Playlists, bookmarks, topic packs, and advanced filters are on your plan. We&apos;re still building some surfaces—thanks for
-                going deeper with Deep Well.
+                Bookmarks, notes, topic packs, playlists, and advanced filters are included on your plan—same calm player, more structure when
+                you need it.
               </p>
               <ul className="mt-4 space-y-2 text-sm text-slate-200">
                 <li className="flex gap-2">

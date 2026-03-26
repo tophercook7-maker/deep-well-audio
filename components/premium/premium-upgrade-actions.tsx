@@ -31,7 +31,7 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
     <div className={className.trim()}>
       <div className={`flex flex-wrap gap-3 ${justify}`}>
         <button type="button" onClick={() => ctx?.openUpgradeModal()} className={btnGhost}>
-          See Premium
+          See what&apos;s included
         </button>
         <StartCheckoutButton interval="monthly" disabled={!publishable} className={btnPrimary}>
           Subscribe — $5/mo

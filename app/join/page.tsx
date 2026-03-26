@@ -11,9 +11,9 @@ export const metadata = {
 };
 
 const benefits = [
-  "Early word when Premium opens or pricing changes",
-  "New topic packs and study tools as they go live",
-  "Quiet, curated notes as the directory improves",
+  "A short note when Premium or pricing changes—no surprise clutter",
+  "Heads-up as topic packs and study tools go live",
+  "Occasional directory updates when we add meaningful teaching sources",
 ];
 
 export default function JoinPage() {
@@ -37,13 +37,13 @@ export default function JoinPage() {
               Deep Well Audio
             </p>
             <h1 className="mt-2 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-              Join the Deep Well list
+              Get notified about Premium &amp; new tools
             </h1>
             <p className="mt-4 text-center text-sm leading-relaxed text-muted">
-              Stay in the loop on Premium, new study tools, and meaningful updates to this library—without inbox noise.
+              Join the Deep Well list for calm updates when study features ship or the curated library grows—never a flood of mail.
             </p>
             <p className="mt-3 text-center text-sm leading-relaxed text-muted/92">
-              We only email when something is worth your time. No spam, no clutter, no unrelated promos—just Deep Well Audio.
+              One field below, no account required. We only send mail when it&apos;s worth opening—no unrelated promos.
             </p>
 
             <ul className="mt-6 space-y-2.5 border-y border-line/35 py-6 text-left text-sm leading-relaxed text-slate-200/95">
@@ -58,7 +58,7 @@ export default function JoinPage() {
             </ul>
 
             <p className="mt-6 text-center text-xs leading-relaxed text-muted">
-              Add your email below—one step, no account. We only send mail when there&apos;s something worth opening.
+              Your email is only used for this list—we don&apos;t sell it or show it anywhere.
             </p>
 
             <div className="mt-5">

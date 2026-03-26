@@ -18,7 +18,7 @@ export function FavoritesList({ rows }: { rows: Row[] }) {
   if (!valid.length) {
     return (
       <div className="card p-8 text-sm text-muted">
-        Nothing saved yet. Browse the directory and tap <strong className="font-medium text-slate-200">Favorite</strong> on any episode
+        Nothing saved yet. Explore the directory and tap <strong className="font-medium text-slate-200">Favorite</strong> on any episode
         you want to find again— it will land here.
       </div>
     );

@@ -90,9 +90,8 @@ export function JoinListForm() {
           </div>
         </div>
         <div className="space-y-2 text-center">
-          <p className="text-lg font-semibold text-white">You&apos;re on the list.</p>
-          <p className="text-sm leading-relaxed text-muted">
-            We&apos;ll email you when Premium news, new study tools, or a meaningful library update is ready—nothing filler.
+          <p className="text-base font-semibold leading-relaxed text-white sm:text-lg">
+            You&apos;re on the list. We&apos;ll let you know when new features are ready.
           </p>
           <p className="text-sm text-amber-200/85">
             Taking you home{countdown != null && countdown > 0 ? ` in ${countdown}s…` : "…"}
@@ -147,7 +146,7 @@ export function JoinListForm() {
             Saving…
           </>
         ) : (
-          "Keep me posted"
+          "Get notified"
         )}
       </button>
     </form>

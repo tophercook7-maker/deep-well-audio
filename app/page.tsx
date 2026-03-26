@@ -81,11 +81,14 @@ export default async function HomePage() {
           <div>
             <span className="tag">Curated Bible audio</span>
             <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-              Find <span className="text-amber-200">rich Bible teaching</span> without digging through fluff.
+              Serious Bible teaching, <span className="text-amber-200">without the noise.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-              Deep Well Audio brings together trusted sermons, podcasts, and apologetics from hand-picked RSS feeds—so you spend less time
-              searching and more time listening. Create a free account to save favorites and whole shows to your library.
+              One calm directory of hand-picked sermons, Bible teaching, and apologetics—curated sources only, no random scraping. Less
+              hunting, more listening. Stream free anytime; sign in when you&apos;re ready to save favorites and shows.
+            </p>
+            <p className="mt-3 max-w-2xl text-xs leading-relaxed text-slate-500">
+              Curated sources only · No open-web scraping · Focused on meaningful teaching
             </p>
 
             {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
@@ -102,29 +105,37 @@ export default async function HomePage() {
               </p>
             ) : null}
 
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/explore"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950"
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)]"
               >
-                Explore the directory
+                Start listening
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
+                href={"/explore" as Route}
+                className="inline-flex items-center gap-2 rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
+              >
+                Explore the directory
+              </Link>
+              <Link
                 href="/library"
-                className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 text-sm font-medium text-muted transition hover:border-line/90 hover:text-white"
               >
                 Your library
               </Link>
             </div>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-muted">
+            <p className="mt-4 max-w-xl text-xs text-slate-500">Listening is free—no account required to press play.</p>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+              <span className="text-slate-400">Get notified:</span>{" "}
               <Link
                 href={"/join" as Route}
                 className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
               >
                 Join the Deep Well list
               </Link>{" "}
-              — stay in the loop for Premium and study-tool updates. No spam; your email stays private.
+              for Premium and study-tool updates. Your email stays private.
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -138,7 +149,7 @@ export default async function HomePage() {
                           : `${showCount} live sources synced`,
                     }
                   : { label: "Curated", value: "Official feeds only" },
-                { label: "Discovery", value: "Search, topics, meaty score" },
+                { label: "Discovery", value: "Search, topics, deeper filters (Premium)" },
                 { label: "Your picks", value: "Favorites & saved shows" },
               ].map((item) => (
                 <div
@@ -179,7 +190,7 @@ export default async function HomePage() {
                     <div>
                       <p className="font-medium text-white">{category.label}</p>
                       <p className="mt-0.5 text-sm text-amber-200/90 transition group-hover:text-amber-100">
-                        Browse
+                        Explore
                         <span className="ml-1 inline-block transition group-hover:translate-x-0.5" aria-hidden>
                           →
                         </span>
@@ -199,7 +210,7 @@ export default async function HomePage() {
 
       <section id="topics" className="container-shell scroll-mt-28 py-8 sm:py-10">
         <div className="mb-6 max-w-2xl">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Browse by topic</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Explore by topic</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Topic collections</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             Episode-level tags across your directory—different from program categories. Follow a theme (like end times or discernment)
@@ -269,8 +280,8 @@ export default async function HomePage() {
         <div className="card border-accent/25 bg-soft/25 p-8 sm:p-10">
           <h2 className="text-2xl font-semibold">What you&apos;ll find here</h2>
           <p className="mt-3 max-w-3xl text-muted">
-            Sermons, long-form Bible teaching, and apologetics—all from sources we&apos;d recommend to a friend. We don&apos;t scrape the
-            open web; every program is configured on purpose. More voices will join the directory as we grow.
+            Sermons, long-form Bible teaching, and apologetics from ministries we&apos;d recommend to a friend. Curated sources only—no
+            random content from the open web. Every feed is added on purpose.
           </p>
           <ul className="mt-5 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">
             <li>• Save the messages you want to return to.</li>
@@ -312,7 +323,7 @@ export default async function HomePage() {
             href="/explore"
             className="shrink-0 rounded-full border border-line/80 px-4 py-2 text-sm font-medium text-amber-200 transition hover:border-accent/35 hover:bg-accent/[0.06] hover:text-white"
           >
-            Browse all sources →
+            Explore →
           </Link>
         </div>
 
@@ -363,8 +374,8 @@ export default async function HomePage() {
             <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Accounts</p>
             <h2 className="mt-2 text-3xl font-semibold">Listen now. Save what lasts.</h2>
             <p className="mt-4 max-w-2xl leading-7 text-muted">
-              Sign in to favorite episodes and save whole shows—your library is yours across sessions. Everything stays inside this same
-              warm, dark experience: content first, noise last.
+              When you want lists that follow you across devices, sign in to favorite episodes and save whole shows—optional, never
+              required to listen. Same calm, content-first experience.
             </p>
           </div>
 

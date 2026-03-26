@@ -68,7 +68,13 @@ export function PlayerBookmarkControl() {
         <BookmarkPlus className="h-5 w-5" aria-hidden />
       </button>
       {hint ? (
-        <span className="sr-only" role="status">
+        <span
+          className={`text-[10px] font-medium leading-none ${
+            hint === "Saved" ? "text-emerald-400/90" : "text-amber-200/85"
+          }`}
+          role="status"
+          aria-live="polite"
+        >
           {hint}
         </span>
       ) : null}

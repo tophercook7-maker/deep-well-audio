@@ -43,11 +43,11 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
 
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/70">Premium</p>
         <h2 id="upgrade-modal-title" className="mt-2 text-xl font-semibold text-white sm:text-2xl">
-          Unlock deeper study tools
+          Premium helps you study, not just listen
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-muted">
-          Listening stays free for everyone. Premium adds topic packs, bookmarks &amp; notes, playlists, and advanced filters—billed through
-          Stripe.
+          Listening stays free for everyone. Premium is for when you want structure on top of the same calm player—bookmarks, notes, topic
+          packs, and faster discovery. Billed securely through Stripe.
         </p>
 
         <ul className="mt-5 space-y-2.5 text-sm text-slate-200">
@@ -55,25 +55,25 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
             <span className="text-accent" aria-hidden>
               ·
             </span>
-            Guided topic packs
+            Save key moments with timestamped bookmarks
           </li>
           <li className="flex gap-2">
             <span className="text-accent" aria-hidden>
               ·
             </span>
-            Bookmarks &amp; notes
+            Take private notes on teaching, tied to episodes
           </li>
           <li className="flex gap-2">
             <span className="text-accent" aria-hidden>
               ·
             </span>
-            Custom playlists
+            Follow structured topic packs across teachers
           </li>
           <li className="flex gap-2">
             <span className="text-accent" aria-hidden>
               ·
             </span>
-            Advanced filters (e.g. meaty score)
+            Find deeper content faster with advanced filtering
           </li>
         </ul>
 

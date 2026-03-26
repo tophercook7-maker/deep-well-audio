@@ -23,9 +23,10 @@ export default function PricingPage() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Pricing</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Choose your pace</h1>
         <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
-          Deep Well Audio is free to explore and listen. Premium adds deeper study tools for people who want more structure and control.
+          Free listening and exploring stay available for everyone. Premium adds structure: bookmarks, notes, topic packs, and tools to find
+          richer episodes faster.
           <span className="mt-2 block text-sm text-slate-400">
-            Subscriptions are processed securely by Stripe—you are not charged until you complete checkout.
+            Stripe processes subscriptions—you are not charged until you finish checkout.
           </span>
         </p>
       </header>
@@ -36,11 +37,10 @@ export default function PricingPage() {
           Free
         </h2>
         <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-200">
-          <li>· Browse the directory</li>
-          <li>· Listen to sermons and podcasts</li>
+          <li>· Listen to sermons and teaching</li>
+          <li>· Explore the directory</li>
           <li>· Save favorites</li>
-          <li>· Continue listening &amp; recently played</li>
-          <li>· Build your library</li>
+          <li>· Continue listening &amp; pick up where you left off</li>
         </ul>
         <Link
           href={"/signup" as Route}
@@ -85,14 +85,14 @@ export default function PricingPage() {
           Join the Deep Well list
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-          Get notified when Premium and new study tools land. No spam—just thoughtful updates. Your email stays private and is never
-          shown publicly. No payment on this step.
+          Join the Deep Well list to hear when new study tools ship. No spam—thoughtful updates only. Your email stays private; nothing to
+          pay on this step.
         </p>
         <Link
           href={"/join" as Route}
           className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
         >
-          Get updates
+          Get notified
         </Link>
         {mailto ? (
           <p className="mt-6 text-sm text-muted">
