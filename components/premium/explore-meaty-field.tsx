@@ -1,6 +1,8 @@
 "use client";
 
-import { useAccountPlan } from "@/components/plan/plan-context";
+import Link from "next/link";
+import type { Route } from "next";
+import { useAccountPlanOptional } from "@/components/plan/plan-context";
 
 const SCORES = [0, 5, 6, 7, 8, 9, 10] as const;
 
@@ -12,7 +14,9 @@ type Props = {
 };
 
 export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props) {
-  const { plan, openUpgradeModal } = useAccountPlan();
+  const account = useAccountPlanOptional();
+  const plan = account?.plan ?? "guest";
+  const openUpgradeModal = account?.openUpgradeModal;
   const locked = plan !== "premium";
 
   if (!locked) {
@@ -44,16 +48,28 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
         </span>
       </span>
       <input type="hidden" name="meaty" value="" />
-      <button
-        type="button"
-        onClick={openUpgradeModal}
-        className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
-      >
-        <span>Any — See Premium for score filtering</span>
-        <span className="text-accent" aria-hidden>
-          →
-        </span>
-      </button>
+      {openUpgradeModal ? (
+        <button
+          type="button"
+          onClick={() => openUpgradeModal()}
+          className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
+        >
+          <span>Any — See Premium for score filtering</span>
+          <span className="text-accent" aria-hidden>
+            →
+          </span>
+        </button>
+      ) : (
+        <Link
+          href={"/pricing#subscribe" as Route}
+          className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
+        >
+          <span>Any — See Premium for score filtering</span>
+          <span className="text-accent" aria-hidden>
+            →
+          </span>
+        </Link>
+      )}
       {showStrippedNotice ? (
         <p className="mt-2 text-xs text-amber-200/80">
           A minimum meaty score was in the link, but only Premium applies that filter. Everything else still works as usual.

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getPublicSiteUrl, getStripePriceMonthly, getStripePriceYearly } from "@/lib/env";
+import { getStripePriceMonthly, getStripePriceYearly, resolvePublicSiteUrlStrict } from "@/lib/env";
 import { getStripe } from "@/lib/stripe-server";
 
 export async function POST(request: Request) {
   const stripe = getStripe();
-  const siteUrl = getPublicSiteUrl();
+  const siteUrl = resolvePublicSiteUrlStrict();
   const priceMonthly = getStripePriceMonthly();
   const priceYearly = getStripePriceYearly();
 

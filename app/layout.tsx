@@ -4,9 +4,9 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { AccountPlanBoundary } from "@/components/plan/account-plan-boundary";
-import { getPublicSiteUrl } from "@/lib/env";
+import { getSafeAbsoluteSiteUrl } from "@/lib/env";
 
-const siteUrl = getPublicSiteUrl() ?? "http://localhost:3000";
+const siteUrl = getSafeAbsoluteSiteUrl();
 
 const defaultDescription = "Find rich Bible teaching without digging through fluff.";
 

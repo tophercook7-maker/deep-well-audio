@@ -40,6 +40,36 @@ export function getPublicSiteUrl(): string | null {
   return normalizeSiteUrlBase(process.env.NEXT_PUBLIC_SITE_URL);
 }
 
+/** Placeholder values sometimes end up in Vercel env by mistake; they must not reach `new URL(...)`. */
+const INVALID_SITE_URL_SENTINELS = new Set(["undefined", "null"]);
+
+/**
+ * Parsed absolute site URL when `NEXT_PUBLIC_SITE_URL` is set and valid; otherwise `null`.
+ * Use for Stripe redirects and “billing ready” checks — do not fall back silently.
+ */
+export function resolvePublicSiteUrlStrict(): string | null {
+  const raw = trimStr(process.env.NEXT_PUBLIC_SITE_URL);
+  if (!raw || INVALID_SITE_URL_SENTINELS.has(raw.toLowerCase())) {
+    return null;
+  }
+  const withProto = /^https?:\/\//i.test(raw) ? raw : `https://${raw.replace(/^\/+/, "")}`;
+  try {
+    const u = new URL(withProto);
+    const path = u.pathname.replace(/\/+$/, "");
+    return path ? `${u.origin}${path}` : u.origin;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Absolute site URL for metadata (`metadataBase`) and Open Graph.
+ * Never throws: malformed or missing env falls back to `http://localhost:3000` so `new URL()` in `layout` cannot crash the app.
+ */
+export function getSafeAbsoluteSiteUrl(): string {
+  return resolvePublicSiteUrlStrict() ?? "http://localhost:3000";
+}
+
 // ---------------------------------------------------------------------------
 // Server-only ingestion / API protection
 // ---------------------------------------------------------------------------
@@ -89,7 +119,7 @@ export function hasStripeBillingConfigured(): boolean {
       getStripeWebhookSecret() &&
       getStripePriceMonthly() &&
       getStripePriceYearly() &&
-      getPublicSiteUrl()
+      resolvePublicSiteUrlStrict()
   );
 }
 
