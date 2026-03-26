@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, type Ref } from "react";
 import {
   ChevronDown,
   ChevronUp,
@@ -15,6 +15,15 @@ import {
 import { usePlayer } from "@/lib/player/context";
 import { FALLBACK_ARTWORK_PATH, normalizeArtworkSrc } from "@/lib/artwork";
 import { useMediaSession } from "@/hooks/use-media-session";
+import type { PlayerTrack } from "@/lib/player/types";
+import {
+  flushProgressFromAudio,
+  MIN_RESUME_SECONDS,
+  MIN_REMAINING_SECONDS,
+  NEAR_END_RATIO,
+  saveListeningProgress,
+  touchRecentPlayback,
+} from "@/lib/listening-progress";
 
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
@@ -24,20 +33,31 @@ function formatTime(sec: number): string {
 }
 
 export function GlobalPlayer() {
-  const { state, dispatch, audioRef, currentTrack } = usePlayer();
+  const { state, dispatch, mediaRef, currentTrack } = usePlayer();
   const seekRectRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<PlayerTrack | null>(null);
+  const resumeAppliedKeyRef = useRef<string | null>(null);
+  const wasPlayingRef = useRef(false);
 
   const playbackUrl = currentTrack?.playbackUrl ?? null;
   const visible = state.visible && currentTrack && playbackUrl;
 
+  useEffect(() => {
+    trackRef.current = currentTrack ?? null;
+  }, [currentTrack]);
+
+  useEffect(() => {
+    resumeAppliedKeyRef.current = null;
+  }, [playbackUrl]);
+
   const applySeek = useCallback(
     (t: number) => {
-      const el = audioRef.current;
+      const el = mediaRef.current;
       if (!el || !Number.isFinite(t)) return;
       el.currentTime = t;
       dispatch({ type: "SET_CURRENT_TIME", time: t });
     },
-    [audioRef, dispatch]
+    [mediaRef, dispatch]
   );
 
   const onPlay = useCallback(() => dispatch({ type: "SET_PLAYING", playing: true }), [dispatch]);
@@ -53,12 +73,105 @@ export function GlobalPlayer() {
     onSeek: applySeek,
   });
 
+  /** Apply saved resume position once per load. */
+  useEffect(() => {
+    const el = mediaRef.current;
+    if (!el || !playbackUrl || !currentTrack?.resumeAtSeconds) return;
+    const seek = currentTrack.resumeAtSeconds;
+    if (!Number.isFinite(seek) || seek < MIN_RESUME_SECONDS) return;
+    if (!state.canPlay && el.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
+
+    const key = `${currentTrack.id}:${playbackUrl}:${seek}`;
+    if (resumeAppliedKeyRef.current === key) return;
+
+    const dur =
+      el.duration > 0 && Number.isFinite(el.duration)
+        ? el.duration
+        : currentTrack.durationSeconds && currentTrack.durationSeconds > 0
+          ? currentTrack.durationSeconds
+          : 0;
+    if (dur > 0) {
+      if (seek / dur >= NEAR_END_RATIO || dur - seek < MIN_REMAINING_SECONDS) {
+        resumeAppliedKeyRef.current = key;
+        return;
+      }
+    }
+
+    try {
+      el.currentTime = seek;
+      dispatch({ type: "SET_CURRENT_TIME", time: seek });
+    } catch {
+      resumeAppliedKeyRef.current = key;
+      return;
+    }
+    resumeAppliedKeyRef.current = key;
+  }, [
+    playbackUrl,
+    state.canPlay,
+    currentTrack?.id,
+    currentTrack?.resumeAtSeconds,
+    currentTrack?.durationSeconds,
+    dispatch,
+    mediaRef,
+    currentTrack,
+  ]);
+
+  useEffect(() => {
+    if (!visible || !playbackUrl || !state.isPlaying) return;
+    const id = window.setInterval(() => {
+      const tr = trackRef.current;
+      const el = mediaRef.current;
+      if (!tr || !el) return;
+      const dur = Number.isFinite(el.duration) && el.duration > 0 ? el.duration : tr.durationSeconds ?? 0;
+      saveListeningProgress(tr, el.currentTime, dur);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [visible, playbackUrl, state.isPlaying, mediaRef]);
+
+  useEffect(() => {
+    if (!visible || !playbackUrl || state.isPlaying) return;
+    const tr = trackRef.current;
+    const el = mediaRef.current;
+    if (!tr || !el) return;
+    const dur = Number.isFinite(el.duration) && el.duration > 0 ? el.duration : tr.durationSeconds ?? 0;
+    saveListeningProgress(tr, el.currentTime, dur);
+  }, [visible, playbackUrl, state.isPlaying, mediaRef]);
+
+  useEffect(() => {
+    const flush = () => {
+      flushProgressFromAudio(trackRef.current, mediaRef.current);
+    };
+    window.addEventListener("pagehide", flush);
+    window.addEventListener("beforeunload", flush);
+    const onVis = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      window.removeEventListener("beforeunload", flush);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [mediaRef]);
+
+  useEffect(() => {
+    if (state.isPlaying && !wasPlayingRef.current && currentTrack?.id) {
+      touchRecentPlayback(currentTrack.id, currentTrack);
+      const el = mediaRef.current;
+      if (el && Number.isFinite(el.currentTime)) {
+        const dur = Number.isFinite(el.duration) && el.duration > 0 ? el.duration : currentTrack.durationSeconds ?? 0;
+        saveListeningProgress(currentTrack, el.currentTime, dur);
+      }
+    }
+    wasPlayingRef.current = state.isPlaying;
+  }, [state.isPlaying, currentTrack, mediaRef]);
+
   useEffect(() => {
     if (!visible) {
       document.documentElement.style.setProperty("--dwa-player-h", "0px");
       return;
     }
-    const h = state.expanded ? "148px" : "92px";
+    const h = state.expanded ? "164px" : "100px";
     document.documentElement.style.setProperty("--dwa-player-h", h);
     return () => {
       document.documentElement.style.setProperty("--dwa-player-h", "0px");
@@ -66,7 +179,7 @@ export function GlobalPlayer() {
   }, [visible, state.expanded]);
 
   useEffect(() => {
-    const el = audioRef.current;
+    const el = mediaRef.current;
     if (!el || !playbackUrl) return;
 
     const onTime = () => dispatch({ type: "SET_CURRENT_TIME", time: el.currentTime });
@@ -76,7 +189,14 @@ export function GlobalPlayer() {
     };
     const onPlayEv = () => dispatch({ type: "SET_PLAYING", playing: true });
     const onPauseEv = () => dispatch({ type: "SET_PLAYING", playing: false });
-    const onEnded = () => dispatch({ type: "MEDIA_ENDED" });
+    const onEnded = () => {
+      const elEnd = mediaRef.current;
+      const tr = trackRef.current;
+      if (elEnd && tr && Number.isFinite(elEnd.duration) && elEnd.duration > 0) {
+        saveListeningProgress(tr, elEnd.duration, elEnd.duration);
+      }
+      dispatch({ type: "MEDIA_ENDED" });
+    };
     const onWaiting = () => {
       dispatch({ type: "SET_LOADING", loading: true });
       dispatch({ type: "SET_CAN_PLAY", canPlay: false });
@@ -128,17 +248,17 @@ export function GlobalPlayer() {
     };
     // Volume/muted: separate effect below — avoids rebinding listeners every slider tick.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playbackUrl, audioRef, dispatch]);
+  }, [playbackUrl, mediaRef, dispatch]);
 
   useEffect(() => {
-    const el = audioRef.current;
+    const el = mediaRef.current;
     if (!el || !playbackUrl) return;
     el.volume = state.volume;
     el.muted = state.muted;
-  }, [state.volume, state.muted, playbackUrl, audioRef]);
+  }, [state.volume, state.muted, playbackUrl, mediaRef]);
 
   useEffect(() => {
-    const el = audioRef.current;
+    const el = mediaRef.current;
     if (!el || !playbackUrl) return;
 
     if (state.isPlaying) {
@@ -155,16 +275,16 @@ export function GlobalPlayer() {
     } else {
       el.pause();
     }
-  }, [state.isPlaying, playbackUrl, audioRef, dispatch]);
+  }, [state.isPlaying, playbackUrl, mediaRef, dispatch]);
 
   useEffect(() => {
-    const el = audioRef.current;
+    const el = mediaRef.current;
     if (!visible && el) {
       el.pause();
       el.removeAttribute("src");
       el.load();
     }
-  }, [visible, audioRef]);
+  }, [visible, mediaRef]);
 
   if (!visible || !currentTrack) return null;
 
@@ -185,38 +305,63 @@ export function GlobalPlayer() {
 
   const seekFromClientX = (clientX: number) => {
     const bar = seekRectRef.current;
-    const el = audioRef.current;
+    const el = mediaRef.current;
     if (!bar || !el || !canSeek) return;
     const r = bar.getBoundingClientRect();
     const x = Math.min(Math.max(0, clientX - r.left), r.width);
     applySeek((x / r.width) * state.duration);
   };
 
+  const isVideoFile = currentTrack?.playbackKind === "video-file";
+
   return (
     <>
-      <audio ref={audioRef} preload="metadata" className="hidden" playsInline />
+      {isVideoFile ? (
+        <video
+          ref={mediaRef as Ref<HTMLVideoElement>}
+          preload="metadata"
+          className="hidden"
+          playsInline
+        />
+      ) : (
+        <audio
+          ref={mediaRef as Ref<HTMLAudioElement>}
+          preload="metadata"
+          className="hidden"
+          playsInline
+        />
+      )}
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-[100] border-t border-accent/25 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_32px_rgba(0,0,0,0.45)]"
+        className="fixed bottom-0 left-0 right-0 z-[100] border-t border-white/10 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 shadow-[0_-12px_40px_rgba(0,0,0,0.5)] ring-1 ring-inset ring-accent/10"
         style={{
-          background: "linear-gradient(180deg, rgba(15,23,42,0.97) 0%, rgba(11,18,32,0.99) 100%)",
+          background: "linear-gradient(180deg, rgba(15,23,42,0.98) 0%, rgba(8,14,26,0.995) 100%)",
         }}
         role="region"
         aria-label="Now playing"
       >
         {state.expanded ? (
-          <div className="container-shell mx-auto mb-2 max-w-4xl text-xs text-slate-400">
+          <div className="container-shell mx-auto mb-2 max-w-4xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Now playing</p>
             {state.queue.length > 1 ? (
-              <p>Playing queue ({state.queue.length} tracks) — next starts automatically.</p>
+              <p className="mt-1 text-xs text-slate-400">
+                Queue · {state.queue.length} tracks — next starts automatically.
+              </p>
             ) : (
-              <p className="text-slate-500">Deep Well Audio</p>
+              <p className="mt-1 text-xs text-slate-500">Deep Well Audio</p>
             )}
           </div>
         ) : null}
 
-        <div className="container-shell mx-auto flex max-w-4xl flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex min-w-0 flex-1 items-center gap-3">
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-line bg-panel sm:h-14 sm:w-14">
+        <div className="container-shell mx-auto flex max-w-4xl flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-5">
+          <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-3.5">
+            <div
+              className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-line/90 bg-panel transition-[box-shadow] duration-300 sm:h-14 sm:w-14 ${
+                state.isPlaying
+                  ? "shadow-[0_0_0_1px_rgba(212,175,55,0.35),0_4px_20px_rgba(0,0,0,0.35)]"
+                  : "shadow-sm"
+              }`}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={art ?? fallbackSrc}
@@ -227,8 +372,13 @@ export function GlobalPlayer() {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-slate-50">{currentTrack.title}</p>
-              <p className="truncate text-xs text-amber-100/70">{currentTrack.subtitle}</p>
+              {!state.expanded ? (
+                <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/60">
+                  Now playing
+                </p>
+              ) : null}
+              <p className="truncate text-sm font-semibold leading-tight text-slate-50">{currentTrack.title}</p>
+              <p className="mt-0.5 truncate text-xs leading-5 text-amber-100/75">{currentTrack.subtitle}</p>
             </div>
           </div>
 
@@ -309,9 +459,9 @@ export function GlobalPlayer() {
                     }
                   }}
                 >
-                  <div className="relative h-2.5 w-full rounded-full bg-line/80">
+                  <div className="relative h-2 w-full rounded-full bg-line/70 ring-1 ring-inset ring-black/20">
                     <div
-                      className="pointer-events-none absolute inset-y-0 left-0 rounded-full bg-accent/90"
+                      className="pointer-events-none absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-accent/95 to-amber-200/90"
                       style={{ width: `${pct}%` }}
                     />
                   </div>

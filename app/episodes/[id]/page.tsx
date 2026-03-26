@@ -15,8 +15,10 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
 
   if (!dataOk) {
     return (
-      <main className="container-shell py-14">
-        <BackButton fallbackHref="/explore" label="Back" />
+      <main className="container-shell py-12 sm:py-14">
+        <div className="mb-6 border-b border-line/50 pb-5">
+          <BackButton fallbackHref="/explore" label="Back" />
+        </div>
         <div className="mt-8 card border-amber-400/25 bg-amber-500/5 p-8">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-100/80">Temporarily unavailable</p>
           <h1 className="mt-3 text-2xl font-semibold text-white">We couldn&apos;t load this episode</h1>
@@ -58,16 +60,19 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
   const official = episode.show?.official_url ?? null;
 
   return (
-    <main className="container-shell py-14">
-      <BackButton fallbackHref={backFallback} label="Back" />
+    <main className="container-shell py-12 sm:py-14">
+      <div className="mb-6 border-b border-line/50 pb-5">
+        <BackButton fallbackHref={backFallback} label="Back" />
+      </div>
 
-      <div className="mt-6">
+      <div className="mt-2">
         <EpisodeRow
           episode={episode}
           showSlug={episode.show?.slug}
           showOfficialUrl={official}
           favorited={favoriteIds.has(episode.id)}
           favoriteReturnPath={`/episodes/${episode.id}`}
+          layout="page"
         />
       </div>
     </main>

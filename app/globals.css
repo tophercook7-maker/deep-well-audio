@@ -120,8 +120,15 @@ textarea {
 .card {
   border-radius: 1rem;
   border: 1px solid var(--dwa-line);
-  background-color: rgba(17, 24, 39, 0.92);
-  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.18), 0 12px 30px rgba(0, 0, 0, 0.28);
+  background-color: rgba(17, 24, 39, 0.94);
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.14),
+    0 14px 36px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(10px);
+}
+
+.section-divider {
+  border-top: 1px solid rgba(37, 50, 71, 0.85);
 }
 
 .tag {

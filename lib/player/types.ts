@@ -10,6 +10,8 @@ export type PlayerTrack = {
   title: string;
   /** Show / source display name */
   subtitle: string;
+  /** For deep links (continue listening, show URLs) */
+  showSlug?: string;
   audioUrl: string | null;
   videoUrl: string | null;
   episodeUrl: string | null;
@@ -22,6 +24,8 @@ export type PlayerTrack = {
   /** Page or file to open when inline playback is unavailable or fails */
   externalUrl: string | null;
   externalLabel: string;
+  /** If set, seek once after the media can play (resume listening). */
+  resumeAtSeconds?: number;
 };
 
 export type PlayerStoreState = {

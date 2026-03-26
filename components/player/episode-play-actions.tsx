@@ -5,6 +5,7 @@ import { ExternalLink, Loader2, Pause, Play } from "lucide-react";
 import type { EpisodeRow as Episode, EpisodeWithShow } from "@/lib/types";
 import { buildPlayerTrackFromEpisode } from "@/lib/player/build-track";
 import { usePlayer } from "@/lib/player/context";
+import { getResumeSecondsForEpisode, MIN_RESUME_SECONDS } from "@/lib/listening-progress";
 
 type Props = {
   episode: Episode | EpisodeWithShow;
@@ -30,15 +31,20 @@ export function EpisodePlayActions({ episode, showTitle, showSlug, showOfficialU
   const { playTrack, dispatch, state, currentTrack } = usePlayer();
   const embedded = showFromEpisode(episode);
 
-  const track = buildPlayerTrackFromEpisode(episode, {
+  const baseTrack = buildPlayerTrackFromEpisode(episode, {
     showTitle,
     showOfficialUrl: showOfficialUrl ?? embedded?.official_url ?? null,
     showArtworkUrl: showArtworkUrl ?? embedded?.artwork_url ?? null,
   });
+  const resumeAt = getResumeSecondsForEpisode(episode.id, episode.duration_seconds);
+  const track = resumeAt != null ? { ...baseTrack, resumeAtSeconds: resumeAt } : baseTrack;
+  const canResumeFromSaved = resumeAt != null && resumeAt >= MIN_RESUME_SECONDS;
 
   const isCurrent = currentTrack?.id === episode.id;
   const loadingThis = isCurrent && state.loading;
   const playingThis = isCurrent && state.isPlaying;
+
+  const primaryLabel = playingThis ? "Pause" : isCurrent ? "Resume" : canResumeFromSaved ? "Resume" : "Play";
 
   if (track.playbackUrl) {
     return (
@@ -62,7 +68,7 @@ export function EpisodePlayActions({ episode, showTitle, showSlug, showOfficialU
           ) : (
             <Play className="h-4 w-4 fill-current shrink-0" aria-hidden />
           )}
-          {playingThis ? "Pause" : isCurrent ? "Resume" : "Play"}
+          {primaryLabel}
         </button>
         <Link href={`/episodes/${episode.id}`} className={outboundClass()}>
           Episode page

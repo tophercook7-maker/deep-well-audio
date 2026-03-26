@@ -3,6 +3,7 @@ import type { EpisodeWithShow } from "@/lib/types";
 import { FavoriteButton } from "@/components/buttons/favorite-button";
 import { EpisodePlayActions } from "@/components/player/episode-play-actions";
 import { formatDate, formatDuration } from "@/lib/format";
+import { getEpisodeDisplayTitle, getShowDisplayLabel } from "@/lib/display";
 import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
 
@@ -28,28 +29,32 @@ export function FavoritesList({ rows }: { rows: Row[] }) {
       {valid.map(({ created_at, episode }) => {
         if (!episode) return null;
         const show = episode.show;
-        const showTitle = show?.title ?? "Program";
+        const showLabel = getShowDisplayLabel(show?.title, show?.slug);
+        const displayTitle = getEpisodeDisplayTitle(episode, showLabel);
         return (
-          <div key={episode.id} className="card flex flex-col gap-4 p-4 md:flex-row md:items-start md:justify-between">
+          <div
+            key={episode.id}
+            className="card flex flex-col gap-5 p-5 transition-colors duration-200 hover:border-accent/20 md:flex-row md:items-start md:justify-between"
+          >
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <SourceBadge source={episode.source_type} />
                 <MeatyPill score={episode.meaty_score} />
               </div>
-              <h3 className="mt-2 text-lg font-semibold">
+              <h3 className="mt-2 text-lg font-semibold leading-snug text-slate-50">
                 <Link href={`/episodes/${episode.id}`} className="hover:text-amber-100">
-                  {episode.title}
+                  {displayTitle}
                 </Link>
               </h3>
               <p className="mt-1 text-sm text-muted">
-                {showTitle} · {formatDuration(episode.duration_seconds)} · {formatDate(episode.published_at)}
+                {showLabel} · {formatDuration(episode.duration_seconds)} · {formatDate(episode.published_at)}
               </p>
               <p className="mt-1 text-xs text-slate-500">Saved {formatDate(created_at)}</p>
             </div>
             <div className="flex flex-col gap-2 md:items-end">
               <EpisodePlayActions
                 episode={episode}
-                showTitle={showTitle}
+                showTitle={showLabel}
                 showSlug={show?.slug}
                 showOfficialUrl={show?.official_url ?? null}
                 showArtworkUrl={show?.artwork_url ?? null}

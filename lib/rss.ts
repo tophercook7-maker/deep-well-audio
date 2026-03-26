@@ -1,6 +1,7 @@
 import Parser from "rss-parser";
 import type { SourceFeedSeed } from "@/data/source-feeds";
 import { DEFAULT_SHOW_ARTWORK } from "@/lib/episode-playback";
+import { coalesceEpisodeTitleForStorage, isWeakEpisodeTitle } from "@/lib/display";
 import {
   fallbackEpisodeDescription,
   inferMeatyScore,
@@ -8,6 +9,7 @@ import {
   slugify,
   stableEpisodeExternalId,
 } from "@/lib/normalizers";
+import { mergeTopicTagsFromSeedAndText } from "@/lib/topic-infer";
 
 const parser = new Parser({
   customFields: {
@@ -185,7 +187,13 @@ export async function fetchRssIngest(
     const episodeTitle = item.title?.trim() || "";
     if (!episodeTitle && !link) continue;
 
-    const titleSafe = episodeTitle || "Episode";
+    const published =
+      item.isoDate || (item.pubDate ? new Date(item.pubDate).toISOString() : null);
+
+    let titleSafe = episodeTitle;
+    if (!titleSafe || isWeakEpisodeTitle(titleSafe)) {
+      titleSafe = coalesceEpisodeTitleForStorage(episodeTitle, title, published, showSlug);
+    }
 
     const extId = stableEpisodeExternalId({
       showSlug,
@@ -193,7 +201,7 @@ export async function fetchRssIngest(
       guid: guidRaw || null,
       link,
       title: titleSafe,
-      publishedAt: item.isoDate || (item.pubDate ? new Date(item.pubDate).toISOString() : null),
+      publishedAt: published,
     });
 
     const enclosureUrl =
@@ -204,9 +212,6 @@ export async function fetchRssIngest(
       enclosureUrl && !enclosureUrl.includes("youtube.com") && !enclosureUrl.includes("youtu.be")
         ? enclosureUrl
         : null;
-
-    const published =
-      item.isoDate || (item.pubDate ? new Date(item.pubDate).toISOString() : null);
 
     const durationSeconds = pickDuration(item);
     const slugBase = slugify(titleSafe, extId.slice(-12));
@@ -242,7 +247,7 @@ export async function fetchRssIngest(
       episode_url: link,
       source_type: "rss",
       scripture_tags: [],
-      topic_tags: seed.tags ?? [],
+      topic_tags: mergeTopicTagsFromSeedAndText(seed.tags, titleSafe, desc),
       meaty_score: meaty,
       artwork_url: epArt,
     });

@@ -1,6 +1,8 @@
 import type { SourceFeedSeed } from "@/data/source-feeds";
+import { coalesceEpisodeTitleForStorage, isWeakEpisodeTitle } from "@/lib/display";
 import { inferMeatyScore, shortHash, slugify } from "@/lib/normalizers";
 import type { NormalizedEpisodeInput } from "@/lib/rss";
+import { mergeTopicTagsFromSeedAndText } from "@/lib/topic-infer";
 
 const API = "https://www.googleapis.com/youtube/v3";
 
@@ -132,8 +134,12 @@ export async function fetchYoutubeIngest(
     const videoId = sn.resourceId?.videoId;
     if (!videoId) return [];
 
-    const episodeTitle = sn.title?.trim() || "Untitled video";
+    const episodeRaw = sn.title?.trim() || "";
     const published = sn.publishedAt ? new Date(sn.publishedAt).toISOString() : null;
+    let episodeTitle = episodeRaw;
+    if (!episodeTitle || isWeakEpisodeTitle(episodeTitle)) {
+      episodeTitle = coalesceEpisodeTitleForStorage(episodeRaw, channelTitle, published, slug);
+    }
     const desc = sn.description?.trim() ?? null;
     const durationSeconds = durations[videoId] ?? null;
     const thumb = sn.thumbnails?.high?.url || sn.thumbnails?.medium?.url || null;
@@ -160,7 +166,7 @@ export async function fetchYoutubeIngest(
         episode_url: `https://www.youtube.com/watch?v=${videoId}`,
         source_type: "youtube",
         scripture_tags: [],
-        topic_tags: seed.tags ?? [],
+        topic_tags: mergeTopicTagsFromSeedAndText(seed.tags, episodeTitle, desc),
         meaty_score: meaty,
         artwork_url: thumb,
       },

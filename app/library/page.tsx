@@ -8,6 +8,8 @@ import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { FavoritesList } from "@/components/library/favorites-list";
 import { SavedShowsList } from "@/components/library/saved-shows-list";
 import { BackButton } from "@/components/buttons/back-button";
+import { ContinueListeningSection } from "@/components/listening/continue-listening";
+import { RecentlyPlayedSection } from "@/components/listening/recently-played";
 
 export default async function LibraryPage() {
   const authConfigured = hasPublicSupabaseEnv();
@@ -27,8 +29,13 @@ export default async function LibraryPage() {
 
   if (!user) {
     return (
-      <main className="container-shell space-y-8 py-14">
-        <BackButton fallbackHref="/" label="Back" />
+      <main className="container-shell space-y-8 py-12 sm:py-14">
+        <div className="border-b border-line/50 pb-5">
+          <BackButton fallbackHref="/" label="Back" />
+        </div>
+
+        <ContinueListeningSection />
+        <RecentlyPlayedSection />
 
         {!authConfigured ? (
           <div className="card border-amber-400/25 bg-amber-500/5 p-5 text-sm leading-7 text-amber-100/90">
@@ -104,10 +111,13 @@ export default async function LibraryPage() {
   }
 
   return (
-    <main className="container-shell space-y-12 py-14">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <main className="container-shell space-y-12 py-12 sm:py-14">
+      <div className="flex flex-col gap-4 border-b border-line/50 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <BackButton fallbackHref="/" label="Back" />
       </div>
+
+      <ContinueListeningSection />
+      <RecentlyPlayedSection />
 
       {!authConfigured ? (
         <div className="card border-amber-400/25 bg-amber-500/5 p-5 text-sm text-amber-100/90">

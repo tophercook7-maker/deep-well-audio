@@ -1,13 +1,21 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { Home, SearchX } from "lucide-react";
 
 type Props = {
   message: string;
   detail?: string;
   variant?: "filters" | "empty-catalog";
+  /** Optional topic chips linking into `/explore?topic=…`. */
+  relatedTopics?: { slug: string; label: string }[];
 };
 
-export function ExploreEmptyState({ message, detail, variant = "filters" }: Props) {
+export function ExploreEmptyState({
+  message,
+  detail,
+  variant = "filters",
+  relatedTopics,
+}: Props) {
   return (
     <div className="card p-10 text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
@@ -22,6 +30,22 @@ export function ExploreEmptyState({ message, detail, variant = "filters" }: Prop
           <code className="rounded bg-soft px-1 text-xs">data/source-feeds.ts</code>.
         </p>
       ) : null}
+      {relatedTopics && relatedTopics.length > 0 ? (
+        <div className="mt-8">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/55">Try a nearby topic</p>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {relatedTopics.map((t) => (
+              <Link
+                key={t.slug}
+                href={`/explore?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}
+                className="rounded-full border border-line/85 bg-soft/35 px-4 py-2 text-sm text-amber-100/90 transition hover:border-accent/40 hover:bg-accent/[0.08] hover:text-white"
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : null}
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
           href="/"
@@ -31,10 +55,10 @@ export function ExploreEmptyState({ message, detail, variant = "filters" }: Prop
           Home
         </Link>
         <Link
-          href="/explore"
+          href={"/explore" as Route}
           className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-muted transition hover:border-accent/40 hover:text-text"
         >
-          Reset filters
+          Clear all filters
         </Link>
       </div>
     </div>

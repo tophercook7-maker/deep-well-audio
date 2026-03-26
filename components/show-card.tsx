@@ -4,6 +4,7 @@ import { ArrowUpRight, Radio, Star } from "lucide-react";
 import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
 import { categoryLabel } from "@/lib/format";
+import { getShowDisplayLabel } from "@/lib/display";
 import { clampSummary } from "@/lib/present";
 import { RemoteArtwork } from "@/components/artwork/remote-artwork";
 
@@ -17,6 +18,7 @@ export function ShowCard({
 }) {
   const count = show.episode_count ?? 0;
   const summary = clampSummary(show.summary, 200);
+  const showTitle = getShowDisplayLabel(show.title, show.slug);
 
   return (
     <Link
@@ -31,7 +33,7 @@ export function ShowCard({
         <div className="-mx-5 -mt-5 mb-4 aspect-[16/10] overflow-hidden border-b border-line/80 bg-soft/50">
           <RemoteArtwork
             src={show.artwork_url}
-            alt={`${show.title} artwork`}
+            alt={`${showTitle} artwork`}
             className="h-full w-full min-h-[120px]"
             imgClassName="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
           />
@@ -49,7 +51,7 @@ export function ShowCard({
               <SourceBadge source={show.source_type} />
               <MeatyPill score={show.meaty_score} />
             </div>
-            <h3 className="text-xl font-semibold text-text group-hover:text-amber-100">{show.title}</h3>
+            <h3 className="text-xl font-semibold text-text group-hover:text-amber-100">{showTitle}</h3>
             <p className="text-sm text-muted">{show.host}</p>
           </div>
           <Radio className="h-5 w-5 shrink-0 text-accent" aria-hidden />

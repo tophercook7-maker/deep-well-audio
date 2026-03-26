@@ -17,9 +17,11 @@ export default async function SignupPage({
   const authAvailable = hasPublicSupabaseEnv();
 
   return (
-    <main className="container-shell py-16">
-      <BackButton fallbackHref="/" label="Back" />
-      <div className="mx-auto mt-8 max-w-xl card p-8">
+    <main className="container-shell py-12 sm:py-16">
+      <div className="border-b border-line/50 pb-5">
+        <BackButton fallbackHref="/" label="Back" />
+      </div>
+      <div className="mx-auto mt-8 max-w-xl card p-8 sm:p-10">
         <span className="tag">Members</span>
         <h1 className="mt-4 text-3xl font-semibold">Create your account</h1>
         <p className="mt-4 leading-7 text-muted">

@@ -1,15 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Headphones, Home, Library, Search } from "lucide-react";
+import { Headphones, Home, Library, Search, Tags } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { AuthMenu } from "@/components/auth/auth-menu";
 
 type NavItem =
   | { href: "/explore" | "/library"; label: string; icon: typeof Search | typeof Library }
-  | { href: string; label: string; icon: typeof Headphones; hash: true };
+  | { href: string; label: string; icon: typeof Headphones | typeof Tags; hash: true };
 
 const nav: NavItem[] = [
   { href: "/explore", label: "Explore", icon: Search },
+  { href: "/#topics", label: "Topics", icon: Tags, hash: true },
   { href: "/library", label: "Library", icon: Library },
   { href: "/#featured", label: "Featured", icon: Headphones, hash: true },
 ];
@@ -22,8 +23,8 @@ export async function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-50 border-b border-line/80 bg-bg/85 backdrop-blur"
-      style={{ backgroundColor: "rgba(11, 18, 32, 0.92)" }}
+      className="sticky top-0 z-50 border-b border-line/80 bg-bg/85 shadow-[0_8px_28px_rgba(0,0,0,0.22)] backdrop-blur-md backdrop-saturate-150"
+      style={{ backgroundColor: "rgba(11, 18, 32, 0.94)" }}
     >
       <div className="container-shell flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-4">
         <Link

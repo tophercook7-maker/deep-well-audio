@@ -19,7 +19,7 @@ const MUTED_KEY = "deep-well-audio-muted";
 
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(playerReducer, initialPlayerState);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const mediaRef = useRef<HTMLMediaElement>(null);
   const hydrated = useRef(false);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       dispatch,
-      audioRef,
+      mediaRef,
       playTrack,
       currentTrack,
     }),

@@ -7,7 +7,8 @@ import type { PlayerAction } from "@/lib/player/actions";
 export type PlayerContextValue = {
   state: PlayerStoreState;
   dispatch: React.Dispatch<PlayerAction>;
-  audioRef: React.RefObject<HTMLAudioElement | null>;
+  /** Shared `<audio>` / `<video>` element for the current resource */
+  mediaRef: React.RefObject<HTMLMediaElement | null>;
   playTrack: (track: PlayerTrack, mode?: "replace" | "queue") => void;
   currentTrack: PlayerTrack | null;
 };

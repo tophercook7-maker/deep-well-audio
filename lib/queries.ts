@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { EpisodeRow, EpisodeWithShow, ShowRow, ShowWithMeta } from "@/lib/types";
 import { hasPublicSupabaseEnv } from "@/lib/env";
 import { isCategoryKey } from "@/lib/normalizers";
+import { getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 
 function logQueryError(scope: string, err: unknown) {
@@ -130,13 +132,109 @@ export type ExploreFilters = {
   category?: string;
   sourceType?: string;
   meatyMin?: number;
+  /** Episode `topic_tags` slug when `getTopicDefinition(slug)` exists (e.g. end-times). */
+  topic?: string;
 };
+
+/** Resolve a catalog topic slug from filters, or "" if absent/invalid. */
+export function resolveExploreTopicSlug(filters: Pick<ExploreFilters, "topic">): string {
+  const raw = filters.topic?.trim() ?? "";
+  if (!raw) return "";
+  const slug = normalizeTopicSlug(raw);
+  return getTopicDefinition(slug) ? slug : "";
+}
+
+function cleanSearchTerm(term: string): string {
+  return term.replace(/[%_,]/g, " ").trim();
+}
+
+/** Show IDs that have at least one episode matching the topic tag (and optional episode-level filters). */
+async function fetchShowIdsWithTopicEpisodes(
+  supabase: SupabaseClient,
+  topicSlug: string,
+  filters: ExploreFilters
+): Promise<string[]> {
+  const category = filters.category && isCategoryKey(filters.category) ? filters.category : null;
+  const meatyMin = filters.meatyMin;
+  const sourceType = filters.sourceType;
+
+  let q = supabase
+    .from("episodes")
+    .select("show_id, show!inner(is_active)")
+    .contains("topic_tags", [topicSlug])
+    .eq("show.is_active", true);
+
+  if (category) {
+    q = q.eq("show.category", category);
+  }
+  if (typeof meatyMin === "number" && !Number.isNaN(meatyMin)) {
+    q = q.gte("meaty_score", meatyMin);
+  }
+  if (sourceType && sourceType !== "all") {
+    q = q.eq("source_type", sourceType);
+  }
+
+  const { data, error } = await q.limit(4000);
+  if (error) {
+    logQueryError("fetchShowIdsWithTopicEpisodes", error);
+    return [];
+  }
+  return [...new Set((data ?? []).map((r: { show_id: string }) => r.show_id))];
+}
+
+/** Show IDs where an episode (or embedded show fields) matches the ILIKE pattern. */
+async function fetchShowIdsFromEpisodeOrShowText(
+  supabase: SupabaseClient,
+  pattern: string,
+  filters: ExploreFilters,
+  topicSlug: string
+): Promise<string[]> {
+  const category = filters.category && isCategoryKey(filters.category) ? filters.category : null;
+  const meatyMin = filters.meatyMin;
+  const sourceType = filters.sourceType;
+
+  let q = supabase
+    .from("episodes")
+    .select("show_id, show!inner(is_active,title,host,summary,description)")
+    .eq("show.is_active", true)
+    .or(
+      `title.ilike.${pattern},description.ilike.${pattern},show.title.ilike.${pattern},show.host.ilike.${pattern},show.summary.ilike.${pattern},show.description.ilike.${pattern}`
+    );
+
+  if (category) {
+    q = q.eq("show.category", category);
+  }
+  if (topicSlug) {
+    q = q.contains("topic_tags", [topicSlug]);
+  }
+  if (typeof meatyMin === "number" && !Number.isNaN(meatyMin)) {
+    q = q.gte("meaty_score", meatyMin);
+  }
+  if (sourceType && sourceType !== "all") {
+    q = q.eq("source_type", sourceType);
+  }
+
+  const { data, error } = await q.limit(4000);
+  if (error) {
+    logQueryError("fetchShowIdsFromEpisodeOrShowText", error);
+    return [];
+  }
+  return [...new Set((data ?? []).map((r: { show_id: string }) => r.show_id))];
+}
 
 export async function exploreShows(filters: ExploreFilters): Promise<ShowWithMeta[]> {
   if (!hasPublicSupabaseEnv()) return [];
   const supabase = await createClient();
   if (!supabase) return [];
   try {
+    const topicSlug = resolveExploreTopicSlug(filters);
+
+    let topicShowIds: string[] | null = null;
+    if (topicSlug) {
+      topicShowIds = await fetchShowIdsWithTopicEpisodes(supabase, topicSlug, filters);
+      if (!topicShowIds.length) return [];
+    }
+
     let q = supabase
       .from("shows")
       .select("*, episodes(count)")
@@ -157,12 +255,22 @@ export async function exploreShows(filters: ExploreFilters): Promise<ShowWithMet
       q = q.eq("source_type", filters.sourceType);
     }
 
+    if (topicShowIds) {
+      q = q.in("id", topicShowIds);
+    }
+
     const term = filters.q?.trim();
     if (term) {
-      const cleaned = term.replace(/[%_,]/g, " ").trim();
+      const cleaned = cleanSearchTerm(term);
       if (cleaned) {
         const p = `%${cleaned}%`;
-        q = q.or(`title.ilike.${p},summary.ilike.${p},host.ilike.${p}`);
+        const epIds = await fetchShowIdsFromEpisodeOrShowText(supabase, p, filters, topicSlug);
+        const cap = epIds.slice(0, 400);
+        if (cap.length) {
+          q = q.or(`title.ilike.${p},summary.ilike.${p},host.ilike.${p},description.ilike.${p},id.in.(${cap.join(",")})`);
+        } else {
+          q = q.or(`title.ilike.${p},summary.ilike.${p},host.ilike.${p},description.ilike.${p}`);
+        }
       }
     }
 
@@ -186,11 +294,74 @@ export async function exploreShows(filters: ExploreFilters): Promise<ShowWithMet
   }
 }
 
+/** Episodes whose `topic_tags` array contains the slug (e.g. end-times). Newest first. */
+export async function getEpisodesByTopicTag(
+  tagSlug: string,
+  limit = 80
+): Promise<{ episodes: EpisodeWithShow[]; dataOk: boolean }> {
+  const clean = normalizeTopicSlug(tagSlug);
+  if (!clean) return { episodes: [], dataOk: true };
+
+  if (!hasPublicSupabaseEnv()) return { episodes: [], dataOk: false };
+
+  const supabase = await createClient();
+  if (!supabase) return { episodes: [], dataOk: false };
+
+  try {
+    const { data, error } = await supabase
+      .from("episodes")
+      .select("*, show:shows!inner(slug,title,host,artwork_url,category,official_url)")
+      .contains("topic_tags", [clean])
+      .order("published_at", { ascending: false, nullsFirst: false })
+      .limit(limit);
+
+    if (error) {
+      logQueryError(`getEpisodesByTopicTag:${clean}`, error);
+      return { episodes: [], dataOk: false };
+    }
+    if (!data) return { episodes: [], dataOk: true };
+    return { episodes: data as EpisodeWithShow[], dataOk: true };
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError(`getEpisodesByTopicTag:${clean}`, e);
+    return { episodes: [], dataOk: false };
+  }
+}
+
+export async function countEpisodesByTopicTag(tagSlug: string): Promise<number> {
+  const clean = normalizeTopicSlug(tagSlug);
+  if (!clean) return 0;
+
+  if (!hasPublicSupabaseEnv()) return 0;
+
+  const supabase = await createClient();
+  if (!supabase) return 0;
+
+  try {
+    const { count, error } = await supabase
+      .from("episodes")
+      .select("id", { count: "exact", head: true })
+      .contains("topic_tags", [clean]);
+
+    if (error) {
+      logQueryError(`countEpisodesByTopicTag:${clean}`, error);
+      return 0;
+    }
+    return count ?? 0;
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError(`countEpisodesByTopicTag:${clean}`, e);
+    return 0;
+  }
+}
+
 export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeWithShow[]> {
   if (!hasPublicSupabaseEnv()) return [];
   const supabase = await createClient();
   if (!supabase) return [];
   try {
+    const topicSlug = resolveExploreTopicSlug(filters);
+
     let showIds: string[] | null = null;
     if (filters.category && isCategoryKey(filters.category)) {
       const { data: showsInCat, error: catErr } = await supabase.from("shows").select("id").eq("category", filters.category);
@@ -202,41 +373,110 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
       if (!showIds.length) return [];
     }
 
-    let q = supabase
-      .from("episodes")
-      .select("*, show:shows!inner(slug,title,host,artwork_url,category,official_url)")
-      .order("published_at", { ascending: false, nullsFirst: false })
-      .limit(120);
-
-    if (showIds) {
-      q = q.in("show_id", showIds);
-    }
-
     const meatyMin = filters.meatyMin;
-    if (typeof meatyMin === "number" && !Number.isNaN(meatyMin)) {
-      q = q.gte("meaty_score", meatyMin);
-    }
+    const sourceType = filters.sourceType;
 
-    if (filters.sourceType && filters.sourceType !== "all") {
-      q = q.eq("source_type", filters.sourceType);
+    const episodeSelect =
+      "*, show:shows!inner(slug,title,host,artwork_url,category,official_url,summary,description,tags)";
+
+    /* Supabase builder type changes after each filter; keep this helper local. */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- PostgREST chain is too polymorphic to name here.
+    function applyEpisodeFilters(base: any): any {
+      let q = base;
+      if (showIds) q = q.in("show_id", showIds);
+      if (typeof meatyMin === "number" && !Number.isNaN(meatyMin)) {
+        q = q.gte("meaty_score", meatyMin);
+      }
+      if (sourceType && sourceType !== "all") {
+        q = q.eq("source_type", sourceType);
+      }
+      if (topicSlug) {
+        q = q.contains("topic_tags", [topicSlug]);
+      }
+      return q;
     }
 
     const term = filters.q?.trim();
-    if (term) {
-      const cleaned = term.replace(/[%_,]/g, " ").trim();
-      if (cleaned) {
-        const p = `%${cleaned}%`;
-        q = q.or(`title.ilike.${p},description.ilike.${p}`);
+    if (!term) {
+      const q = applyEpisodeFilters(
+        supabase.from("episodes").select(episodeSelect).order("published_at", { ascending: false, nullsFirst: false })
+      ).limit(120);
+      const { data, error } = await q;
+      if (error) {
+        logQueryError("exploreEpisodes", error);
+        return [];
+      }
+      if (!data) return [];
+      return (data as EpisodeWithShow[]).slice(0, 80);
+    }
+
+    const cleaned = cleanSearchTerm(term);
+    if (!cleaned) {
+      const q = applyEpisodeFilters(
+        supabase.from("episodes").select(episodeSelect).order("published_at", { ascending: false, nullsFirst: false })
+      ).limit(120);
+      const { data, error } = await q;
+      if (error) {
+        logQueryError("exploreEpisodes", error);
+        return [];
+      }
+      if (!data) return [];
+      return (data as EpisodeWithShow[]).slice(0, 80);
+    }
+
+    const p = `%${cleaned}%`;
+    const merged = new Map<string, EpisodeWithShow>();
+
+    const qText = applyEpisodeFilters(
+      supabase.from("episodes").select(episodeSelect).order("published_at", { ascending: false, nullsFirst: false })
+    ).or(
+      `title.ilike.${p},description.ilike.${p},show.title.ilike.${p},show.host.ilike.${p},show.summary.ilike.${p},show.description.ilike.${p}`
+    );
+
+    const { data: d1, error: e1 } = await qText.limit(120);
+    if (e1) {
+      logQueryError("exploreEpisodes:text", e1);
+      return [];
+    }
+    for (const row of d1 ?? []) merged.set(row.id, row as EpisodeWithShow);
+
+    if (!topicSlug) {
+      const dictSlug =
+        getTopicDefinition(normalizeTopicSlug(cleaned))?.slug ??
+        getTopicDefinition(normalizeTopicSlug(cleaned.replace(/\s+/g, "-")))?.slug;
+      if (dictSlug) {
+        const qTag = applyEpisodeFilters(
+          supabase.from("episodes").select(episodeSelect).order("published_at", { ascending: false, nullsFirst: false })
+        ).contains("topic_tags", [dictSlug]);
+        const { data: d2, error: e2 } = await qTag.limit(120);
+        if (e2) logQueryError("exploreEpisodes:topicTag", e2);
+        else for (const row of d2 ?? []) merged.set(row.id, row as EpisodeWithShow);
       }
     }
 
-    const { data, error } = await q;
-    if (error) {
-      logQueryError("exploreEpisodes", error);
-      return [];
+    const firstWord = cleaned.split(/\s+/).find((w) => w.length >= 3);
+    if (firstWord) {
+      const token = firstWord.toLowerCase();
+      const tryTags = async (tagVal: string) => {
+        const qt = applyEpisodeFilters(
+          supabase.from("episodes").select(episodeSelect).order("published_at", { ascending: false, nullsFirst: false })
+        ).contains("show.tags", [tagVal]);
+        const { data: dT, error: eT } = await qt.limit(80);
+        if (eT) logQueryError("exploreEpisodes:tags", eT);
+        else for (const row of dT ?? []) merged.set(row.id, row as EpisodeWithShow);
+      };
+      await tryTags(token);
+      const cap = token.charAt(0).toUpperCase() + token.slice(1);
+      if (cap !== token) await tryTags(cap);
     }
-    if (!data) return [];
-    return (data as EpisodeWithShow[]).slice(0, 80);
+
+    return Array.from(merged.values())
+      .sort((a, b) => {
+        const ta = a.published_at ? new Date(a.published_at).getTime() : 0;
+        const tb = b.published_at ? new Date(b.published_at).getTime() : 0;
+        return tb - ta;
+      })
+      .slice(0, 80);
   } catch (e) {
     rethrowIfDynamic(e);
     logQueryError("exploreEpisodes", e);

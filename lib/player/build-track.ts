@@ -1,5 +1,6 @@
 import type { EpisodeRow, EpisodeWithShow } from "@/lib/types";
 import { normalizeArtworkSrc } from "@/lib/artwork";
+import { getEpisodeDisplayTitle, getShowDisplayLabel } from "@/lib/display";
 import { getOutboundListenUrl, getOutboundLabel } from "@/lib/episode-playback";
 import type { PlayerPlaybackKind, PlayerTrack } from "@/lib/player/types";
 import {
@@ -18,6 +19,9 @@ export function buildPlayerTrackFromEpisode(
   const official = opts.showOfficialUrl?.trim() || null;
 
   const show = "show" in episode ? episode.show : undefined;
+  const showLabel = getShowDisplayLabel(opts.showTitle, show?.slug);
+  const displayTitle = getEpisodeDisplayTitle(episode, showLabel);
+
   const art =
     normalizeArtworkSrc(episode.artwork_url) ??
     normalizeArtworkSrc(opts.showArtworkUrl) ??
@@ -59,8 +63,9 @@ export function buildPlayerTrackFromEpisode(
 
   return {
     id: episode.id,
-    title: episode.title,
-    subtitle: opts.showTitle,
+    title: displayTitle,
+    subtitle: showLabel,
+    showSlug: show?.slug,
     audioUrl: audio,
     videoUrl: video,
     episodeUrl: epPage,

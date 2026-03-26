@@ -10,6 +10,7 @@ import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
 import { ShowOutboundLinks } from "@/components/shows/show-links";
 import { categoryLabel } from "@/lib/format";
+import { getShowDisplayLabel } from "@/lib/display";
 import { clampSummary, stripHtmlToPlain } from "@/lib/present";
 import { RemoteArtwork } from "@/components/artwork/remote-artwork";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
@@ -22,8 +23,10 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
 
   if (!dataOk) {
     return (
-      <main className="container-shell py-14">
-        <BackButton fallbackHref="/explore" label="Back" />
+      <main className="container-shell py-12 sm:py-14">
+        <div className="mb-6 border-b border-line/50 pb-5">
+          <BackButton fallbackHref="/explore" label="Back" />
+        </div>
         <div className="mt-8 card border-amber-400/25 bg-amber-500/5 p-8">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-100/80">Temporarily unavailable</p>
           <h1 className="mt-3 text-2xl font-semibold text-white">We couldn&apos;t load this program</h1>
@@ -66,17 +69,20 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
 
   const yt = show.youtube_channel_id ? `https://www.youtube.com/channel/${show.youtube_channel_id}` : null;
   const tagList = Array.isArray(show.tags) ? show.tags : [];
+  const showDisplayTitle = getShowDisplayLabel(show.title, show.slug);
 
   return (
-    <main className="container-shell py-14">
-      <BackButton fallbackHref="/explore" label="Back" />
+    <main className="container-shell py-12 sm:py-14">
+      <div className="mb-6 border-b border-line/50 pb-5">
+        <BackButton fallbackHref="/explore" label="Back" />
+      </div>
 
-      <section className="mt-6 card p-8">
-        <div className="grid gap-8 lg:grid-cols-[140px_1fr] lg:items-start">
-          <div className="overflow-hidden rounded-2xl border border-line bg-soft/40">
+      <section className="card overflow-hidden p-8 sm:p-10">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,160px)_1fr] lg:items-start lg:gap-10">
+          <div className="overflow-hidden rounded-2xl border border-line/90 bg-soft/40 ring-1 ring-white/[0.04]">
             <RemoteArtwork
               src={show.artwork_url}
-              alt={`${show.title} artwork`}
+              alt={`${showDisplayTitle} artwork`}
               className="aspect-square h-full w-full"
               imgClassName="aspect-square h-full w-full object-cover"
               loading="eager"
@@ -92,8 +98,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
 
             <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
               <div>
-                <h1 className="text-4xl font-semibold">{show.title}</h1>
-                <p className="mt-3 text-lg text-slate-300">{show.host}</p>
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{showDisplayTitle}</h1>
+                <p className="mt-3 text-base text-slate-300 sm:text-lg">{show.host}</p>
                 <p className="mt-5 max-w-3xl leading-7 text-muted">{clampSummary(show.summary, 420)}</p>
                 {show.description ? (
                   <p className="mt-4 max-w-3xl leading-7 text-muted">{clampSummary(stripHtmlToPlain(show.description), 520)}</p>
@@ -128,10 +134,11 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
         </div>
       </section>
 
-      <section className="mt-10">
-        <div className="mb-5">
+      <section className="mt-10 sm:mt-12">
+        <div className="mb-6">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Episodes</p>
-          <h2 className="mt-2 text-2xl font-semibold">Latest from this source</h2>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Latest from this source</h2>
+          <p className="mt-2 max-w-2xl text-sm text-muted">Newest items first—play in the bar or open the episode page.</p>
         </div>
         {episodes.length ? (
           <div className="space-y-4">
@@ -147,9 +154,9 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
             ))}
           </div>
         ) : (
-          <div className="card p-8 text-sm text-muted">
+          <div className="card border-dashed border-line/55 bg-soft/20 p-10 text-center text-sm leading-relaxed text-muted">
             Episodes are still being pulled in for this source. Run an RSS sync, or check your feed entry in{" "}
-            <code className="rounded bg-soft px-1 text-xs">data/source-feeds.ts</code> if this stays empty.
+            <code className="rounded bg-soft px-1.5 py-0.5 text-xs text-slate-200">data/source-feeds.ts</code> if this stays empty.
           </div>
         )}
       </section>
