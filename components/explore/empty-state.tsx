@@ -20,7 +20,7 @@ export function ExploreEmptyState({
   return (
     <div className="card p-10 text-center">
       <div className="mb-5 flex justify-center">
-        <DeepWellLogo variant="inline" className="mx-auto h-8 max-w-[220px] opacity-90" />
+        <DeepWellLogo variant="inline" className="mx-auto h-9 max-w-[240px] opacity-90 sm:h-10 sm:max-w-[260px]" />
       </div>
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
         <SearchX className="h-6 w-6" aria-hidden />

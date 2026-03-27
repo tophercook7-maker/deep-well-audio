@@ -37,9 +37,9 @@ export function OgBrandShareLayout({ logoDataUrl }: { logoDataUrl?: string | nul
         <img
           src={logoDataUrl}
           alt=""
-          height={150}
+          height={160}
           width={520}
-          style={{ height: 150, width: "auto", maxWidth: 520, objectFit: "contain" }}
+          style={{ height: 160, width: "auto", maxWidth: 520, objectFit: "contain" }}
         />
         <span style={TAGLINE_STYLE}>Bible teaching worth hearing</span>
         <span style={SUB_STYLE}>Find rich Bible teaching without digging through fluff.</span>

@@ -23,7 +23,7 @@ export default function PricingPage() {
       </div>
 
       <header className="max-w-2xl">
-        <DeepWellLogo variant="inline" className="mb-6 max-w-[280px] opacity-95" />
+        <DeepWellLogo variant="inline" className="mb-6 h-9 max-w-[280px] opacity-95 sm:h-10 sm:max-w-[300px]" />
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Pricing</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           Listen freely. <span className="text-amber-200/95">Study more deeply.</span>

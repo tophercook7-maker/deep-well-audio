@@ -23,7 +23,7 @@ export default async function LoginPage({
         <BackButton fallbackHref="/" label="Back" />
       </div>
       <div className="mx-auto mt-8 max-w-xl card p-8 sm:p-10">
-        <DeepWellLogo variant="inline" className="mb-6 max-w-[260px]" />
+        <DeepWellLogo variant="inline" className="mb-6 h-9 max-w-[280px] sm:h-10" />
         <span className="tag">Members</span>
         <h1 className="mt-4 text-3xl font-semibold">Sign in</h1>
         <p className="mt-4 leading-7 text-muted">

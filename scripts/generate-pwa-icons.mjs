@@ -1,6 +1,6 @@
 /**
- * Rasterizes public/logo.png (preferred) or public/brand/icon.svg
- * into PNGs for manifest + Apple touch + favicon.
+ * Rasterizes public/logo-square.png (preferred) or public/logo.png into PNGs
+ * for manifest + Apple touch + favicon. Square artwork minimizes letterboxing in app icons.
  * Run: npm run build:icons  (also runs automatically before build)
  */
 import fs from "node:fs";
@@ -10,42 +10,46 @@ import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
-const pngPath = path.join(root, "public", "logo.png");
-const svgPath = path.join(root, "public", "brand", "icon.svg");
+const squarePath = path.join(root, "public", "logo-square.png");
+const fullLogoPath = path.join(root, "public", "logo.png");
 const outDir = path.join(root, "public", "icons");
 
 const BG = "#0b1220";
-const usePng = fs.existsSync(pngPath);
 
-async function sourceBuffer() {
-  return fs.readFileSync(usePng ? pngPath : svgPath);
+function resolveSource() {
+  if (fs.existsSync(squarePath)) {
+    return { filePath: squarePath, label: "logo-square.png" };
+  }
+  if (fs.existsSync(fullLogoPath)) {
+    return { filePath: fullLogoPath, label: "logo.png" };
+  }
+  console.error("Missing public/logo-square.png (preferred) or public/logo.png — cannot generate icons.");
+  process.exit(1);
 }
 
-/** Full-bleed icons (192 / 512 / 32) — contain on dark pad for wide logos. */
+const source = resolveSource();
+
+async function sourceBuffer() {
+  return fs.readFileSync(source.filePath);
+}
+
+/** App icons (192 / 512 / 32 / 180) — contain on dark pad. */
 async function rasterize(size) {
   const raw = await sourceBuffer();
-  if (usePng) {
-    return sharp(raw)
-      .resize(size, size, { fit: "contain", background: BG })
-      .png({ compressionLevel: 9 })
-      .toBuffer();
-  }
-  return sharp(raw).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
+  return sharp(raw)
+    .resize(size, size, { fit: "contain", background: BG })
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 }
 
 /** Maskable: content scaled ~76% and centered on 512×512 for Android safe zone. */
 async function maskable512() {
   const raw = await sourceBuffer();
   const inner = 390;
-  let resized;
-  if (usePng) {
-    resized = await sharp(raw)
-      .resize(inner, inner, { fit: "contain", background: BG })
-      .png()
-      .toBuffer();
-  } else {
-    resized = await sharp(raw).resize(inner, inner, { fit: "contain", background: BG }).png().toBuffer();
-  }
+  const resized = await sharp(raw)
+    .resize(inner, inner, { fit: "contain", background: BG })
+    .png()
+    .toBuffer();
   return sharp({
     create: { width: 512, height: 512, channels: 4, background: BG },
   })
@@ -72,7 +76,7 @@ async function main() {
   const fav32 = await rasterize(32);
   fs.writeFileSync(path.join(root, "public", "favicon-32.png"), fav32);
 
-  console.log(`Wrote public/icons/*.png and public/favicon-32.png (source: ${usePng ? "logo.png" : "icon.svg"})`);
+  console.log(`Wrote public/icons/*.png and public/favicon-32.png (source: ${source.label})`);
 }
 
 main().catch((err) => {

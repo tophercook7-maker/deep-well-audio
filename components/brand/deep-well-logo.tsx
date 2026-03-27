@@ -11,23 +11,23 @@ type Props = {
 };
 
 /**
- * Primary brand mark (raster). Keep dimensions generous for sharp downsampling.
+ * Primary brand mark (raster). Intrinsic size matches `public/logo.png` for correct aspect ratio + sharp scaling.
  */
 export function DeepWellLogo({ className, variant = "header", priority = false }: Props) {
   const defaultClass =
     variant === "header"
       ? "h-9 w-auto max-w-[min(280px,88vw)] shrink-0 object-contain object-left sm:h-10 sm:max-w-[300px] md:max-w-[320px]"
-      : "h-8 w-auto max-w-[200px] shrink-0 object-contain object-left sm:h-9 sm:max-w-[240px]";
+      : "h-8 w-auto max-w-[220px] shrink-0 object-contain object-left sm:h-9 sm:max-w-[260px]";
 
   return (
     <Image
       src={LOGO_SRC}
       alt="Deep Well Audio"
-      width={640}
-      height={200}
+      width={1024}
+      height={682}
       className={`${defaultClass} ${className ?? ""}`.trim()}
       priority={priority}
-      unoptimized
+      sizes="(max-width: 640px) 88vw, 320px"
     />
   );
 }

@@ -11,10 +11,7 @@ export function SiteFooter() {
       <InstallHint />
       <div className="container-shell py-6 text-center text-xs text-slate-500">
         <div className="mb-5 flex justify-center">
-          <DeepWellLogo
-            variant="inline"
-            className="mx-auto h-7 max-w-[200px] opacity-90 sm:h-8 sm:max-w-[220px]"
-          />
+          <DeepWellLogo variant="inline" className="mx-auto max-w-[240px] opacity-90 sm:max-w-[260px]" />
         </div>
         <p className="leading-relaxed">
           © {year}{" "}

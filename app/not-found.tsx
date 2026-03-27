@@ -6,7 +6,7 @@ export default function NotFound() {
     <main className="container-shell flex min-h-[70vh] items-center justify-center py-20">
       <div className="card max-w-xl p-10 text-center">
         <div className="flex justify-center">
-          <DeepWellLogo variant="inline" className="mx-auto mb-6 max-w-[260px]" />
+          <DeepWellLogo variant="inline" className="mx-auto mb-6 h-9 max-w-[280px] sm:h-10" />
         </div>
         <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Not found</p>
         <h1 className="mt-4 text-4xl font-semibold">That page ran dry.</h1>
