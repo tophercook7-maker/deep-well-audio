@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Bell } from "lucide-react";
 import { BackButton } from "@/components/buttons/back-button";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { JoinListForm } from "@/components/join/join-list-form";
 
 export const metadata = {
@@ -30,12 +30,9 @@ export default function JoinPage() {
             aria-hidden
           />
           <div className="relative">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
-              <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+            <div className="flex justify-center">
+              <DeepWellLogo variant="inline" className="mx-auto max-w-[260px]" />
             </div>
-            <p className="mt-6 text-center text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">
-              Deep Well Audio
-            </p>
             <h1 className="mt-2 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               Get notified about Premium &amp; new tools
             </h1>

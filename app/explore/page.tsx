@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { CATEGORY_OPTIONS } from "@/lib/types";
 import {
   exploreEpisodes,
@@ -309,6 +310,12 @@ export default async function ExplorePage({
         method="get"
       >
         {topicSlugResolved ? <input type="hidden" name="topic" value={normalizeTopicSlug(topicParamRaw)} /> : null}
+        <div className="flex flex-col gap-3 border-b border-line/40 pb-5 md:col-span-2 lg:col-span-6 md:flex-row md:items-center md:justify-between">
+          <DeepWellLogo variant="inline" className="opacity-95" />
+          <p className="text-xs leading-relaxed text-muted md:max-w-md md:text-right">
+            Search and filter the curated directory—shows, episodes, hosts, and topic tags.
+          </p>
+        </div>
         <label className="lg:col-span-2">
           <span className="text-xs uppercase tracking-wide text-amber-100/70">Search</span>
           <input

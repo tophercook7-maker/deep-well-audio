@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { BackButton } from "@/components/buttons/back-button";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
 import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env";
 
@@ -22,6 +23,7 @@ export default function PricingPage() {
       </div>
 
       <header className="max-w-2xl">
+        <DeepWellLogo variant="inline" className="mb-6 max-w-[280px] opacity-95" />
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Pricing</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           Listen freely. <span className="text-amber-200/95">Study more deeply.</span>

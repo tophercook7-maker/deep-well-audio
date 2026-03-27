@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 
 const STORAGE_KEY = "deep-well-audio-install-dismissed";
 
@@ -69,9 +70,10 @@ export function InstallHint() {
       role="region"
       aria-label="Install app"
     >
-      <div className="container-shell mx-auto flex max-w-3xl flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
+      <div className="container-shell mx-auto flex max-w-3xl flex-col items-center justify-center gap-3 sm:flex-row sm:items-center sm:gap-5">
+        <DeepWellLogo variant="inline" className="h-7 max-w-[180px] opacity-90 sm:h-8" />
         <p className="text-xs text-slate-400 sm:text-left">
-          Install <span className="text-amber-100/90">Deep Well Audio</span> for a focused, app-like window on this device.
+          Install for a focused, app-like window on this device—same catalog, calmer chrome.
         </p>
         <div className="flex shrink-0 items-center gap-2">
           <button

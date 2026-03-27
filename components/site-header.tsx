@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { User } from "@supabase/supabase-js";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { Headphones, Home, Library, Search, Tags } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
@@ -28,32 +28,9 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
       <div className="container-shell flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-4">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:gap-3"
+          className="flex min-w-0 items-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220]"
         >
-          <Image
-            src="/brand/logo-mark.svg"
-            alt=""
-            width={40}
-            height={40}
-            className="h-9 w-9 shrink-0 sm:hidden"
-            priority
-            unoptimized
-          />
-          <Image
-            src="/brand/logo-wordmark.svg"
-            alt="Deep Well Audio"
-            width={268}
-            height={46}
-            className="hidden h-9 w-auto max-w-[240px] shrink-0 sm:block md:max-w-[280px] md:h-10"
-            priority
-            unoptimized
-          />
-          <span className="flex min-w-0 flex-col sm:hidden">
-            <span className="truncate text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-300">
-              Deep Well
-            </span>
-            <span className="truncate text-sm font-semibold tracking-wide text-amber-100/90">Audio</span>
-          </span>
+          <DeepWellLogo variant="header" priority />
         </Link>
 
         <nav className="flex flex-wrap items-center gap-2 sm:flex-1 sm:justify-end" aria-label="Primary">

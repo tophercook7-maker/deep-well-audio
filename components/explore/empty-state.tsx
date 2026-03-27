@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { Home, SearchX } from "lucide-react";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 
 type Props = {
   message: string;
@@ -18,6 +19,9 @@ export function ExploreEmptyState({
 }: Props) {
   return (
     <div className="card p-10 text-center">
+      <div className="mb-5 flex justify-center">
+        <DeepWellLogo variant="inline" className="mx-auto h-8 max-w-[220px] opacity-90" />
+      </div>
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
         <SearchX className="h-6 w-6" aria-hidden />
       </div>

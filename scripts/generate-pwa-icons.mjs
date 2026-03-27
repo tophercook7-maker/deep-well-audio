@@ -1,5 +1,6 @@
 /**
- * Rasterizes public/brand/icon.svg into PNGs for manifest + Apple touch.
+ * Rasterizes public/logo.png (preferred) or public/brand/icon.svg
+ * into PNGs for manifest + Apple touch + favicon.
  * Run: npm run build:icons  (also runs automatically before build)
  */
 import fs from "node:fs";
@@ -9,26 +10,42 @@ import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
+const pngPath = path.join(root, "public", "logo.png");
 const svgPath = path.join(root, "public", "brand", "icon.svg");
 const outDir = path.join(root, "public", "icons");
 
 const BG = "#0b1220";
+const usePng = fs.existsSync(pngPath);
 
-async function svgBuffer() {
-  return fs.readFileSync(svgPath);
+async function sourceBuffer() {
+  return fs.readFileSync(usePng ? pngPath : svgPath);
 }
 
-/** Full-bleed icons (192 / 512). */
+/** Full-bleed icons (192 / 512 / 32) — contain on dark pad for wide logos. */
 async function rasterize(size) {
-  const buf = await svgBuffer();
-  return sharp(buf).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
+  const raw = await sourceBuffer();
+  if (usePng) {
+    return sharp(raw)
+      .resize(size, size, { fit: "contain", background: BG })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+  }
+  return sharp(raw).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
 }
 
 /** Maskable: content scaled ~76% and centered on 512×512 for Android safe zone. */
 async function maskable512() {
-  const buf = await svgBuffer();
+  const raw = await sourceBuffer();
   const inner = 390;
-  const resized = await sharp(buf).resize(inner, inner, { fit: "contain", background: BG }).png().toBuffer();
+  let resized;
+  if (usePng) {
+    resized = await sharp(raw)
+      .resize(inner, inner, { fit: "contain", background: BG })
+      .png()
+      .toBuffer();
+  } else {
+    resized = await sharp(raw).resize(inner, inner, { fit: "contain", background: BG }).png().toBuffer();
+  }
   return sharp({
     create: { width: 512, height: 512, channels: 4, background: BG },
   })
@@ -55,7 +72,7 @@ async function main() {
   const fav32 = await rasterize(32);
   fs.writeFileSync(path.join(root, "public", "favicon-32.png"), fav32);
 
-  console.log("Wrote public/icons/*.png and public/favicon-32.png");
+  console.log(`Wrote public/icons/*.png and public/favicon-32.png (source: ${usePng ? "logo.png" : "icon.svg"})`);
 }
 
 main().catch((err) => {

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { SignupForm } from "@/components/auth/signup-form";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { BackButton } from "@/components/buttons/back-button";
 import { hasPublicSupabaseEnv } from "@/lib/env";
 import { safeInternalNext } from "@/lib/nav-utils";
@@ -22,6 +23,7 @@ export default async function SignupPage({
         <BackButton fallbackHref="/" label="Back" />
       </div>
       <div className="mx-auto mt-8 max-w-xl card p-8 sm:p-10">
+        <DeepWellLogo variant="inline" className="mb-6 max-w-[260px]" />
         <span className="tag">Members</span>
         <h1 className="mt-4 text-3xl font-semibold">Create your account</h1>
         <p className="mt-4 leading-7 text-muted">
