@@ -92,6 +92,10 @@ export default function PricingPage() {
             · <span className="font-medium text-slate-100">Advanced filters</span> — including meaty score on Explore, so you can surface
             deeper teaching faster when you&apos;re ready to focus.
           </li>
+          <li>
+            · <span className="font-medium text-slate-100">World Watch</span> — a calm weekly briefing on{" "}
+            <span className="text-slate-300">faith and the public square</span>, written for Premium members and delivered by email.
+          </li>
         </ul>
 
         <div className="mt-6 rounded-2xl border border-accent/25 bg-accent/[0.05] px-4 py-4 sm:px-5">
@@ -112,7 +116,7 @@ export default function PricingPage() {
         <div className="mt-6 rounded-2xl border border-line/70 bg-soft/20 px-4 py-4 text-sm text-slate-200">
           <p className="font-medium text-amber-100/90">Pricing</p>
           <p className="mt-2 text-base font-semibold text-white">
-            <span className="tabular-nums">$5</span>/month &nbsp;·&nbsp; <span className="tabular-nums">$49</span>/year
+            <span className="tabular-nums">$9</span>/month &nbsp;·&nbsp; <span className="tabular-nums">$90</span>/year
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted">
             Cancel anytime from Stripe when your customer portal is enabled in the Dashboard.

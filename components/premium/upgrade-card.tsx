@@ -22,7 +22,7 @@ export function UpgradeCard({ className = "", showJoinLink = true }: { className
             <li>· Filter and surface deeper episodes faster</li>
           </ul>
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            <span className="text-slate-300">$5/month</span> or <span className="text-slate-300">$49/year</span> via Stripe Checkout.
+            <span className="text-slate-300">$9/month</span> or <span className="text-slate-300">$90/year</span> via Stripe Checkout.
           </p>
           <PremiumUpgradeActions className="mt-5" align="start" showJoinLink={showJoinLink} />
         </div>

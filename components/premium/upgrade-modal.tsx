@@ -78,7 +78,7 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
         </ul>
 
         <p className="mt-6 rounded-2xl border border-accent/20 bg-accent/5 px-4 py-3 text-center text-sm text-amber-100/90">
-          <span className="font-semibold text-white">$5/month</span> or <span className="font-semibold text-white">$49/year</span>
+          <span className="font-semibold text-white">$9/month</span> or <span className="font-semibold text-white">$90/year</span>
           <span className="mt-1 block text-xs text-muted">Secure checkout powered by Stripe.</span>
         </p>
 

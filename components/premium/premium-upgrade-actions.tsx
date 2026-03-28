@@ -42,7 +42,7 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
           See what&apos;s included
         </button>
         <StartCheckoutButton interval="monthly" disabled={!publishable} className={btnPrimary}>
-          Subscribe — $5/mo
+          Subscribe — $9/month
         </StartCheckoutButton>
         <FunnelLink href={"/pricing#subscribe" as Route} funnelEvent="view_plans_click" className={btnGhost}>
           View plans

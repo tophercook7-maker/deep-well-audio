@@ -10,13 +10,15 @@ export type FeatureKey =
   | "playlists"
   | "bookmarks"
   | "topic_packs"
-  | "advanced_filters";
+  | "advanced_filters"
+  | "world_watch";
 
 const PREMIUM_ONLY = new Set<FeatureKey>([
   "playlists",
   "bookmarks",
   "topic_packs",
   "advanced_filters",
+  "world_watch",
 ]);
 
 const FREE_AND_UP = new Set<FeatureKey>(["save", "continue_listening"]);

@@ -36,6 +36,21 @@ create table public.premium_waitlist (
 create unique index premium_waitlist_email_lower_key on public.premium_waitlist (lower(email));
 
 -- ---------------------------------------------------------------------------
+-- world_watch_digest_sends (weekly email idempotency; service role / cron only)
+-- ---------------------------------------------------------------------------
+create table public.world_watch_digest_sends (
+  id uuid primary key default gen_random_uuid(),
+  campaign_key text not null,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  email text not null,
+  provider_message_id text,
+  created_at timestamptz not null default now(),
+  unique (campaign_key, user_id)
+);
+
+create index world_watch_digest_sends_campaign_idx on public.world_watch_digest_sends (campaign_key);
+
+-- ---------------------------------------------------------------------------
 -- shows
 -- ---------------------------------------------------------------------------
 create table public.shows (
@@ -222,6 +237,7 @@ create trigger on_auth_user_created
 -- ---------------------------------------------------------------------------
 alter table public.profiles enable row level security;
 alter table public.premium_waitlist enable row level security;
+alter table public.world_watch_digest_sends enable row level security;
 alter table public.episode_bookmarks enable row level security;
 alter table public.episode_notes enable row level security;
 alter table public.shows enable row level security;

@@ -1,18 +1,19 @@
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
-import { Headphones, Home, Library, Search, Tags } from "lucide-react";
+import { Globe, Headphones, Home, Library, Search, Tags } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
 
 type NavItem =
-  | { href: "/explore" | "/library"; label: string; icon: typeof Search | typeof Library }
+  | { href: "/explore" | "/library" | "/world-watch"; label: string; icon: typeof Search | typeof Library | typeof Globe }
   | { href: string; label: string; icon: typeof Headphones | typeof Tags; hash: true };
 
 const nav: NavItem[] = [
   { href: "/explore", label: "Explore", icon: Search },
   { href: "/#topics", label: "Topics", icon: Tags, hash: true },
   { href: "/library", label: "Library", icon: Library },
+  { href: "/world-watch", label: "World Watch", icon: Globe },
   { href: "/#featured", label: "Featured", icon: Headphones, hash: true },
 ];
 

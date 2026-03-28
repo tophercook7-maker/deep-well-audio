@@ -17,10 +17,10 @@ export function PricingPremiumCheckout({ stripeReady }: Props) {
       <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Subscribe</p>
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <StartCheckoutButton interval="monthly" disabled={!stripeReady} className={btnPrimary}>
-          Monthly — $5/month
+          Monthly — $9/month
         </StartCheckoutButton>
         <StartCheckoutButton interval="yearly" disabled={!stripeReady} className={btnPrimary}>
-          Yearly — $49/year
+          Yearly — $90/year
         </StartCheckoutButton>
       </div>
       {!stripeReady ? (

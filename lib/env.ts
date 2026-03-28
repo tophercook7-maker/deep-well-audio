@@ -140,6 +140,13 @@ export function hasSyncSecret(): boolean {
   return Boolean(getSyncApiSecret());
 }
 
+/**
+ * Dev-only escape hatch for `/api/account/upgrade-stub`. Enable with `ALLOW_STUB_PREMIUM_UPGRADE=1`; keep unset in production (Stripe + webhook is source of truth).
+ */
+export function allowStubPremiumUpgrade(): boolean {
+  return trimStr(process.env.ALLOW_STUB_PREMIUM_UPGRADE) === "1";
+}
+
 export function hasYoutubeKey(): boolean {
   return Boolean(getOptionalYoutubeApiKey());
 }
@@ -158,4 +165,22 @@ export function getPremiumWaitlistMailto(): string | null {
 /** True when a debug / setup panel is useful (local dev or Vercel preview). */
 export function isNonProductionDeploy(): boolean {
   return process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview";
+}
+
+/** Protects `/api/cron/*` from public invocation; Vercel Cron sends `Authorization: Bearer …` when set in project env. */
+export function getCronSecret(): string | null {
+  return trimStr(process.env.CRON_SECRET);
+}
+
+/**
+ * Resend API for transactional email (World Watch weekly digest). Optional until you enable the cron job.
+ * https://resend.com/docs/api-reference/emails/send-email
+ */
+export function getResendApiKey(): string | null {
+  return trimStr(process.env.RESEND_API_KEY);
+}
+
+/** From address verified in Resend (e.g. `World Watch <digest@mail.yourdomain.com>`). */
+export function getResendFromWorldWatch(): string | null {
+  return trimStr(process.env.RESEND_FROM_WORLD_WATCH);
 }
