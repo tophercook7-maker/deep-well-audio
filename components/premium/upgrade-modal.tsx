@@ -46,8 +46,8 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
           Premium helps you study, not just listen
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-muted">
-          Listening stays free for everyone. Premium is for when you want structure on top of the same calm player—bookmarks, notes, topic
-          packs, and faster discovery. Billed securely through Stripe.
+          Listening stays free for everyone. Premium adds calm structure—bookmarks, notes, topic packs, World Watch, and tools to find deeper
+          teaching without more noise. Billing runs securely through Stripe.
         </p>
 
         <ul className="mt-5 space-y-2.5 text-sm text-slate-200">
@@ -75,11 +75,19 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
             </span>
             Find deeper content faster with advanced filtering
           </li>
+          <li className="flex gap-2">
+            <span className="text-accent" aria-hidden>
+              ·
+            </span>
+            World Watch — member-only context on faith and public life
+          </li>
         </ul>
 
         <p className="mt-6 rounded-2xl border border-accent/20 bg-accent/5 px-4 py-3 text-center text-sm text-amber-100/90">
           <span className="font-semibold text-white">$9/month</span> or <span className="font-semibold text-white">$90/year</span>
-          <span className="mt-1 block text-xs text-muted">Secure checkout powered by Stripe.</span>
+          <span className="mt-1 block text-xs text-muted">
+            Secure checkout with Stripe. Cancel anytime through Stripe—billing links are in your receipts, or contact us if you need help.
+          </span>
         </p>
 
         <div className="mt-6 flex flex-col gap-3">

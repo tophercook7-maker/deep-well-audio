@@ -1,8 +1,9 @@
-import Link from "next/link";
-import type { Route } from "next";
 import { Globe } from "lucide-react";
 import { PremiumUpgradeActions } from "@/components/premium/premium-upgrade-actions";
 
+/**
+ * Shown to guests and free accounts. PremiumUpgradeActions already links to checkout and /pricing#subscribe.
+ */
 export function WorldWatchTeaser() {
   return (
     <div className="space-y-10">
@@ -13,17 +14,18 @@ export function WorldWatchTeaser() {
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">World Watch</p>
-            <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">A calmer read on faith and the world</h2>
+            <h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">Clarity without the noise</h2>
             <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted">
-              Each week, Premium members get a short, careful briefing—context without alarmism, and a path back to Scripture and prayer. The
-              email lands in your inbox; the full edition stays here when you want to reread or share a section.
+              World Watch is a measured read on faith and public life—scripturally grounded, calm, and written for people who already love serious
+              Bible teaching. The full edition lives here on Deep Well for <span className="text-slate-300">Premium members</span>; take your time,
+              return when you want, and let it prompt prayer more than anxiety.
             </p>
           </div>
         </div>
         <ul className="mt-6 space-y-2 border-t border-line/50 pt-6 text-sm leading-relaxed text-slate-300">
-          <li>· Three lenses we use: what happened, what it means for neighbors and institutions, how to pray and stay grounded.</li>
-          <li>· Curated links—not an endless feed—with a note on why each piece might matter for a Christian listener.</li>
-          <li>· A closing prompt to take into the week, tied to the same habit of slow study Deep Well stands for.</li>
+          <li>· What happened, what it may mean for neighbors and institutions, and how to pray and stay grounded.</li>
+          <li>· Hand-picked links with a short note on why each might matter for a Christian listener—not an endless feed.</li>
+          <li>· A gentle prompt to carry into the week, in the same spirit of slow, thoughtful study Deep Well stands for.</li>
         </ul>
       </section>
 
@@ -31,21 +33,18 @@ export function WorldWatchTeaser() {
         className="card border-accent/25 bg-gradient-to-br from-accent/[0.06] via-soft/15 to-transparent p-6 sm:p-8"
         aria-labelledby="ww-upgrade-heading"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Member access</p>
         <h2 id="ww-upgrade-heading" className="mt-2 text-lg font-semibold text-white sm:text-xl">
-          World Watch is included in Premium
+          World Watch is part of Premium
         </h2>
         <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted">
-          One Premium subscription unlocks World Watch on the site and the weekly email—same checkout and account as the rest of Premium. There
-          isn&apos;t a separate membership or add-on to buy.
+          One calm membership unlocks World Watch together with bookmarks, notes, topic packs, and the rest—not a separate product or another
+          login. Use <span className="text-slate-300">View plans</span> for the full picture, or subscribe when you&apos;re ready.
         </p>
         <PremiumUpgradeActions className="mt-6" align="start" showJoinLink={false} />
-        <Link
-          href={"/pricing" as Route}
-          className="mt-5 inline-flex text-sm font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
-        >
-          View full pricing and what else Premium includes →
-        </Link>
+        <p className="mt-4 max-w-prose text-xs leading-relaxed text-slate-500">
+          Cancel anytime through Stripe—billing links are in your Stripe receipts, or contact us if you need a hand.
+        </p>
       </section>
     </div>
   );

@@ -26,8 +26,8 @@ export function PricingPremiumCheckout({ stripeReady }: Props) {
       {!stripeReady ? (
         <>
           <p className="text-sm leading-relaxed text-muted">
-            Checkout isn&apos;t connected in this deployment yet—buttons stay disabled until Stripe keys and prices are configured on the
-            server. Listening and exploring stay fully free meanwhile.
+            Checkout will be available once billing is fully configured—buttons stay off until Stripe keys, price IDs, and site URL are set on the
+            server. Listening and exploring stay free meanwhile.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <FunnelLink
@@ -47,7 +47,7 @@ export function PricingPremiumCheckout({ stripeReady }: Props) {
         </>
       ) : (
         <p className="text-xs text-muted">
-          Secure payment via Stripe Checkout. You can manage billing from your Stripe customer portal when enabled.
+          Secure checkout with Stripe. Manage or cancel through Stripe (links in your subscription receipts) or contact us—no surprise hoops.
         </p>
       )}
       {stripeReady ? (

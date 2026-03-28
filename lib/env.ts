@@ -167,20 +167,28 @@ export function isNonProductionDeploy(): boolean {
   return process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview";
 }
 
-/** Protects `/api/cron/*` from public invocation; Vercel Cron sends `Authorization: Bearer …` when set in project env. */
+/**
+ * Weekly World Watch digest (`/api/cron/world-watch-weekly`). Must be exactly `1` to run sends.
+ * Leave unset for launch—no Resend/cron required; `/world-watch` stays fully available on-site.
+ */
+export function isWorldWatchWeeklyDigestEnabled(): boolean {
+  return trimStr(process.env.WORLD_WATCH_WEEKLY_DIGEST_ENABLED) === "1";
+}
+
+/** Protects `/api/cron/world-watch-weekly` when digest is enabled; use `Authorization: Bearer …`. */
 export function getCronSecret(): string | null {
   return trimStr(process.env.CRON_SECRET);
 }
 
 /**
- * Resend API for transactional email (World Watch weekly digest). Optional until you enable the cron job.
+ * Resend API for the optional World Watch weekly digest only—not needed for core app or Premium.
  * https://resend.com/docs/api-reference/emails/send-email
  */
 export function getResendApiKey(): string | null {
   return trimStr(process.env.RESEND_API_KEY);
 }
 
-/** From address verified in Resend (e.g. `World Watch <digest@mail.yourdomain.com>`). */
+/** Verified sender in Resend; only used when digest email is enabled. */
 export function getResendFromWorldWatch(): string | null {
   return trimStr(process.env.RESEND_FROM_WORLD_WATCH);
 }

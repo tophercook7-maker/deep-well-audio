@@ -20,9 +20,11 @@ export function UpgradeCard({ className = "", showJoinLink = true }: { className
             <li>· Take notes on teaching</li>
             <li>· Follow structured topic packs</li>
             <li>· Filter and surface deeper episodes faster</li>
+            <li>· World Watch — calm context on faith and public life</li>
           </ul>
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            <span className="text-slate-300">$9/month</span> or <span className="text-slate-300">$90/year</span> via Stripe Checkout.
+            <span className="text-slate-300">$9/month</span> or <span className="text-slate-300">$90/year</span> through Stripe. Cancel anytime
+            through Stripe—use links in your subscription emails from Stripe, or reach out for billing help.
           </p>
           <PremiumUpgradeActions className="mt-5" align="start" showJoinLink={showJoinLink} />
         </div>

@@ -8,7 +8,8 @@ import { isNextDynamicUsageError } from "@/lib/next-runtime";
 
 export const metadata = {
   title: "World Watch",
-  description: "A weekly briefing on faith and the public square for Deep Well Premium members.",
+  description:
+    "Thoughtful context on faith and public life—calm, scripturally grounded member access on Deep Well Audio.",
 };
 
 export default async function WorldWatchPage() {
@@ -35,8 +36,18 @@ export default async function WorldWatchPage() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Premium</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight text-white sm:text-4xl">World Watch</h1>
           <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted sm:text-base">
-            Calm context on faith and the world—written for listeners who already care about serious Bible teaching and want{" "}
-            <span className="text-slate-300">one steady briefing</span> instead of another noisy timeline.
+            {premium ? (
+              <>
+                A quiet corner for you—reflective context on faith and public life, grounded in Scripture, with clarity instead of alarm. One steady
+                place to read, pray, and return when the headlines feel loud.
+              </>
+            ) : (
+              <>
+                Reflective context on faith and public life—scripturally grounded and calm instead of loud. The full edition is{" "}
+                <span className="text-slate-300">for Premium members</span>; below is a thoughtful preview of what&apos;s included and how to join
+                when you&apos;re ready.
+              </>
+            )}
           </p>
         </div>
       </header>

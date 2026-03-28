@@ -33,6 +33,9 @@ The deployable app lives in **`deep-well-audio-starter/`**. Open this folder in 
 | `STRIPE_WEBHOOK_SECRET` | Server | Webhook signing secret (`whsec_…`) |
 | `STRIPE_PRICE_MONTHLY` | Server | Price ID for $9/mo |
 | `STRIPE_PRICE_YEARLY` | Server | Price ID for $90/yr |
+| `WORLD_WATCH_WEEKLY_DIGEST_ENABLED` | Server | Optional; must be `1` to allow World Watch email cron (see `.env.example`) |
+| `CRON_SECRET` | Server | Optional; Bearer secret for digest route when email is enabled |
+| `RESEND_API_KEY` / `RESEND_FROM_WORLD_WATCH` | Server | Optional; Resend when digest is enabled |
 
 Accessors live in `lib/env.ts`.
 
@@ -63,7 +66,7 @@ Local dev typically uses `http://localhost:3000` for both, with `http://localhos
 
 - **Guest** — Browse, search, play audio, topic hubs. No account required; listening stays free.
 - **Free (signed in)** — Favorites, saved shows, library, continue listening, and recently played.
-- **Premium** — Everything above plus topic packs, playlists and bookmarks (UI surfaces), and advanced Explore filters (e.g. meaty score), when `profiles.plan = 'premium'` in Supabase.
+- **Premium** — Everything above plus topic packs, playlists and bookmarks (UI surfaces), advanced Explore filters (e.g. meaty score), and **World Watch** (`/world-watch`), when `profiles.plan = 'premium'` in Supabase. An optional weekly email digest for World Watch is **off by default** (no Resend/cron required for launch); see `.env.example` for `WORLD_WATCH_WEEKLY_DIGEST_ENABLED`.
 
 The **Premium UI and gating are live**. **Stripe Checkout** (monthly/yearly) upgrades the account via webhooks into **`profiles.plan`**; configure env vars in `.env.example`. **`/pricing`** also offers a **notify-me** form (`/api/premium-waitlist`, requires `SUPABASE_SERVICE_ROLE_KEY` and the `premium_waitlist` table from `supabase/migrations`). The app does not simulate payment or upgrade without a successful Stripe subscription.
 

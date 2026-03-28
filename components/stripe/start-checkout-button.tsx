@@ -13,9 +13,16 @@ type Props = {
   disabled?: boolean;
 };
 
+const USER_CHECKOUT_GENERIC =
+  "We couldn't open secure checkout right now. Please try again in a moment.";
+
+const USER_CHECKOUT_CONFIG_HINT =
+  "If this keeps happening, Stripe may not be fully configured yet—try again later or contact us.";
+
 export function StartCheckoutButton({ interval, children, className, disabled = false }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorHint, setErrorHint] = useState<string | null>(null);
   const busyRef = useRef(false);
 
   const onClick = useCallback(async () => {
@@ -23,6 +30,7 @@ export function StartCheckoutButton({ interval, children, className, disabled = 
     trackFunnelEvent("premium_feature_click", { intent: "checkout", interval });
     busyRef.current = true;
     setError(null);
+    setErrorHint(null);
     setLoading(true);
     try {
       const res = await fetch("/api/stripe/create-checkout-session", {
@@ -30,18 +38,39 @@ export function StartCheckoutButton({ interval, children, className, disabled = 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ price: interval }),
       });
-      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+      let data: { url?: string; error?: string } = {};
+      try {
+        data = (await res.json()) as { url?: string; error?: string };
+      } catch {
+        data = {};
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[deep-well:checkout]", { status: res.status, error: data.error ?? null, ok: res.ok });
+      }
+
       if (!res.ok) {
-        setError(data.error ?? "Could not start checkout.");
+        const serverMsg = typeof data.error === "string" && data.error.length ? data.error : null;
+        setError(serverMsg ?? USER_CHECKOUT_GENERIC);
+        if (res.status >= 500 || res.status === 502) {
+          setErrorHint(USER_CHECKOUT_CONFIG_HINT);
+        } else if (res.status === 503) {
+          setErrorHint(USER_CHECKOUT_CONFIG_HINT);
+        }
         return;
       }
       if (data.url) {
         window.location.assign(data.url);
         return;
       }
-      setError("No checkout URL returned.");
+      setError(USER_CHECKOUT_GENERIC);
+      setErrorHint(USER_CHECKOUT_CONFIG_HINT);
     } catch {
-      setError("Network error.");
+      setError(USER_CHECKOUT_GENERIC);
+      setErrorHint(USER_CHECKOUT_CONFIG_HINT);
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[deep-well:checkout] network or parse error");
+      }
     } finally {
       busyRef.current = false;
       setLoading(false);
@@ -58,7 +87,12 @@ export function StartCheckoutButton({ interval, children, className, disabled = 
       >
         {loading ? "Redirecting…" : children}
       </button>
-      {error ? <span className="text-xs text-amber-200/90">{error}</span> : null}
+      {error ? (
+        <>
+          <span className="max-w-md text-xs leading-relaxed text-amber-200/95">{error}</span>
+          {errorHint ? <span className="max-w-md text-xs leading-relaxed text-slate-500">{errorHint}</span> : null}
+        </>
+      ) : null}
     </span>
   );
 }

@@ -9,7 +9,7 @@ import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env"
 export const metadata = {
   title: "Pricing · Deep Well Audio",
   description:
-    "Listen and explore the curated catalog free. Premium adds bookmarks, notes, topic packs, and advanced filters for a deeper study experience.",
+    "Listen free. Premium adds study tools, topic packs, World Watch, and advanced filters—$9/mo or $90/yr, calm Stripe checkout.",
 };
 
 export default function PricingPage() {
@@ -67,34 +67,33 @@ export default function PricingPage() {
       >
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Premium</p>
         <h2 id="premium-plan-heading" className="mt-2 text-2xl font-semibold text-white">
-          Premium — a better study experience
+          Deep Well Premium
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-          Premium doesn&apos;t gate the teaching—it adds <span className="text-slate-300">structure and control</span> for people who want
-          to go deeper than play-and-forget: keep your place in hard passages, capture thoughts beside the audio, and walk ordered paths
-          through weighty subjects.
+          Go deeper with tools for serious listening, reflection, and study—including{" "}
+          <span className="text-slate-300">full access to World Watch</span>, our calm read on faith and public life, alongside bookmarks, guided
+          packs, and filters—all in one membership. The catalog itself stays free; Premium shapes how you keep and revisit what matters.
         </p>
         <ul className="mt-5 space-y-3 text-sm leading-relaxed text-slate-200">
           <li>
-            · <span className="font-medium text-slate-100">Bookmarks</span> — save key moments with timestamps and{" "}
-            <span className="text-slate-300">return to what mattered</span> without scrubbing the whole message again.
+            · <span className="font-medium text-slate-100">World Watch</span> — member-only{" "}
+            <span className="text-slate-300">briefing on faith and public life</span>, thoughtful and unhurried, here on Deep Well.
           </li>
           <li>
-            · <span className="font-medium text-slate-100">Private notes</span> — reflections tied to each episode so you{" "}
-            <span className="text-slate-300">keep your study in one place</span>.
+            · <span className="font-medium text-slate-100">Guided topic packs</span> —{" "}
+            <span className="text-slate-300">clear paths through hard topics</span> with curated episodes, not an endless scroll.
           </li>
           <li>
-            · <span className="font-medium text-slate-100">Topic packs</span> —{" "}
-            <span className="text-slate-300">follow a clear path through difficult topics</span> with guided sections and curated episodes, not
-            a flat scroll.
+            · <span className="font-medium text-slate-100">Bookmarks and notes</span> — save key moments with timestamps and keep private reflections{" "}
+            <span className="text-slate-300">beside the teaching</span>.
           </li>
           <li>
-            · <span className="font-medium text-slate-100">Advanced filters</span> — including meaty score on Explore, so you can surface
-            deeper teaching faster when you&apos;re ready to focus.
+            · <span className="font-medium text-slate-100">Advanced filters</span> — including meaty score on Explore, to surface richer episodes when
+            you&apos;re ready to focus.
           </li>
           <li>
-            · <span className="font-medium text-slate-100">World Watch</span> — a calm weekly briefing on{" "}
-            <span className="text-slate-300">faith and the public square</span>, written for Premium members and delivered by email.
+            · <span className="font-medium text-slate-100">Deeper study tools</span> —{" "}
+            <span className="text-slate-300">structure and control</span> around the same calm player you already use.
           </li>
         </ul>
 
@@ -114,12 +113,12 @@ export default function PricingPage() {
         </div>
 
         <div className="mt-6 rounded-2xl border border-line/70 bg-soft/20 px-4 py-4 text-sm text-slate-200">
-          <p className="font-medium text-amber-100/90">Pricing</p>
+          <p className="font-medium text-amber-100/90">Simple pricing</p>
           <p className="mt-2 text-base font-semibold text-white">
             <span className="tabular-nums">$9</span>/month &nbsp;·&nbsp; <span className="tabular-nums">$90</span>/year
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted">
-            Cancel anytime from Stripe when your customer portal is enabled in the Dashboard.
+            Cancel anytime through Stripe—links in your subscription receipts or email us for billing help. No separate add-on or second product.
           </p>
         </div>
         <PricingPremiumCheckout stripeReady={stripeReady} />

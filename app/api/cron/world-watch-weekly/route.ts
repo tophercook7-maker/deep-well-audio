@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/db";
-import { getCronSecret } from "@/lib/env";
+import { getCronSecret, isWorldWatchWeeklyDigestEnabled } from "@/lib/env";
 import { defaultCampaignKeyForSend } from "@/lib/world-watch/digest-email";
 import { runWorldWatchWeeklyDigest } from "@/lib/world-watch/run-weekly-digest";
 
@@ -14,10 +14,21 @@ function authorizeCron(req: Request): boolean {
 }
 
 /**
- * Weekly World Watch email for `profiles.plan = 'premium'`.
- * Secured with `Authorization: Bearer ${CRON_SECRET}` (set on Vercel for Cron Jobs).
+ * Optional weekly World Watch email for `profiles.plan = 'premium'`.
+ * Off by default: set `WORLD_WATCH_WEEKLY_DIGEST_ENABLED=1` plus Resend + `CRON_SECRET` when ready.
  */
 export async function GET(req: Request) {
+  if (!isWorldWatchWeeklyDigestEnabled()) {
+    return NextResponse.json(
+      {
+        error: "World Watch weekly digest is disabled.",
+        hint: "Set WORLD_WATCH_WEEKLY_DIGEST_ENABLED=1 and configure Resend + CRON_SECRET to send.",
+        disabled: true,
+      },
+      { status: 403 }
+    );
+  }
+
   if (!authorizeCron(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

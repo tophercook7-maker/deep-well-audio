@@ -3,14 +3,31 @@ import { createClient } from "@/lib/supabase/server";
 import { getStripePriceMonthly, getStripePriceYearly, resolvePublicSiteUrlStrict } from "@/lib/env";
 import { getStripe } from "@/lib/stripe-server";
 
+/** Safe for JSON responses — no secrets. */
+const CHECKOUT_UNAVAILABLE =
+  "We couldn't open secure checkout right now. Please try again in a moment.";
+
 export async function POST(request: Request) {
   const stripe = getStripe();
+  if (!stripe) {
+    return NextResponse.json({ error: "Stripe is not configured yet." }, { status: 503 });
+  }
+
   const siteUrl = resolvePublicSiteUrlStrict();
+  if (!siteUrl) {
+    return NextResponse.json(
+      { error: "Checkout redirects are not configured yet. Set NEXT_PUBLIC_SITE_URL in production." },
+      { status: 503 }
+    );
+  }
+
   const priceMonthly = getStripePriceMonthly();
   const priceYearly = getStripePriceYearly();
-
-  if (!stripe || !siteUrl || !priceMonthly || !priceYearly) {
-    return NextResponse.json({ error: "Billing is not configured on the server." }, { status: 503 });
+  if (!priceMonthly) {
+    return NextResponse.json({ error: "The monthly plan is not configured yet." }, { status: 503 });
+  }
+  if (!priceYearly) {
+    return NextResponse.json({ error: "The yearly plan is not configured yet." }, { status: 503 });
   }
 
   const supabase = await createClient();
@@ -65,12 +82,12 @@ export async function POST(request: Request) {
     });
 
     if (!session.url) {
-      return NextResponse.json({ error: "Checkout session missing URL." }, { status: 500 });
+      return NextResponse.json({ error: CHECKOUT_UNAVAILABLE }, { status: 502 });
     }
 
     return NextResponse.json({ url: session.url });
   } catch (e) {
     console.error("[stripe:create-checkout-session]", e instanceof Error ? e.message : e);
-    return NextResponse.json({ error: "Could not start checkout." }, { status: 500 });
+    return NextResponse.json({ error: CHECKOUT_UNAVAILABLE }, { status: 502 });
   }
 }
