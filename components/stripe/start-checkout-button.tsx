@@ -9,7 +9,7 @@ type Props = {
   interval: Interval;
   children: React.ReactNode;
   className?: string;
-  /** Visually disabled when billing env is incomplete (avoid dead clicks in dev). */
+  /** Parent-controlled only (e.g. pricing gate). No env checks inside this component. */
   disabled?: boolean;
 };
 
@@ -20,13 +20,14 @@ const USER_CHECKOUT_CONFIG_HINT =
   "If this keeps happening, Stripe may not be fully configured yet—try again later or contact us.";
 
 export function StartCheckoutButton({ interval, children, className, disabled = false }: Props) {
+  const isDisabled = disabled;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorHint, setErrorHint] = useState<string | null>(null);
   const busyRef = useRef(false);
 
   const onClick = useCallback(async () => {
-    if (disabled || busyRef.current) return;
+    if (isDisabled || busyRef.current) return;
     trackFunnelEvent("premium_feature_click", { intent: "checkout", interval });
     busyRef.current = true;
     setError(null);
@@ -75,14 +76,14 @@ export function StartCheckoutButton({ interval, children, className, disabled = 
       busyRef.current = false;
       setLoading(false);
     }
-  }, [disabled, interval]);
+  }, [isDisabled, interval]);
 
   return (
     <span className="inline-flex flex-col gap-1">
       <button
         type="button"
         onClick={() => void onClick()}
-        disabled={disabled || loading}
+        disabled={isDisabled}
         className={className}
       >
         {loading ? "Redirecting…" : children}

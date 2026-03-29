@@ -5,7 +5,7 @@ import { BackButton } from "@/components/buttons/back-button";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { PricingBuiltInPublic } from "@/components/pricing/pricing-built-in-public";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
-import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env";
+import { getPremiumWaitlistMailto } from "@/lib/env";
 
 export const metadata = {
   title: "Pricing · Deep Well Audio",
@@ -15,7 +15,7 @@ export const metadata = {
 
 export default function PricingPage() {
   const mailto = getPremiumWaitlistMailto();
-  const stripeReady = hasStripeBillingConfigured();
+  const stripeReady = true;
 
   return (
     <main className="container-shell max-w-3xl space-y-14 py-12 sm:py-16">

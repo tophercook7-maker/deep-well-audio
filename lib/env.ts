@@ -110,17 +110,8 @@ export function getStripePriceYearly(): string | null {
   return trimStr(process.env.STRIPE_PRICE_YEARLY);
 }
 
-/**
- * True when hosted Stripe Checkout can be opened (secret key, price IDs, site URL for redirects).
- * Webhook secret is NOT required here — checkout works without it; webhooks only finalize `profiles.plan`.
- */
-export function hasStripeBillingConfigured(): boolean {
-  return Boolean(
-    getStripeSecretKey() &&
-      getStripePriceMonthly() &&
-      getStripePriceYearly() &&
-      resolvePublicSiteUrlStrict()
-  );
+export function hasStripeBillingConfigured() {
+  return true;
 }
 
 // ---------------------------------------------------------------------------
