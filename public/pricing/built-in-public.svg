@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Deep Well  built in public</title>
+  <desc id="desc">Abstract calm gradient suggesting depth and steady improvement</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0b1220"/>
+      <stop offset="45%" style="stop-color:#111d33"/>
+      <stop offset="100%" style="stop-color:#0b1220"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#facc15;stop-opacity:0.14"/>
+      <stop offset="70%" style="stop-color:#22d3ee;stop-opacity:0.06"/>
+      <stop offset="100%" style="stop-color:#0b1220;stop-opacity:0"/>
+    </linearGradient>
+    <radialGradient id="well" cx="50%" cy="72%" r="55%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#0b1220;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="520" fill="url(#bg)"/>
+  <rect width="1200" height="520" fill="url(#glow)"/>
+  <ellipse cx="600" cy="400" rx="420" ry="180" fill="url(#well)"/>
+  <circle cx="600" cy="200" r="3" fill="#fcd34d" fill-opacity="0.5"/>
+  <path d="M600 200 L600 360" stroke="#fcd34d" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 8" fill="none"/>
+  <text x="600" y="140" text-anchor="middle" fill="#94a3b8" font-family="Georgia, 'Times New Roman', serif" font-size="22" letter-spacing="0.12em">CALM · STEADY · PUBLIC</text>
+  <text x="600" y="200" text-anchor="middle" fill="#e2e8f0" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="500">Built with listeners in the open</text>
+</svg>

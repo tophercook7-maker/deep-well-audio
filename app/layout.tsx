@@ -84,6 +84,9 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
+/** Fresh session + `profiles.plan` on every request (Premium after checkout / webhook). */
+export const dynamic = "force-dynamic";
+
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [user, plan] = await Promise.all([getSessionUser(), getUserPlan()]);
 

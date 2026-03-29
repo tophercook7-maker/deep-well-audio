@@ -13,13 +13,18 @@ import {
 
 export const runtime = "nodejs";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   const stripe = getStripe();
   const webhookSecret = getStripeWebhookSecret();
 
   if (!stripe || !webhookSecret) {
-    console.error("[stripe:webhook] missing stripe or webhook secret");
-    return NextResponse.json({ error: "Not configured." }, { status: 503 });
+    console.error("[stripe:webhook] misconfigured", {
+      hasStripeSecret: Boolean(stripe),
+      hasWebhookSecret: Boolean(webhookSecret),
+    });
+    return NextResponse.json({ error: "Webhook is not configured." }, { status: 503 });
   }
 
   const body = await request.text();
@@ -38,6 +43,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature." }, { status: 400 });
   }
 
+  console.info("[stripe:webhook] event", event.type, event.id);
+
   const admin = createServiceClient();
   if (!admin) {
     console.error("[stripe:webhook] no service client");
@@ -50,7 +57,10 @@ export async function POST(request: Request) {
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.mode !== "subscription") break;
 
-        const userId = session.metadata?.user_id ?? null;
+        const userId =
+          (typeof session.metadata?.user_id === "string" && session.metadata.user_id.trim()) ||
+          (typeof session.client_reference_id === "string" && session.client_reference_id.trim()) ||
+          null;
         const customerRaw = session.customer;
         const customerId = typeof customerRaw === "string" ? customerRaw : customerRaw?.id ?? null;
 
@@ -59,7 +69,12 @@ export async function POST(request: Request) {
           break;
         }
 
-        await profileSetPremiumActive(admin, userId, customerId);
+        const { error: profErr } = await profileSetPremiumActive(admin, userId, customerId);
+        if (profErr) {
+          console.error("[stripe:webhook] checkout.session.completed profile update failed");
+          return NextResponse.json({ error: "Webhook handler failed." }, { status: 500 });
+        }
+        console.info("[stripe:webhook] checkout.session.completed profile premium ok", userId.slice(0, 8));
         break;
       }
 
@@ -81,7 +96,12 @@ export async function POST(request: Request) {
         }
 
         if (userId) {
-          await profileSetPremiumActive(admin, userId, customerId);
+          const { error: profErr } = await profileSetPremiumActive(admin, userId, customerId);
+          if (profErr) {
+            console.error("[stripe:webhook] invoice.payment_succeeded profile update failed");
+            return NextResponse.json({ error: "Webhook handler failed." }, { status: 500 });
+          }
+          console.info("[stripe:webhook] invoice.payment_succeeded profile premium ok", userId.slice(0, 8));
         } else {
           console.error("[stripe:webhook] invoice.payment_succeeded could not resolve user_id");
         }
@@ -95,9 +115,19 @@ export async function POST(request: Request) {
         const customerId = typeof custRef === "string" ? custRef : custRef?.id ?? null;
 
         if (userId) {
-          await profileSetFreeCanceled(admin, userId);
+          const { error: profErr } = await profileSetFreeCanceled(admin, userId);
+          if (profErr) {
+            console.error("[stripe:webhook] subscription.deleted profile update failed (by user)");
+            return NextResponse.json({ error: "Webhook handler failed." }, { status: 500 });
+          }
+          console.info("[stripe:webhook] subscription.deleted profile free ok", userId.slice(0, 8));
         } else if (customerId) {
-          await profileSetFreeCanceledByStripeCustomer(admin, customerId);
+          const { error: profErr } = await profileSetFreeCanceledByStripeCustomer(admin, customerId);
+          if (profErr) {
+            console.error("[stripe:webhook] subscription.deleted profile update failed (by customer)");
+            return NextResponse.json({ error: "Webhook handler failed." }, { status: 500 });
+          }
+          console.info("[stripe:webhook] subscription.deleted profile free ok (customer)", customerId.slice(0, 8));
         } else {
           console.error("[stripe:webhook] subscription.deleted missing user and customer");
         }

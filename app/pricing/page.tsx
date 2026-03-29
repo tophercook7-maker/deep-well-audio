@@ -3,6 +3,7 @@ import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { BackButton } from "@/components/buttons/back-button";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
+import { PricingBuiltInPublic } from "@/components/pricing/pricing-built-in-public";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
 import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env";
 
@@ -60,6 +61,8 @@ export default function PricingPage() {
           Create free account
         </Link>
       </section>
+
+      <PricingBuiltInPublic />
 
       <section
         className="card border-accent/30 bg-accent/[0.04] p-6 sm:p-8"
@@ -122,6 +125,13 @@ export default function PricingPage() {
           </p>
         </div>
         <PricingPremiumCheckout stripeReady={stripeReady} />
+        <p className="mt-5 max-w-prose text-center text-xs leading-relaxed text-slate-500 sm:text-left">
+          Prefer a direct link?{" "}
+          <Link href={"/feedback" as Route} className="text-amber-200/75 underline-offset-2 hover:text-amber-100 hover:underline">
+            Open the feedback form
+          </Link>
+          .
+        </p>
       </section>
 
       <section

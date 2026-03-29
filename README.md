@@ -36,6 +36,7 @@ The deployable app lives in **`deep-well-audio-starter/`**. Open this folder in 
 | `WORLD_WATCH_WEEKLY_DIGEST_ENABLED` | Server | Optional; must be `1` to allow World Watch email cron (see `.env.example`) |
 | `CRON_SECRET` | Server | Optional; Bearer secret for digest route when email is enabled |
 | `RESEND_API_KEY` / `RESEND_FROM_WORLD_WATCH` | Server | Optional; Resend when digest is enabled |
+| `FEEDBACK_ADMIN_EMAILS` | Server | Comma-separated emails that may open `/admin/feedback` (uses `site_feedback` migration) |
 
 Accessors live in `lib/env.ts`.
 

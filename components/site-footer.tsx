@@ -26,6 +26,10 @@ export function SiteFooter() {
           </Link>
           {" · "}
           <FooterJoinLink className="text-muted transition hover:text-amber-100/80">Join the Deep Well list</FooterJoinLink>
+          {" · "}
+          <Link href="/feedback" className="text-muted transition hover:text-amber-100/80">
+            Send feedback
+          </Link>
         </p>
       </div>
     </footer>

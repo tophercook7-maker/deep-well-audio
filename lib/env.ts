@@ -192,3 +192,22 @@ export function getResendApiKey(): string | null {
 export function getResendFromWorldWatch(): string | null {
   return trimStr(process.env.RESEND_FROM_WORLD_WATCH);
 }
+
+/**
+ * Comma- or semicolon-separated emails allowed to open `/admin/feedback` and PATCH feedback rows.
+ * Example: `you@domain.com,ops@domain.com`
+ */
+export function getFeedbackAdminEmails(): string[] {
+  const raw = trimStr(process.env.FEEDBACK_ADMIN_EMAILS);
+  if (!raw) return [];
+  return raw
+    .split(/[,;]+/)
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export function isFeedbackAdminEmail(email: string | null | undefined): boolean {
+  if (!email || typeof email !== "string") return false;
+  const allow = new Set(getFeedbackAdminEmails());
+  return allow.has(email.trim().toLowerCase());
+}

@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getStripePriceMonthly, getStripePriceYearly, resolvePublicSiteUrlStrict } from "@/lib/env";
 import { getStripe } from "@/lib/stripe-server";
 
+export const dynamic = "force-dynamic";
+
 /** Safe for JSON responses — no secrets. */
 const CHECKOUT_UNAVAILABLE =
   "We couldn't open secure checkout right now. Please try again in a moment.";
@@ -84,6 +86,13 @@ export async function POST(request: Request) {
     if (!session.url) {
       return NextResponse.json({ error: CHECKOUT_UNAVAILABLE }, { status: 502 });
     }
+
+    console.info(
+      "[stripe:create-checkout-session] session created",
+      session.id,
+      priceType,
+      `user=${user.id.slice(0, 8)}…`
+    );
 
     return NextResponse.json({ url: session.url });
   } catch (e) {

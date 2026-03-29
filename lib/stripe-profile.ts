@@ -15,9 +15,10 @@ export async function profileSetPremiumActive(
     .eq("id", userId);
 
   if (error) {
-    console.error("[stripe-profile] profileSetPremiumActive", error.message);
+    console.error("[stripe-profile] profileSetPremiumActive failed", error.message, `user=${userId.slice(0, 8)}…`);
     return { error: error.message };
   }
+  console.info("[stripe-profile] profileSetPremiumActive ok", `user=${userId.slice(0, 8)}…`);
   return { error: null };
 }
 
@@ -31,9 +32,10 @@ export async function profileSetFreeCanceled(admin: SupabaseClient, userId: stri
     .eq("id", userId);
 
   if (error) {
-    console.error("[stripe-profile] profileSetFreeCanceled", error.message);
+    console.error("[stripe-profile] profileSetFreeCanceled failed", error.message, `user=${userId.slice(0, 8)}…`);
     return { error: error.message };
   }
+  console.info("[stripe-profile] profileSetFreeCanceled ok", `user=${userId.slice(0, 8)}…`);
   return { error: null };
 }
 
@@ -50,9 +52,10 @@ export async function profileSetFreeCanceledByStripeCustomer(
     .eq("stripe_customer_id", stripeCustomerId);
 
   if (error) {
-    console.error("[stripe-profile] profileSetFreeCanceledByStripeCustomer", error.message);
+    console.error("[stripe-profile] profileSetFreeCanceledByStripeCustomer failed", error.message, `cust=${stripeCustomerId.slice(0, 8)}…`);
     return { error: error.message };
   }
+  console.info("[stripe-profile] profileSetFreeCanceledByStripeCustomer ok", `cust=${stripeCustomerId.slice(0, 8)}…`);
   return { error: null };
 }
 

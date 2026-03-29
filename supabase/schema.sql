@@ -51,6 +51,65 @@ create table public.world_watch_digest_sends (
 create index world_watch_digest_sends_campaign_idx on public.world_watch_digest_sends (campaign_key);
 
 -- ---------------------------------------------------------------------------
+-- site_feedback (user reports; service role API only)
+-- ---------------------------------------------------------------------------
+create table public.site_feedback (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  user_id uuid references auth.users (id) on delete set null,
+  email text,
+  category text not null,
+  message text not null,
+  page_url text,
+  user_agent text,
+  status text not null default 'new',
+  admin_note text,
+  replied_at timestamptz,
+  reply_sent boolean not null default false,
+  constraint site_feedback_category_check check (category in ('bug', 'suggestion', 'billing', 'content', 'other')),
+  constraint site_feedback_status_check check (status in ('new', 'in_progress', 'fixed', 'closed'))
+);
+
+create index site_feedback_created_at_desc_idx on public.site_feedback (created_at desc);
+
+create trigger site_feedback_set_updated_at
+  before update on public.site_feedback
+  for each row
+  execute function public.set_updated_at();
+
+-- ---------------------------------------------------------------------------
+-- world_watch_items (Premium feed; service role from app only)
+-- ---------------------------------------------------------------------------
+create table public.world_watch_items (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  published_at timestamptz not null default now(),
+  title text not null,
+  slug text not null unique,
+  source_name text,
+  source_url text,
+  image_url text,
+  summary text not null,
+  reflection text,
+  category text,
+  is_published boolean not null default true,
+  constraint world_watch_items_category_check check (
+    category is null
+    or category in ('global', 'faith_public_life', 'culture', 'prayer_watch', 'other')
+  )
+);
+
+create index world_watch_items_published_at_desc_idx on public.world_watch_items (published_at desc);
+create index world_watch_items_is_published_idx on public.world_watch_items (is_published) where is_published = true;
+
+create trigger world_watch_items_set_updated_at
+  before update on public.world_watch_items
+  for each row
+  execute function public.set_updated_at();
+
+-- ---------------------------------------------------------------------------
 -- shows
 -- ---------------------------------------------------------------------------
 create table public.shows (
@@ -238,6 +297,8 @@ create trigger on_auth_user_created
 alter table public.profiles enable row level security;
 alter table public.premium_waitlist enable row level security;
 alter table public.world_watch_digest_sends enable row level security;
+alter table public.site_feedback enable row level security;
+alter table public.world_watch_items enable row level security;
 alter table public.episode_bookmarks enable row level security;
 alter table public.episode_notes enable row level security;
 alter table public.shows enable row level security;

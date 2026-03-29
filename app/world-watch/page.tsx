@@ -3,7 +3,9 @@ import { BackButton } from "@/components/buttons/back-button";
 import { WorldWatchPremium } from "@/components/world-watch/world-watch-premium";
 import { WorldWatchTeaser } from "@/components/world-watch/world-watch-teaser";
 import { getUserPlan } from "@/lib/auth";
+import { createServiceClient } from "@/lib/db";
 import { canUseFeature } from "@/lib/permissions";
+import { fetchPublishedWorldWatchItems } from "@/lib/world-watch/items";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 
 export const metadata = {
@@ -11,6 +13,8 @@ export const metadata = {
   description:
     "Thoughtful context on faith and public life—calm, scripturally grounded member access on Deep Well Audio.",
 };
+
+export const dynamic = "force-dynamic";
 
 export default async function WorldWatchPage() {
   let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
@@ -21,6 +25,16 @@ export default async function WorldWatchPage() {
   }
 
   const premium = canUseFeature("world_watch", plan);
+
+  let worldWatchItems: Awaited<ReturnType<typeof fetchPublishedWorldWatchItems>> = [];
+  if (premium) {
+    const admin = createServiceClient();
+    if (admin) {
+      worldWatchItems = await fetchPublishedWorldWatchItems(admin);
+    } else {
+      console.warn("[world-watch] service role unavailable — premium feed empty");
+    }
+  }
 
   return (
     <main className="container-shell max-w-3xl space-y-10 py-12 sm:py-16">
@@ -52,7 +66,7 @@ export default async function WorldWatchPage() {
         </div>
       </header>
 
-      {premium ? <WorldWatchPremium /> : <WorldWatchTeaser />}
+      {premium ? <WorldWatchPremium items={worldWatchItems} /> : <WorldWatchTeaser />}
     </main>
   );
 }

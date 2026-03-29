@@ -1,3 +1,5 @@
+import Link from "next/link";
+import type { Route } from "next";
 import { Globe } from "lucide-react";
 import { PremiumUpgradeActions } from "@/components/premium/premium-upgrade-actions";
 
@@ -27,6 +29,18 @@ export function WorldWatchTeaser() {
           <li>· Hand-picked links with a short note on why each might matter for a Christian listener—not an endless feed.</li>
           <li>· A gentle prompt to carry into the week, in the same spirit of slow, thoughtful study Deep Well stands for.</li>
         </ul>
+        <p className="mt-4 max-w-prose text-xs leading-relaxed text-slate-500">
+          I&apos;m on this as fast as lightning—if anything feels broken, confusing, or missing,{" "}
+          <Link href={"/feedback" as Route} className="text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline">
+            tell me
+          </Link>{" "}
+          and I&apos;ll fix it.
+          <span className="mt-2 block text-slate-500">
+            <Link href={"/feedback" as Route} className="text-amber-200/70 underline-offset-2 hover:text-amber-100 hover:underline">
+              Send feedback about World Watch →
+            </Link>
+          </span>
+        </p>
       </section>
 
       <section
