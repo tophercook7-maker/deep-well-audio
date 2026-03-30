@@ -31,6 +31,26 @@ const VARIANT_CLASSES: Record<NonNullable<Props["variant"]>, string> = {
 /** Clip bottom of hero PNG (~wordmark band) so only the waveform shows above real HTML type. Tune if artboard changes. */
 const RASTER_WORDMARK_CLIP = "[clip-path:inset(0_0_36%_0)]";
 
+/** Shared column width so the wave scales to the same line length as “Deep Well Audio” (header scale). */
+const HEADER_WORDMARK_SHELL =
+  "inline-flex w-[min(92vw,17.25rem)] flex-col items-center gap-1 sm:w-[min(92vw,18.75rem)] sm:gap-1.5 md:w-[min(92vw,20.85rem)]";
+
+/** Wave only: fills shell width, height caps keep proportion vs type. */
+const HEADER_WITH_WORDMARK_IMG =
+  "block h-auto w-full max-h-12 object-contain object-center sm:max-h-[3.85rem] md:max-h-[4.45rem]";
+
+/** Inline / footer / auth: slightly narrower shell. */
+const INLINE_WORDMARK_SHELL =
+  "inline-flex w-[min(92vw,14.5rem)] flex-col items-center gap-1 sm:w-[min(92vw,15.75rem)] md:w-[min(92vw,17.25rem)]";
+
+const INLINE_WITH_WORDMARK_IMG =
+  "block h-auto w-full max-h-10 object-contain object-center sm:max-h-11 md:max-h-12";
+
+const COMPACT_WORDMARK_SHELL = "inline-flex max-w-[min(100%,280px)] flex-col items-center gap-1";
+
+const COMPACT_WITH_WORDMARK_IMG =
+  "block h-auto w-full max-h-9 object-contain object-center sm:max-h-10";
+
 /**
  * Primary brand mark (raster). Intrinsic dimensions match `public/logo.png` for sharp Next/Image scaling.
  */
@@ -41,32 +61,54 @@ export function DeepWellLogo({
   priority = false,
   showWordmark = true,
 }: Props) {
-  const base = VARIANT_CLASSES[variant];
   const clipRaster = showWordmark ? RASTER_WORDMARK_CLIP : "";
-  const img = (
-    <Image
-      src={LOGO_SRC}
-      alt={showWordmark ? "" : "Deep Well Audio"}
-      width={1024}
-      height={682}
-      className={`${base} ${clipRaster} ${className ?? ""}`.trim()}
-      priority={priority}
-      sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
-      {...(showWordmark ? { "aria-hidden": true as const } : {})}
-    />
-  );
-
-  if (!showWordmark) return img;
+  const base = VARIANT_CLASSES[variant];
 
   /** Full class strings here (not dynamic object lookup) so Tailwind’s scanner always emits utilities. */
   const wordmarkClass =
     variant === "compact"
-      ? "block text-sm font-semibold leading-tight tracking-tight text-white sm:text-base"
-      : "block text-xl font-semibold leading-tight tracking-tight text-white sm:text-3xl md:text-[2.625rem]";
+      ? "block w-full text-center text-sm font-semibold leading-tight tracking-tight text-white sm:text-base"
+      : "block w-full whitespace-nowrap text-center text-xl font-semibold leading-tight tracking-tight text-white sm:text-3xl md:text-[2.625rem]";
+
+  if (!showWordmark) {
+    return (
+      <Image
+        src={LOGO_SRC}
+        alt="Deep Well Audio"
+        width={1024}
+        height={682}
+        className={`${base} ${className ?? ""}`.trim()}
+        priority={priority}
+        sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
+      />
+    );
+  }
+
+  let shellClass: string;
+  let imgClass: string;
+  if (variant === "header") {
+    shellClass = `${HEADER_WORDMARK_SHELL} ${brandClassName ?? ""}`.trim();
+    imgClass = `${HEADER_WITH_WORDMARK_IMG} ${clipRaster} ${className ?? ""}`.trim();
+  } else if (variant === "inline") {
+    shellClass = `${INLINE_WORDMARK_SHELL} ${brandClassName ?? ""}`.trim();
+    imgClass = `${INLINE_WITH_WORDMARK_IMG} ${clipRaster} ${className ?? ""}`.trim();
+  } else {
+    shellClass = `${COMPACT_WORDMARK_SHELL} ${brandClassName ?? ""}`.trim();
+    imgClass = `${COMPACT_WITH_WORDMARK_IMG} ${clipRaster} ${className ?? ""}`.trim();
+  }
 
   return (
-    <span className={`inline-flex max-w-[min(100%,480px)] flex-col items-start gap-1 sm:gap-1.5 ${brandClassName ?? ""}`.trim()}>
-      {img}
+    <span className={shellClass}>
+      <Image
+        src={LOGO_SRC}
+        alt=""
+        width={1024}
+        height={682}
+        className={imgClass}
+        priority={priority}
+        sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
+        aria-hidden
+      />
       <span className={wordmarkClass}>Deep Well Audio</span>
     </span>
   );
