@@ -5,8 +5,8 @@ import { peekRssFeed } from "@/lib/rss";
 import { requireSyncSecret } from "@/lib/sync-guard";
 
 /**
- * Fetch + parse one feed only (no DB). Protected like other sync routes.
- * GET ?slug=optional-show-slug — defaults to first active RSS seed.
+ * Operator-only RSS peek (no DB writes). Requires `SYNC_API_SECRET` via Bearer or `?secret=` — same as `/api/sync/*`.
+ * Not for public traffic; keep the secret out of logs and browser history (prefer Authorization header).
  */
 export async function GET(request: Request) {
   const denied = requireSyncSecret(request);
@@ -34,8 +34,6 @@ export async function GET(request: Request) {
   if (!rssUrl) {
     return NextResponse.json({ error: "No RSS URL for selected seed" }, { status: 400 });
   }
-
-  console.log("DEBUG RSS route:", seed.title, rssUrl);
 
   const peek = await peekRssFeed(rssUrl);
 

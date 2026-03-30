@@ -153,25 +153,44 @@ export default async function LibraryPage() {
           Favorites and saved shows stay here. Remove items from these cards or from individual show pages.
         </p>
         <div className="mt-5 flex flex-wrap gap-3 text-sm">
+          {plan === "premium" ? (
+            <FunnelLink
+              href={"/world-watch" as Route}
+              funnelEvent="premium_feature_click"
+              funnelData={{ intent: "premium_nav", target: "world_watch" }}
+              className="rounded-full border border-accent/35 bg-accent/[0.06] px-4 py-2.5 text-amber-100/90 transition hover:border-accent/50"
+            >
+              World Watch
+            </FunnelLink>
+          ) : null}
           <Link
             href={"/library/playlists" as Route}
-            className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+            className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
           >
             Playlists
           </Link>
           <Link
             href={"/library/bookmarks" as Route}
-            className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+            className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
           >
             Bookmarks &amp; notes
           </Link>
-          <FunnelLink
-            href={"/pricing" as Route}
-            funnelEvent="view_plans_click"
-            className="rounded-full border border-accent/30 px-4 py-2 text-amber-100/85 transition hover:border-accent/45"
-          >
-            View plans
-          </FunnelLink>
+          {plan === "premium" ? (
+            <Link
+              href={"/explore" as Route}
+              className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
+            >
+              Explore
+            </Link>
+          ) : (
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              className="rounded-full border border-accent/30 px-4 py-2.5 text-amber-100/85 transition hover:border-accent/45"
+            >
+              View plans
+            </FunnelLink>
+          )}
         </div>
       </div>
 
@@ -189,14 +208,14 @@ export default async function LibraryPage() {
               <FunnelLink
                 href={"/pricing" as Route}
                 funnelEvent="view_plans_click"
-                className="rounded-full border border-accent/35 px-4 py-2 font-medium text-amber-100/90 transition hover:border-accent/50"
+                className="rounded-full border border-accent/35 px-4 py-2.5 font-medium text-amber-100/90 transition hover:border-accent/50"
               >
                 View plans
               </FunnelLink>
               <FunnelLink
                 href={"/join" as Route}
                 funnelEvent="join_list_click"
-                className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+                className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
               >
                 Join the Deep Well list
               </FunnelLink>
@@ -208,19 +227,19 @@ export default async function LibraryPage() {
 
       {plan === "premium" ? (
         <section
-          className="card border-accent/30 bg-accent/[0.04] p-6 sm:p-7"
+          className="card border-accent/30 bg-accent/[0.04] p-6 sm:p-8"
           aria-labelledby="library-premium-state"
         >
-          <div className="flex flex-wrap items-start gap-4">
+          <div className="flex flex-wrap items-start gap-4 sm:gap-5">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">
               <Sparkles className="h-6 w-6" aria-hidden />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
-              <h2 id="library-premium-state" className="mt-1 text-lg font-semibold text-white">
+              <h2 id="library-premium-state" className="mt-1 text-xl font-semibold tracking-tight text-white">
                 Your study tools are unlocked
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
+              <p className="mt-3 text-sm leading-[1.65] text-muted">
                 Bookmarks, notes, topic packs, playlists, and advanced filters are included on your plan—same calm player, more structure when
                 you need it.
               </p>
@@ -234,26 +253,33 @@ export default async function LibraryPage() {
                   Meaty score and deeper filters on Explore
                 </li>
               </ul>
-              <div className="mt-5 flex flex-wrap gap-3 text-sm">
+              <div className="mt-6 flex flex-wrap gap-3 text-sm">
+                <FunnelLink
+                  href={"/world-watch" as Route}
+                  funnelEvent="premium_feature_click"
+                  funnelData={{ intent: "premium_nav", target: "world_watch" }}
+                  className="rounded-full border border-accent/35 bg-accent/[0.06] px-4 py-2.5 text-amber-100/90 transition hover:border-accent/50"
+                >
+                  World Watch
+                </FunnelLink>
                 <Link
                   href={"/library/playlists" as Route}
-                  className="rounded-full border border-line/85 px-4 py-2 text-amber-100/90 transition hover:border-accent/40"
+                  className="rounded-full border border-line/85 px-4 py-2.5 text-amber-100/90 transition hover:border-accent/40"
                 >
                   Playlists
                 </Link>
                 <Link
                   href={"/library/bookmarks" as Route}
-                  className="rounded-full border border-line/85 px-4 py-2 text-amber-100/90 transition hover:border-accent/40"
+                  className="rounded-full border border-line/85 px-4 py-2.5 text-amber-100/90 transition hover:border-accent/40"
                 >
                   Bookmarks
                 </Link>
-                <FunnelLink
-                  href={"/pricing" as Route}
-                  funnelEvent="view_plans_click"
-                  className="rounded-full border border-line/85 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white"
+                <Link
+                  href={"/explore" as Route}
+                  className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
                 >
-                  View plans
-                </FunnelLink>
+                  Explore catalog
+                </Link>
               </div>
             </div>
           </div>

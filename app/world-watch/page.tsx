@@ -37,7 +37,7 @@ export default async function WorldWatchPage() {
   }
 
   return (
-    <main className="container-shell max-w-3xl space-y-10 py-12 sm:py-16">
+    <main className="container-shell max-w-3xl space-y-12 py-12 sm:space-y-14 sm:py-16">
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>

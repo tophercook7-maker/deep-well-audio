@@ -116,12 +116,19 @@ export function FeedbackAdminPanel({ rows }: { rows: FeedbackRow[] }) {
   );
 
   if (!rows.length) {
-    return <p className="text-sm text-muted">No submissions yet.</p>;
+    return (
+      <div className="card border-line/70 bg-soft/10 p-8 text-center sm:p-10">
+        <p className="text-sm font-medium text-slate-300">Inbox empty</p>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">Submissions from the public feedback form will show up here.</p>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
-      {globalErr ? <p className="text-sm text-amber-200/90">{globalErr}</p> : null}
+      {globalErr ? (
+        <p className="rounded-xl border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/95">{globalErr}</p>
+      ) : null}
       <ul className="space-y-8">
         {rows.map((row) => (
           <FeedbackAdminRow
@@ -178,7 +185,7 @@ function FeedbackAdminRow({
     <li className="card border-line/70 p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line/40 pb-3">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-200/70">{row.category}</span>
-        <time className="text-xs text-slate-500" dateTime={row.created_at}>
+        <time className="text-xs tabular-nums text-slate-400" dateTime={row.created_at}>
           {fmtDate(row.created_at)}
         </time>
       </div>
@@ -226,14 +233,14 @@ function FeedbackAdminRow({
       ) : null}
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
         <div className="min-w-[10rem] flex-1">
-          <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500" htmlFor={`st-${row.id}`}>
+          <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400" htmlFor={`st-${row.id}`}>
             Status
           </label>
           <select
             id={`st-${row.id}`}
             value={status}
             onChange={(e) => setStatus(e.target.value as FeedbackStatus)}
-            className="mt-1 w-full rounded-lg border border-line/80 bg-soft/25 px-3 py-2 text-sm text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="mt-1.5 w-full rounded-lg border border-line/80 bg-soft/25 px-3 py-2 text-sm text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
           >
             {FEEDBACK_STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -243,10 +250,10 @@ function FeedbackAdminRow({
           </select>
         </div>
         <div className="min-w-0 flex-[2]">
-          <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500" htmlFor={`note-${row.id}`}>
+          <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400" htmlFor={`note-${row.id}`}>
             Reply / reassurance
           </label>
-          <p className="mt-0.5 text-[11px] leading-snug text-slate-500">
+          <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
             Draft the message you may send them later (email from the app is optional). Saving stores it; you can paste into Gmail anytime or mark sent
             when you&apos;re done.
           </p>
@@ -256,7 +263,7 @@ function FeedbackAdminRow({
             onChange={(e) => setNote(e.target.value)}
             rows={3}
             maxLength={2000}
-            className="mt-1 w-full resize-y rounded-lg border border-line/80 bg-soft/25 px-3 py-2 text-sm text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+            className="mt-1.5 w-full resize-y rounded-lg border border-line/80 bg-soft/25 px-3 py-2 text-sm text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
             placeholder="e.g. Thanks for writing — here’s what I’m doing and when you can expect a fix…"
           />
           <div className="mt-2 flex flex-wrap items-center gap-2">

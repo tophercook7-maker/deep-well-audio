@@ -6,6 +6,7 @@ import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { useAccountPlanOptional } from "@/components/plan/plan-context";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
+import { isClientCheckoutConfigured } from "@/lib/stripe-checkout-client";
 
 const btnPrimary =
   "inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-45";
@@ -27,7 +28,7 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
   const ctx = useAccountPlanOptional();
   const plan = ctx?.plan ?? "guest";
   const justify = align === "center" ? "justify-center" : "justify-start";
-  const publishable = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  const checkoutOk = isClientCheckoutConfigured();
   const hintAlign = align === "center" ? "mx-auto text-center" : "text-left";
 
   if (plan === "premium") {
@@ -36,7 +37,7 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
 
   return (
     <div className={className.trim()}>
-      <div className={`flex flex-wrap gap-3 ${justify}`}>
+      <div className={`flex flex-wrap gap-3 sm:gap-3.5 ${justify}`}>
         <button
           type="button"
           onClick={() => {
@@ -47,7 +48,7 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
         >
           See what&apos;s included
         </button>
-        <StartCheckoutButton interval="monthly" disabled={!publishable} className={btnPrimary}>
+        <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
           Subscribe — $9/month
         </StartCheckoutButton>
         <FunnelLink href={"/pricing#subscribe" as Route} funnelEvent="view_plans_click" className={btnGhost}>

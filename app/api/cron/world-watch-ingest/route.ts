@@ -1,22 +1,20 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/db";
+import { getCronSecret } from "@/lib/env";
 import { ingestWorldWatchRssFeeds } from "@/lib/world-watch/ingest-rss";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 export async function GET(request: Request) {
-  // TEMP: allow manual ingest via ?manual=1
-  const url = new URL(request.url);
-  const allowManual = url.searchParams.get("manual") === "1";
+  const secret = getCronSecret();
+  if (!secret) {
+    return NextResponse.json({ error: "CRON_SECRET is not configured" }, { status: 503 });
+  }
 
-  if (!allowManual) {
-    const auth = request.headers.get("authorization");
-    const expected = `Bearer ${process.env.CRON_SECRET}`;
-
-    if (!auth || auth !== expected) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-    }
+  const auth = request.headers.get("authorization");
+  if (auth !== `Bearer ${secret}`) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
   const admin = createServiceClient();

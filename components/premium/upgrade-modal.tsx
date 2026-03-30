@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { useAccountPlan } from "@/components/plan/plan-context";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
+import { isClientCheckoutConfigured } from "@/lib/stripe-checkout-client";
 
 const btnPrimary =
   "inline-flex min-h-[44px] flex-1 items-center justify-center rounded-full bg-accent px-4 py-2.5 text-center text-sm font-semibold text-slate-950 transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none";
@@ -20,7 +21,7 @@ type Props = {
 
 export function UpgradeModal({ open, onOpenChange }: Props) {
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
-  const publishable = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  const checkoutOk = isClientCheckoutConfigured();
   const { plan } = useAccountPlan();
 
   if (!open) return null;
@@ -82,7 +83,7 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
         <h2 id="upgrade-modal-title" className="mt-2 text-xl font-semibold text-white sm:text-2xl">
           Premium helps you study, not just listen
         </h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">
+        <p className="mt-3 text-sm leading-[1.65] text-muted">
           Listening stays free for everyone. Premium adds calm structure—bookmarks, notes, topic packs, World Watch, and tools to find deeper
           teaching without more noise. Billing runs securely through Stripe.
         </p>
@@ -129,15 +130,17 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
 
         <div className="mt-6 flex flex-col gap-3">
           <div className="flex flex-col gap-2 sm:flex-row sm:justify-stretch">
-            <StartCheckoutButton interval="monthly" disabled={!publishable} className={btnPrimary}>
+            <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
               Monthly
             </StartCheckoutButton>
-            <StartCheckoutButton interval="yearly" disabled={!publishable} className={btnPrimary}>
+            <StartCheckoutButton interval="yearly" disabled={!checkoutOk} className={btnPrimary}>
               Yearly
             </StartCheckoutButton>
           </div>
-          {!publishable ? (
-            <p className="text-center text-xs text-muted">Add Stripe keys to enable checkout in this environment.</p>
+          {!checkoutOk ? (
+            <p className="text-center text-xs text-muted">
+              Checkout needs Stripe keys, price IDs, and <span className="text-slate-400">NEXT_PUBLIC_SITE_URL</span> in this environment.
+            </p>
           ) : null}
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
             <button type="button" onClick={close} className={`${btnGhost} order-2 sm:order-1`}>

@@ -70,12 +70,12 @@ export function WorldWatchAdminTable({ rows }: Props) {
                   // eslint-disable-next-line @next/next/no-img-element -- remote operator URLs
                   <img src={thumb} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-[10px] text-slate-600">No image</div>
+                  <div className="flex h-full items-center justify-center px-2 text-center text-[10px] font-medium text-slate-500">No image</div>
                 )}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-white">{row.title}</p>
-                <p className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-slate-500">
+                <p className="mt-1 flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-slate-400">
                   <span className={row.is_published ? "text-emerald-400/90" : "text-amber-200/85"}>
                     {row.is_published ? "Published" : "Draft"}
                   </span>
@@ -98,7 +98,7 @@ export function WorldWatchAdminTable({ rows }: Props) {
                   <span className="text-slate-600">·</span>
                   <span>Pub {fmt(row.published_at)}</span>
                 </p>
-                <p className="mt-1 text-[11px] text-slate-500">
+                <p className="mt-1 text-[11px] text-slate-400">
                   {row.source_name ? <span className="text-slate-400">{row.source_name}</span> : null}
                   {cat ? (
                     <span className="text-slate-600">

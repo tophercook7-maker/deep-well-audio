@@ -26,14 +26,14 @@ export function PremiumActiveState({ className = "", align = "center" }: Props) 
         World Watch and study tools are already unlocked.
       </p>
 
-      <div className={`mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${justify}`}>
+      <div className={`mt-6 flex flex-col gap-3.5 sm:flex-row sm:flex-wrap ${justify}`}>
         <FunnelLink
           href={"/world-watch" as Route}
           funnelEvent="premium_feature_click"
           funnelData={{ intent: "premium_nav", target: "world_watch" }}
           className={btnNav}
         >
-          Go to World Watch
+          World Watch
         </FunnelLink>
         <FunnelLink
           href={"/library" as Route}
@@ -41,11 +41,19 @@ export function PremiumActiveState({ className = "", align = "center" }: Props) 
           funnelData={{ intent: "premium_nav", target: "library" }}
           className={btnNav}
         >
-          Go to Library
+          Library
+        </FunnelLink>
+        <FunnelLink
+          href={"/explore" as Route}
+          funnelEvent="premium_feature_click"
+          funnelData={{ intent: "premium_nav", target: "explore" }}
+          className={btnNav}
+        >
+          Explore catalog
         </FunnelLink>
       </div>
 
-      <p className={`mt-4 text-xs leading-relaxed text-muted ${blockAlign} max-w-lg`}>
+      <p className={`mt-5 text-xs leading-relaxed text-slate-400 ${blockAlign} max-w-lg`}>
         Need billing help? Use the link in your Stripe receipt or contact us.
       </p>
     </div>

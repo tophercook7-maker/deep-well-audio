@@ -75,14 +75,17 @@ export default async function AdminFeedbackPage() {
   }
 
   return (
-    <main className="container-shell max-w-3xl space-y-8 py-12 sm:py-14">
+    <main className="container-shell max-w-3xl space-y-10 py-12 sm:py-14">
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>
-      <header>
+      <header className="rounded-2xl border border-line/60 bg-soft/10 px-5 py-5 sm:px-6 sm:py-6">
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Admin</p>
         <h1 className="mt-1 text-2xl font-semibold text-white sm:text-3xl">Site feedback</h1>
-        <p className="mt-2 text-sm text-muted">Newest first. Draft replies stay here until you send them (manually or when email is enabled).</p>
+        <p className="mt-2 max-w-prose text-sm leading-[1.65] text-muted">
+          Newest first. Update status, draft a reply, copy to your mail client, then mark sent when you&apos;re done—nothing leaves this panel until
+          you act.
+        </p>
       </header>
       {!admin ? (
         <p className="text-sm text-amber-200/90">Service role key missing — cannot load feedback from the database.</p>

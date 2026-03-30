@@ -26,15 +26,15 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
       className="sticky top-0 z-50 border-b border-line/80 bg-bg/85 shadow-[0_8px_28px_rgba(0,0,0,0.22)] backdrop-blur-md backdrop-saturate-150"
       style={{ backgroundColor: "rgba(11, 18, 32, 0.94)" }}
     >
-      <div className="container-shell flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:py-4">
+      <div className="container-shell flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
         <Link
           href="/"
-          className="flex min-w-0 items-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220]"
+          className="flex shrink-0 items-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220]"
         >
           <DeepWellLogo variant="header" priority />
         </Link>
 
-        <nav className="flex flex-wrap items-center gap-2 sm:flex-1 sm:justify-end" aria-label="Primary">
+        <nav className="flex min-w-0 flex-wrap items-center gap-2.5 sm:flex-1 sm:justify-end sm:gap-3" aria-label="Primary">
           <Link href="/" className={linkClass}>
             <Home className="h-4 w-4 shrink-0" aria-hidden />
             Home
@@ -56,7 +56,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
               </Link>
             );
           })}
-          <div className="sm:ml-1 sm:border-l sm:border-line/80 sm:pl-3">
+          <div className="sm:ml-1 sm:border-l sm:border-line/80 sm:pl-4">
             <AuthMenu user={user} plan={plan} />
           </div>
         </nav>

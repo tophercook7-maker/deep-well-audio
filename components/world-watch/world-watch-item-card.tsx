@@ -51,19 +51,31 @@ export function WorldWatchItemCard({ item, variant = "default" }: Props) {
           />
         </div>
       ) : featured ? (
-        <div className="border-b border-line/40 bg-gradient-to-br from-accent/[0.12] via-soft/15 to-transparent px-7 py-5 sm:px-9">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/45">Lead story</p>
+        <div className="border-b border-line/40 bg-gradient-to-br from-accent/[0.14] via-soft/18 to-transparent px-7 py-6 sm:px-9">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/50">Lead story</p>
         </div>
-      ) : null}
-      <div className={featured ? "space-y-5 p-7 sm:p-9" : "space-y-4 p-6 sm:p-7"}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      ) : (
+        <div className="h-px bg-gradient-to-r from-line/50 via-line/25 to-transparent" aria-hidden />
+      )}
+      <div className={featured ? "space-y-6 p-7 sm:p-9" : "space-y-4 p-6 sm:p-7"}>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           {item.pinned ? (
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Editor&apos;s note</span>
+            <>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Editor&apos;s note</span>
+              <span className="select-none text-slate-600" aria-hidden>
+                ·
+              </span>
+            </>
           ) : null}
           {categoryLabel ? (
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/60">{categoryLabel}</span>
+            <>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-200/55">{categoryLabel}</span>
+              <span className="select-none text-slate-600" aria-hidden>
+                ·
+              </span>
+            </>
           ) : null}
-          <time className="text-[11px] text-slate-500" dateTime={item.published_at}>
+          <time className="text-[11px] tabular-nums tracking-tight text-slate-400" dateTime={item.published_at}>
             {dateLabel}
           </time>
         </div>
@@ -75,22 +87,24 @@ export function WorldWatchItemCard({ item, variant = "default" }: Props) {
           {item.title}
         </h2>
         {item.source_name || item.source_url ? (
-          <p className="text-xs leading-relaxed text-slate-500">
-            {item.source_name ? <span className="text-slate-400">Source · {item.source_name}</span> : null}
+          <p className="text-[13px] leading-relaxed text-slate-500">
+            {item.source_name ? <span className="text-slate-400/95">{item.source_name}</span> : null}
             {item.source_url && item.source_name ? <span className="text-slate-600"> · </span> : null}
             {item.source_url ? (
               <a
                 href={item.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-amber-200/75 underline-offset-2 transition hover:text-amber-100 hover:underline"
+                className="font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline"
               >
                 Read at source
               </a>
             ) : null}
           </p>
         ) : null}
-        <div className={`leading-relaxed text-slate-300 ${featured ? "text-base" : "text-sm"} ${!hero && featured ? "max-w-prose" : ""}`}>
+        <div
+          className={`max-w-prose leading-[1.65] text-slate-300/95 ${featured ? "text-base" : "text-sm"}`}
+        >
           {summaryParas.map((para, i) => (
             <p key={i} className={i > 0 ? "mt-3" : ""}>
               {para}

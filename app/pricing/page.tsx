@@ -6,7 +6,7 @@ import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { PricingBuiltInPublic } from "@/components/pricing/pricing-built-in-public";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
 import { getUserPlan } from "@/lib/auth";
-import { getPremiumWaitlistMailto } from "@/lib/env";
+import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env";
 
 export const metadata = {
   title: "Pricing · Deep Well Audio",
@@ -16,17 +16,17 @@ export const metadata = {
 
 export default async function PricingPage() {
   const mailto = getPremiumWaitlistMailto();
-  const stripeReady = true;
+  const stripeReady = hasStripeBillingConfigured();
   const plan = await getUserPlan();
 
   return (
-    <main className="container-shell max-w-3xl space-y-14 py-12 sm:py-16">
+    <main className="container-shell max-w-3xl space-y-12 py-12 sm:space-y-14 sm:py-16">
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Back" />
       </div>
 
       <header className="max-w-2xl">
-        <DeepWellLogo variant="inline" className="mb-6 h-9 max-w-[280px] opacity-95 sm:h-10 sm:max-w-[300px]" />
+        <DeepWellLogo variant="header" className="mb-6 mx-auto object-center opacity-95 sm:mx-0 sm:object-left" />
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Pricing</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           Listen freely. <span className="text-amber-200/95">Study more deeply.</span>
@@ -127,7 +127,7 @@ export default async function PricingPage() {
           </p>
         </div>
         <PricingPremiumCheckout stripeReady={stripeReady} plan={plan} />
-        <p className="mt-5 max-w-prose text-center text-xs leading-relaxed text-slate-500 sm:text-left">
+        <p className="mt-6 max-w-prose text-center text-xs leading-relaxed text-slate-400 sm:text-left">
           Prefer a direct link?{" "}
           <Link href={"/feedback" as Route} className="text-amber-200/75 underline-offset-2 hover:text-amber-100 hover:underline">
             Open the feedback form

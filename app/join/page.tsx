@@ -31,9 +31,9 @@ export default function JoinPage() {
           />
           <div className="relative">
             <div className="flex justify-center">
-              <DeepWellLogo variant="inline" className="mx-auto h-9 max-w-[280px] sm:h-10" />
+              <DeepWellLogo variant="inline" className="mx-auto" />
             </div>
-            <h1 className="mt-2 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            <h1 className="mt-6 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               Get notified about Premium &amp; new tools
             </h1>
             <p className="mt-4 text-center text-sm leading-relaxed text-muted">

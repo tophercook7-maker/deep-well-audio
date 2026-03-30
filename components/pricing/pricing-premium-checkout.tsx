@@ -17,7 +17,7 @@ type Props = {
 export function PricingPremiumCheckout({ stripeReady, plan }: Props) {
   if (plan === "premium") {
     return (
-      <div id="subscribe" className="mt-6 scroll-mt-28 space-y-3">
+      <div id="subscribe" className="mt-6 scroll-mt-28 space-y-4">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Your membership</p>
         <PremiumActiveState align="start" />
       </div>
@@ -25,7 +25,7 @@ export function PricingPremiumCheckout({ stripeReady, plan }: Props) {
   }
 
   return (
-    <div id="subscribe" className="mt-6 scroll-mt-28 space-y-3">
+    <div id="subscribe" className="mt-6 scroll-mt-28 space-y-4">
       <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Subscribe</p>
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <StartCheckoutButton interval="monthly" disabled={!stripeReady} className={btnPrimary}>
@@ -58,12 +58,12 @@ export function PricingPremiumCheckout({ stripeReady, plan }: Props) {
           </div>
         </>
       ) : (
-        <p className="text-xs text-muted">
+        <p className="text-xs leading-relaxed text-slate-400">
           Secure checkout with Stripe. Manage or cancel through Stripe (links in your subscription receipts) or contact us—no surprise hoops.
         </p>
       )}
       {stripeReady ? (
-        <p className="text-xs leading-relaxed text-muted">
+        <p className="text-xs leading-relaxed text-slate-400">
           Not ready to subscribe?{" "}
           <FunnelLink
             href={"/join" as Route}

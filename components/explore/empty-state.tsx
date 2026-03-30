@@ -18,15 +18,15 @@ export function ExploreEmptyState({
   relatedTopics,
 }: Props) {
   return (
-    <div className="card p-10 text-center">
-      <div className="mb-5 flex justify-center">
-        <DeepWellLogo variant="inline" className="mx-auto h-9 max-w-[240px] opacity-90 sm:h-10 sm:max-w-[260px]" />
+    <div className="card p-8 text-center sm:p-10">
+      <div className="mb-6 flex justify-center">
+        <DeepWellLogo variant="inline" className="mx-auto opacity-90" />
       </div>
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10 text-accent">
         <SearchX className="h-6 w-6" aria-hidden />
       </div>
-      <p className="mt-5 text-base font-medium text-text">{message}</p>
-      {detail ? <p className="mx-auto mt-3 max-w-lg text-sm text-muted">{detail}</p> : null}
+      <p className="mt-5 text-base font-medium leading-snug text-text">{message}</p>
+      {detail ? <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted">{detail}</p> : null}
       {variant === "empty-catalog" ? (
         <p className="mx-auto mt-3 max-w-lg text-sm text-muted">
           After you run an RSS sync with your <code className="rounded bg-soft px-1 text-xs">SYNC_API_SECRET</code>, shows and

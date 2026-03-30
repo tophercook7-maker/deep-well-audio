@@ -29,7 +29,7 @@ function Section({
           <h2 className="mt-1 text-lg font-semibold text-white">{title}</h2>
         </div>
       </div>
-      <div className="mt-5 space-y-3 text-sm leading-relaxed text-slate-300">{children}</div>
+      <div className="mt-5 space-y-3 text-sm leading-[1.65] text-slate-300/95">{children}</div>
     </section>
   );
 }
@@ -40,12 +40,12 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
   const rest = items.length > 1 ? items.slice(1) : [];
 
   return (
-    <div className="space-y-10">
-      <div className="rounded-2xl border border-line/60 bg-soft/10 px-5 py-4 sm:px-6">
+    <div className="space-y-10 sm:space-y-12">
+      <div className="rounded-2xl border border-line/60 bg-soft/10 px-5 py-5 sm:px-7">
         <p className="text-xs font-medium text-slate-300">This week</p>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted">
-          Week of <span className="text-slate-400">{weekKey}</span> (Monday, UTC). These entries are curated—measured, linked to primary sources,
-          and meant for slow reading and prayer rather than urgency.
+        <p className="mt-2 max-w-prose text-sm leading-[1.65] text-muted">
+          Week of <span className="text-slate-400">{weekKey}</span> (Monday, UTC). Each piece links to primary sources—ordered for slow reading and
+          prayer, not breaking-news urgency.
         </p>
       </div>
 
@@ -66,17 +66,17 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
           </Link>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-10">
           {featured ? (
-            <div className="space-y-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Featured</p>
+            <div className="space-y-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Featured</p>
               <WorldWatchItemCard item={featured} variant="featured" />
             </div>
           ) : null}
 
           {rest.length > 0 ? (
             <div className={`space-y-3 ${rest.length <= 2 ? "pb-2" : ""}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">More from World Watch</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">More from World Watch</p>
               <div className={`grid sm:grid-cols-2 ${rest.length <= 2 ? "gap-8 sm:gap-10" : "gap-6"}`}>
                 {rest.map((item) => (
                   <WorldWatchItemCard key={item.id} item={item} variant="default" />

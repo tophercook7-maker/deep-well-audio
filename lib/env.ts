@@ -45,7 +45,10 @@ const INVALID_SITE_URL_SENTINELS = new Set(["undefined", "null"]);
 
 /**
  * Parsed absolute site URL when `NEXT_PUBLIC_SITE_URL` is set and valid; otherwise `null`.
- * Use for Stripe redirects and “billing ready” checks — do not fall back silently.
+ *
+ * **Production:** Set to `https://deepwellaudio.com` (no trailing slash). Required for Stripe checkout
+ * redirects, `hasStripeBillingConfigured()`, and consistent auth callback URLs.
+ * `getSafeAbsoluteSiteUrl()` adds metadata/OG fallbacks only; it does **not** substitute here.
  */
 export function resolvePublicSiteUrlStrict(): string | null {
   const raw = trimStr(process.env.NEXT_PUBLIC_SITE_URL);
@@ -62,12 +65,24 @@ export function resolvePublicSiteUrlStrict(): string | null {
   }
 }
 
+/** Production marketing origin when `NEXT_PUBLIC_SITE_URL` is unset (e.g. env slip on first deploy). */
+const PRODUCTION_CANONICAL_SITE = "https://deepwellaudio.com";
+
 /**
  * Absolute site URL for metadata (`metadataBase`) and Open Graph.
- * Never throws: malformed or missing env falls back to `http://localhost:3000` so `new URL()` in `layout` cannot crash the app.
+ * Prefers `NEXT_PUBLIC_SITE_URL`, then sensible deploy defaults (production apex, Vercel preview host), then localhost.
  */
 export function getSafeAbsoluteSiteUrl(): string {
-  return resolvePublicSiteUrlStrict() ?? "http://localhost:3000";
+  const strict = resolvePublicSiteUrlStrict();
+  if (strict) return strict;
+  if (process.env.VERCEL_ENV === "production") {
+    return PRODUCTION_CANONICAL_SITE;
+  }
+  const vercelUrl = trimStr(process.env.VERCEL_URL);
+  if (process.env.VERCEL_ENV === "preview" && vercelUrl) {
+    return `https://${vercelUrl}`;
+  }
+  return "http://localhost:3000";
 }
 
 // ---------------------------------------------------------------------------
@@ -110,8 +125,15 @@ export function getStripePriceYearly(): string | null {
   return trimStr(process.env.STRIPE_PRICE_YEARLY);
 }
 
-export function hasStripeBillingConfigured() {
-  return true;
+/** True when Stripe subscription checkout can run server-side (secret, price IDs, publishable key, site URL for redirects). */
+export function hasStripeBillingConfigured(): boolean {
+  return Boolean(
+    getStripeSecretKey() &&
+      getStripePriceMonthly() &&
+      getStripePriceYearly() &&
+      getPublicStripePublishableKey() &&
+      resolvePublicSiteUrlStrict()
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -168,7 +190,7 @@ export function isWorldWatchWeeklyDigestEnabled(): boolean {
 
 /**
  * Bearer for cron routes: `/api/cron/world-watch-weekly` (digest), `/api/cron/world-watch-ingest` (RSS pull).
- * Set in Vercel env; same secret can gate both.
+ * Set `CRON_SECRET` in the project environment. Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` when this var is defined.
  */
 export function getCronSecret(): string | null {
   return trimStr(process.env.CRON_SECRET);

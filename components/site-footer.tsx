@@ -9,11 +9,11 @@ export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-line/40 bg-[rgba(11,18,32,0.5)]">
       <InstallHint />
-      <div className="container-shell py-6 text-center text-xs text-slate-500">
-        <div className="mb-5 flex justify-center">
-          <DeepWellLogo variant="inline" className="mx-auto max-w-[240px] opacity-90 sm:max-w-[260px]" />
+      <div className="container-shell py-7 text-center text-[13px] leading-relaxed text-slate-400 sm:py-8">
+        <div className="mb-6 flex justify-center">
+          <DeepWellLogo variant="inline" className="mx-auto opacity-90" />
         </div>
-        <p className="leading-relaxed">
+        <p>
           © {year}{" "}
           <span className="text-slate-400">Deep Well Audio</span>
           {" · "}
