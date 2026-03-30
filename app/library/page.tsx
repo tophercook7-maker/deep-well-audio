@@ -160,7 +160,7 @@ export default async function LibraryPage() {
               funnelData={{ intent: "premium_nav", target: "world_watch" }}
               className="rounded-full border border-accent/35 bg-accent/[0.06] px-4 py-2.5 text-amber-100/90 transition hover:border-accent/50"
             >
-              World Watch
+              Open World Watch
             </FunnelLink>
           ) : null}
           <Link
@@ -260,7 +260,7 @@ export default async function LibraryPage() {
                   funnelData={{ intent: "premium_nav", target: "world_watch" }}
                   className="rounded-full border border-accent/35 bg-accent/[0.06] px-4 py-2.5 text-amber-100/90 transition hover:border-accent/50"
                 >
-                  World Watch
+                  Open World Watch
                 </FunnelLink>
                 <Link
                   href={"/library/playlists" as Route}

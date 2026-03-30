@@ -223,7 +223,7 @@ function FeedbackAdminRow({
           </a>
         </p>
       ) : null}
-      <div className="mt-4 max-h-40 overflow-y-auto rounded-lg border border-line/50 bg-soft/20 p-3 text-sm leading-relaxed text-slate-200">
+      <div className="mt-4 max-h-52 overflow-y-auto rounded-lg border border-line/50 bg-soft/25 p-3.5 text-sm leading-relaxed text-slate-100">
         {row.message}
       </div>
       {row.user_agent ? (

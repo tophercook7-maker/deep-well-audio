@@ -53,14 +53,14 @@ export function ExploreEmptyState({
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
         >
           <Home className="h-4 w-4" />
           Home
         </Link>
         <Link
           href={"/explore" as Route}
-          className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-muted transition hover:border-accent/40 hover:text-text"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-slate-400 transition hover:border-accent/40 hover:text-white"
         >
           Clear all filters
         </Link>

@@ -45,12 +45,15 @@ export default async function PricingPage() {
         </p>
       </header>
 
-      <section className="card border-line/90 p-6 sm:p-8" aria-labelledby="free-plan-heading">
+      <section
+        className="card border-line/85 bg-soft/[0.04] p-6 sm:p-8"
+        aria-labelledby="free-plan-heading"
+      >
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Always free</p>
-        <h2 id="free-plan-heading" className="mt-2 text-2xl font-semibold text-white">
+        <h2 id="free-plan-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
           Free — listening first
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
           The catalog stays open: serious Bible teaching and curated sources are here for everyone, without watering down what free means.
         </p>
         <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-200">
@@ -75,10 +78,10 @@ export default async function PricingPage() {
         aria-labelledby="premium-plan-heading"
       >
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Premium</p>
-        <h2 id="premium-plan-heading" className="mt-2 text-2xl font-semibold text-white">
+        <h2 id="premium-plan-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
           Deep Well Premium
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
           Go deeper with tools for serious listening, reflection, and study—including{" "}
           <span className="text-slate-300">full access to World Watch</span>, our calm read on faith and public life, alongside bookmarks, guided
           packs, and filters—all in one membership. The catalog itself stays free; Premium shapes how you keep and revisit what matters.

@@ -21,6 +21,12 @@ import { ContinueListeningSection } from "@/components/listening/continue-listen
 import { RecentlyPlayedSection } from "@/components/listening/recently-played";
 import { getDiscoverTopicCards } from "@/lib/topics";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { createServiceClient } from "@/lib/db";
+import { fetchPublishedWorldWatchItems } from "@/lib/world-watch/items";
+import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
+import { WorldWatchHomePreview } from "@/components/home/world-watch-home-preview";
+import { HomePremiumValue } from "@/components/home/home-premium-value";
+import { HomeFeedbackNote } from "@/components/home/home-feedback-note";
 
 const HOMEPAGE_FEATURED_LIMIT = 6;
 const HOMEPAGE_RECENT_EPISODES = 8;
@@ -57,14 +63,22 @@ export default async function HomePage() {
   let episodeCount = 0;
   let catalogProbe: Awaited<ReturnType<typeof probeCatalogBackend>> = "missing_env";
   let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
+  let worldWatchPreview: WorldWatchItemPublic[] = [];
   try {
-    [featured, recentPool, showCount, episodeCount, catalogProbe, plan] = await Promise.all([
+    const adminClient = createServiceClient();
+    [featured, recentPool, showCount, episodeCount, catalogProbe, plan, worldWatchPreview] = await Promise.all([
       getFeaturedShows(HOMEPAGE_FEATURED_LIMIT),
       getHomeRecentEpisodes(HOMEPAGE_RECENT_POOL),
       getActiveShowCount(),
       getPublicEpisodeCount(),
       hasPublicSupabaseEnv() ? probeCatalogBackend() : Promise.resolve("missing_env" as const),
       getUserPlan(),
+      adminClient
+        ? fetchPublishedWorldWatchItems(adminClient, 3).catch((err) => {
+            console.error("home world watch preview:", err instanceof Error ? err.message : err);
+            return [] as WorldWatchItemPublic[];
+          })
+        : Promise.resolve([] as WorldWatchItemPublic[]),
     ]);
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
@@ -85,11 +99,17 @@ export default async function HomePage() {
               Find real Bible teaching{" "}
               <span className="text-amber-200">without the noise.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-              Deep Well Audio gathers trusted sermons, podcasts, and Bible teaching in one place—sources we choose on purpose, not an endless
-              sweep of the web. Less searching, more listening. Stream free; sign in when you want favorites and saved shows to stay with you.
+            <p className="mt-6 max-w-2xl text-lg leading-[1.65] text-muted">
+              Deep Well gathers trusted sermons, podcasts, and Bible teaching in one place—sources we choose on purpose, not an endless sweep of
+              the web. Listening and browsing stay{" "}
+              <span className="text-slate-300">free</span>; sign in when you want favorites and saved shows to follow you.
             </p>
-            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+            <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-400 sm:text-base">
+              <span className="text-slate-300">Premium</span> is optional: bookmarks, notes, guided topic packs on hubs, richer filters on Explore,
+              and <span className="text-slate-300">World Watch</span>—calm reads on faith and public life—when you want that layer on top of
+              listening.
+            </p>
+            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-400">
               Curated sources · No random feeds · Calm, trustworthy listening
             </p>
 
@@ -107,23 +127,23 @@ export default async function HomePage() {
               </p>
             ) : null}
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-9">
               <FunnelLink
                 href={"/explore" as Route}
                 funnelEvent="start_listening_click"
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)]"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)]"
               >
                 Start listening
                 <ArrowRight className="h-4 w-4" />
               </FunnelLink>
               <Link
                 href={"/explore" as Route}
-                className="inline-flex items-center gap-2 rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
               >
                 Explore the directory
               </Link>
             </div>
-            <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-500">
+            <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-400">
               Listening is free—no account needed to press play.{" "}
               <Link href={"/library" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
                 Your library
@@ -153,15 +173,18 @@ export default async function HomePage() {
                           : `${showCount} live sources synced`,
                     }
                   : { label: "Curated", value: "Official feeds only" },
-                { label: "Discovery", value: "Search, topics, deeper filters (Premium)" },
-                { label: "Your picks", value: "Favorites & saved shows" },
+                {
+                  label: "Premium",
+                  value: "Bookmarks, notes, topic packs, World Watch, richer Explore filters",
+                },
+                { label: "Your picks", value: "Favorites & saved shows (signed in)" },
               ].map((item) => (
                 <div
                   key={item.label}
                   className="card border-line/90 p-5 transition-colors duration-200 hover:border-accent/25"
                 >
-                  <p className="text-xs uppercase tracking-[0.25em] text-amber-100/70">{item.label}</p>
-                  <p className="mt-2.5 font-medium leading-snug text-slate-100">{item.value}</p>
+                  <p className="text-xs uppercase tracking-[0.25em] text-amber-100/75">{item.label}</p>
+                  <p className="mt-2.5 text-sm font-medium leading-snug text-slate-100">{item.value}</p>
                 </div>
               ))}
             </div>
@@ -209,14 +232,16 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <WorldWatchHomePreview items={worldWatchPreview} />
+
       <ContinueListeningSection enabled={showSessionListening} />
       <RecentlyPlayedSection enabled={showSessionListening} />
 
-      <section id="topics" className="container-shell scroll-mt-28 py-8 sm:py-10">
-        <div className="mb-6 max-w-2xl">
+      <section id="topics" className="container-shell section-divider scroll-mt-28 py-10 sm:py-12">
+        <div className="mb-7 max-w-2xl">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Explore by topic</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Topic collections</h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted">
+          <p className="mt-3 text-sm leading-[1.65] text-muted">
             Episode-level tags across your directory—different from program categories. Follow a theme (like end times or discernment)
             across many teachers.
           </p>
@@ -253,12 +278,12 @@ export default async function HomePage() {
       {quickListenEpisodes.length > 0 ? (
         <section className="container-shell pb-10 pt-2 sm:pb-12 sm:pt-0" aria-labelledby="home-quick-list-heading">
           <div className="card overflow-hidden border-accent/25 bg-gradient-to-b from-accent/[0.07] via-soft/20 to-bg/80 p-6 shadow-[0_20px_48px_-24px_rgba(0,0,0,0.55)] sm:p-8">
-            <div className="mb-5 max-w-2xl sm:mb-6">
+            <div className="mb-6 max-w-2xl sm:mb-7">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/80">Listen</p>
               <h2 id="home-quick-list-heading" className="mt-2.5 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                Start Listening in Seconds
+                Start listening in seconds
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted sm:text-base">No searching. Just press play.</p>
+              <p className="mt-3 text-sm leading-[1.65] text-muted sm:text-base">No searching. Just press play.</p>
             </div>
             <div className="space-y-3 sm:space-y-4">
               {quickListenEpisodes.map((episode) => (
@@ -287,18 +312,36 @@ export default async function HomePage() {
 
       <section className="container-shell section-divider py-12 sm:py-14">
         <div className="card border-accent/25 bg-soft/25 p-8 sm:p-10">
-          <h2 className="text-2xl font-semibold">What you&apos;ll find here</h2>
-          <p className="mt-3 max-w-3xl text-muted">
-            Sermons, long-form Bible teaching, and apologetics from ministries we&apos;d recommend to a friend. Curated sources only—no
-            random content from the open web. Every feed is added on purpose.
+          <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/70">The catalog</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">What you&apos;ll find here</h2>
+          <p className="mt-4 max-w-3xl text-sm leading-[1.65] text-muted sm:text-base">
+            Sermons, long-form Bible teaching, and apologetics from ministries we&apos;d recommend to a friend. Curated sources only—no random
+            content from the open web. Every feed is added on purpose.
           </p>
-          <ul className="mt-5 grid gap-2 text-sm text-slate-200 sm:grid-cols-2">
-            <li>• Save the messages you want to return to.</li>
-            <li>• Hear Scripture opened seriously, not diluted.</li>
-            <li>• Keep a single calm place for serious listening.</li>
+          <ul className="mt-6 grid gap-3 text-sm leading-relaxed text-slate-200/95 sm:grid-cols-2">
+            <li className="flex gap-2">
+              <span className="text-accent" aria-hidden>
+                ·
+              </span>
+              Save the messages you want to return to.
+            </li>
+            <li className="flex gap-2">
+              <span className="text-accent" aria-hidden>
+                ·
+              </span>
+              Hear Scripture opened seriously, not diluted.
+            </li>
+            <li className="flex gap-2 sm:col-span-2">
+              <span className="text-accent" aria-hidden>
+                ·
+              </span>
+              Keep a single calm place for serious listening.
+            </li>
           </ul>
         </div>
       </section>
+
+      <HomePremiumValue />
 
       {!hasContent && showCount === 0 ? (
         <section className="container-shell py-10">
@@ -318,11 +361,11 @@ export default async function HomePage() {
       ) : null}
 
       <section id="featured" className="container-shell section-divider py-12 sm:py-14">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-9 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Featured sources</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Hand-picked teaching</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+            <p className="text-xs uppercase tracking-[0.3em] text-amber-100/75">Featured sources</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Hand-picked teaching</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-[1.65] text-muted">
               {featured.length > 0 && showCount > 0
                 ? `Programs flagged featured in the directory—up to ${HOMEPAGE_FEATURED_LIMIT} at a time from your ${showCount} synced sources.`
                 : "Once shows are marked featured in your catalog, they appear here first."}
@@ -350,10 +393,10 @@ export default async function HomePage() {
       </section>
 
       <section className="container-shell section-divider py-12 sm:py-14">
-        <div className="mb-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Recently published</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Newest episodes</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+        <div className="mb-9">
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-100/75">Recently published</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Newest episodes</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-[1.65] text-muted">
             Latest episodes by publish date across every synced feed—open one to listen or save it for later.
           </p>
         </div>
@@ -381,11 +424,14 @@ export default async function HomePage() {
         <div className="card grid gap-8 p-8 sm:p-10 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Accounts</p>
-            <h2 className="mt-2 text-3xl font-semibold">Listen now. Save what lasts.</h2>
-            <p className="mt-4 max-w-2xl leading-7 text-muted">
-              When you want lists that follow you across devices, sign in to favorite episodes and save whole shows—optional, never
-              required to listen. Same calm, content-first experience.
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white">Listen now. Save what lasts.</h2>
+            <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-muted sm:text-base">
+              When you want lists that follow you across devices, sign in to favorite episodes and save whole shows—optional, never required to
+              listen. Same calm, content-first experience.
             </p>
+            <div className="mt-6">
+              <HomeFeedbackNote />
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -393,9 +439,9 @@ export default async function HomePage() {
               "Email sign-in via Supabase",
               "Favorites and saved shows",
               "Curated RSS ingestion",
-              "Room to grow: more feeds, more features",
+              "Premium tools when you choose them",
             ].map((item) => (
-              <div key={item} className="rounded-2xl border border-line bg-soft/30 p-4 text-sm text-slate-200">
+              <div key={item} className="rounded-2xl border border-line bg-soft/30 p-4 text-sm leading-snug text-slate-200">
                 {item}
               </div>
             ))}

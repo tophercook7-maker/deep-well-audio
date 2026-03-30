@@ -33,7 +33,7 @@ export function PremiumActiveState({ className = "", align = "center" }: Props) 
           funnelData={{ intent: "premium_nav", target: "world_watch" }}
           className={btnNav}
         >
-          World Watch
+          Open World Watch
         </FunnelLink>
         <FunnelLink
           href={"/library" as Route}
@@ -41,7 +41,7 @@ export function PremiumActiveState({ className = "", align = "center" }: Props) 
           funnelData={{ intent: "premium_nav", target: "library" }}
           className={btnNav}
         >
-          Library
+          Open your library
         </FunnelLink>
         <FunnelLink
           href={"/explore" as Route}

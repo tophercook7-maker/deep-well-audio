@@ -9,15 +9,15 @@ export default function NotFound() {
           <DeepWellLogo variant="inline" brandClassName="items-center mx-auto mb-7" />
         </div>
         <p className="text-xs uppercase tracking-[0.3em] text-amber-200/65">Not found</p>
-        <h1 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">That page ran dry.</h1>
-        <p className="mt-4 leading-relaxed text-muted">
+        <h1 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">That page ran dry.</h1>
+        <p className="mt-4 leading-relaxed text-slate-400">
           Head back to the directory and keep digging for something worth hearing.
         </p>
         <Link
           href="/"
-          className="mt-8 inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950"
+          className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
         >
-          Go home
+          Back to home
         </Link>
       </div>
     </main>

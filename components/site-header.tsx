@@ -26,16 +26,16 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
       className="sticky top-0 z-50 border-b border-line/80 bg-bg/85 shadow-[0_8px_28px_rgba(0,0,0,0.22)] backdrop-blur-md backdrop-saturate-150"
       style={{ backgroundColor: "rgba(11, 18, 32, 0.94)" }}
     >
-      <div className="container-shell flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
+      <div className="container-shell flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-[1.125rem]">
         <Link
           href="/"
           aria-label="Deep Well Audio — Home"
-          className="flex shrink-0 flex-col items-start gap-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220]"
+          className="flex shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
         >
           <DeepWellLogo variant="header" priority showWordmark />
         </Link>
 
-        <nav className="flex min-w-0 flex-wrap items-center gap-2.5 sm:flex-1 sm:justify-end sm:gap-3" aria-label="Primary">
+        <nav className="flex min-w-0 flex-wrap items-center gap-2 sm:flex-1 sm:justify-end sm:gap-2.5 md:gap-3" aria-label="Primary">
           <Link href="/" className={linkClass}>
             <Home className="h-4 w-4 shrink-0" aria-hidden />
             Home

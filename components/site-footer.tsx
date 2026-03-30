@@ -7,29 +7,39 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-line/40 bg-[rgba(11,18,32,0.5)]">
+    <footer className="mt-auto border-t border-line/40 bg-[rgba(11,18,32,0.52)]">
       <InstallHint />
-      <div className="container-shell py-7 text-center text-[13px] leading-relaxed text-slate-400 sm:py-8">
-        <div className="mb-6 flex justify-center">
+      <div className="container-shell py-8 text-center sm:py-9">
+        <div className="mb-7 flex justify-center sm:mb-8">
           <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
         </div>
-        <p>
+        <p className="text-[13px] leading-relaxed text-slate-500">
           © {year}
-          {" · "}
-          <Link href="/explore" className="text-muted transition hover:text-amber-100/80">
+        </p>
+        <nav
+          className="mx-auto mt-4 flex max-w-xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[13px] text-slate-300/95"
+          aria-label="Footer"
+        >
+          <Link href="/explore" className="transition hover:text-amber-100/85">
             Explore
           </Link>
-          {" · "}
-          <Link href="/library" className="text-muted transition hover:text-amber-100/80">
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href="/library" className="transition hover:text-amber-100/85">
             Library
           </Link>
-          {" · "}
-          <FooterJoinLink className="text-muted transition hover:text-amber-100/80">Join the Deep Well list</FooterJoinLink>
-          {" · "}
-          <Link href="/feedback" className="text-muted transition hover:text-amber-100/80">
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <FooterJoinLink className="transition hover:text-amber-100/85">Join the Deep Well list</FooterJoinLink>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href="/feedback" className="transition hover:text-amber-100/85">
             Send feedback
           </Link>
-        </p>
+        </nav>
       </div>
     </footer>
   );

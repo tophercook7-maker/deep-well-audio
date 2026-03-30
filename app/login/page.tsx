@@ -23,16 +23,16 @@ export default async function LoginPage({
         <BackButton fallbackHref="/" label="Back" />
       </div>
       <div className="mx-auto mt-8 max-w-xl card p-8 sm:p-10">
-        <DeepWellLogo variant="inline" brandClassName="mb-7" />
+        <DeepWellLogo variant="inline" brandClassName="mb-6 sm:mb-7" />
         <span className="tag">Members</span>
-        <h1 className="mt-5 text-3xl font-semibold tracking-tight">Sign in</h1>
-        <p className="mt-4 leading-relaxed text-muted">
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Sign in</h1>
+        <p className="mt-4 leading-relaxed text-slate-400">
           Welcome back. Use the email and password you registered with—we&apos;ll return you to your library or the page you were on.
         </p>
         <LoginForm authAvailable={authAvailable} />
-        <p className="mt-6 text-sm text-muted">
+        <p className="mt-6 text-sm text-slate-400">
           Need an account?{" "}
-          <Link href={signupHref as Route} className="text-amber-200 hover:text-white">
+          <Link href={signupHref as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">
             Create one
           </Link>
         </p>

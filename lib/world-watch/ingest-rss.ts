@@ -102,82 +102,112 @@ export type WorldWatchIngestResult = {
   inserted: number;
   skippedDuplicates: number;
   errors: string[];
+  /** Wall time for the full ingest run (ms). */
+  durationMs: number;
 };
 
 export async function ingestWorldWatchRssFeeds(admin: SupabaseClient): Promise<WorldWatchIngestResult> {
+  const started = Date.now();
   const result: WorldWatchIngestResult = {
     feedsAttempted: 0,
     itemsScanned: 0,
     inserted: 0,
     skippedDuplicates: 0,
     errors: [],
+    durationMs: 0,
   };
 
   const sources = getEnabledWorldWatchRssSources();
 
   for (const source of sources) {
     result.feedsAttempted += 1;
-    const { items, error } = await fetchFeed(source);
-    if (error) {
-      result.errors.push(error);
-      continue;
-    }
-
-    for (const item of items) {
-      result.itemsScanned += 1;
-      const titleRaw = typeof item.title === "string" ? item.title.trim() : "";
-      if (!titleRaw) continue;
-      const title = normalizeFeedTitle(titleRaw, source.name);
-      if (!title) continue;
-
-      const canonical = itemCanonicalUrl(item);
-      const guid = itemGuid(item, canonical);
-      if (!guid) continue;
-
-      const exists = await rowExists(admin, source.id, guid, canonical);
-      if (exists) {
-        result.skippedDuplicates += 1;
+    try {
+      const { items, error } = await fetchFeed(source);
+      if (error) {
+        result.errors.push(error);
         continue;
       }
 
-      const publishedAt = itemPublishedAt(item);
-      const summary = normalizeFeedSummary(rawDescription(item), title);
-      const externalImage = pickExternalImageUrl(item);
-      const autoPublish = Boolean(source.auto_publish);
-      const slug = await ensureUniqueWorldWatchSlug(admin, title, null);
+      for (const item of items) {
+        try {
+          result.itemsScanned += 1;
+          const titleRaw = typeof item.title === "string" ? item.title.trim() : "";
+          if (!titleRaw) continue;
+          const title = normalizeFeedTitle(titleRaw, source.name);
+          if (!title) continue;
 
-      const { error: insErr } = await admin.from("world_watch_items").insert({
-        title,
-        slug,
-        source_name: source.name,
-        source_url: canonical,
-        source_type: "rss",
-        source_feed: source.id,
-        source_guid: guid,
-        canonical_url: canonical,
-        external_image_url: externalImage,
-        image_url: null,
-        summary,
-        reflection: null,
-        category: source.category_hint,
-        is_published: autoPublish,
-        published_at: publishedAt,
-        pinned: false,
-        pinned_rank: null,
-        ingestion_status: autoPublish ? "ready" : "review",
-      } as never);
+          const canonical = itemCanonicalUrl(item);
+          const guid = itemGuid(item, canonical);
+          if (!guid) continue;
 
-      if (insErr) {
-        if (insErr.code === "23505") {
-          result.skippedDuplicates += 1;
-        } else {
-          result.errors.push(`${source.id} insert: ${insErr.message}`);
+          const exists = await rowExists(admin, source.id, guid, canonical);
+          if (exists) {
+            result.skippedDuplicates += 1;
+            continue;
+          }
+
+          const publishedAt = itemPublishedAt(item);
+          const summary = normalizeFeedSummary(rawDescription(item), title);
+          const externalImage = pickExternalImageUrl(item);
+          const autoPublish = Boolean(source.auto_publish);
+          const slug = await ensureUniqueWorldWatchSlug(admin, title, null);
+
+          const { error: insErr } = await admin.from("world_watch_items").insert({
+            title,
+            slug,
+            source_name: source.name,
+            source_url: canonical,
+            source_type: "rss",
+            source_feed: source.id,
+            source_guid: guid,
+            canonical_url: canonical,
+            external_image_url: externalImage,
+            image_url: null,
+            summary,
+            reflection: null,
+            category: source.category_hint,
+            is_published: autoPublish,
+            published_at: publishedAt,
+            pinned: false,
+            pinned_rank: null,
+            ingestion_status: autoPublish ? "ready" : "review",
+          } as never);
+
+          if (insErr) {
+            if (insErr.code === "23505") {
+              result.skippedDuplicates += 1;
+            } else {
+              result.errors.push(`${source.id} insert: ${insErr.message}`);
+            }
+            continue;
+          }
+
+          result.inserted += 1;
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : String(e);
+          result.errors.push(`${source.id} item: ${msg}`);
         }
-        continue;
       }
-
-      result.inserted += 1;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      result.errors.push(`${source.id}: ${msg}`);
     }
+  }
+
+  result.durationMs = Date.now() - started;
+  console.info(
+    "[world-watch-ingest]",
+    JSON.stringify({
+      feedsAttempted: result.feedsAttempted,
+      itemsScanned: result.itemsScanned,
+      inserted: result.inserted,
+      skippedDuplicates: result.skippedDuplicates,
+      errorCount: result.errors.length,
+      durationMs: result.durationMs,
+    })
+  );
+  if (result.errors.length > 0) {
+    console.warn("[world-watch-ingest] errors", result.errors);
   }
 
   return result;

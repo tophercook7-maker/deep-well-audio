@@ -42,10 +42,10 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
   return (
     <div className="space-y-10 sm:space-y-12">
       <div className="rounded-2xl border border-line/60 bg-soft/10 px-5 py-5 sm:px-7">
-        <p className="text-xs font-medium text-slate-300">This week</p>
-        <p className="mt-2 max-w-prose text-sm leading-[1.65] text-muted">
-          Week of <span className="text-slate-400">{weekKey}</span> (Monday, UTC). Each piece links to primary sources—ordered for slow reading and
-          prayer, not breaking-news urgency.
+        <p className="text-xs font-medium tracking-wide text-slate-300">This week</p>
+        <p className="mt-2 max-w-prose text-sm leading-[1.65] text-slate-400">
+          Week of <span className="tabular-nums text-slate-300">{weekKey}</span> (Monday, UTC). Each item links out to primary sources—paced for
+          reading and prayer, not breaking-news urgency.
         </p>
       </div>
 
@@ -53,10 +53,9 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
         <div className="card border-line/70 bg-soft/10 p-8 text-center sm:p-10">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/65">World Watch</p>
           <p className="mt-3 text-base font-semibold text-white sm:text-lg">We&apos;re preparing the first edition</p>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
-            Nothing to rush through yet. Entries are added from trusted public feeds and occasional hand curation so the feed stays calm. When pieces
-            are live, they appear here with the lead story up top and editor&apos;s pins when you set them. The sections below are still for you
-            while this space fills in.
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-400">
+            Entries arrive from trusted feeds and occasional hand curation. When pieces are live, the lead sits up top—pins when you set them. The
+            notes below still apply while this space fills in.
           </p>
           <Link
             href={"/explore" as Route}
@@ -66,17 +65,17 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
           </Link>
         </div>
       ) : (
-        <div className="space-y-10">
+        <div className="space-y-10 sm:space-y-12">
           {featured ? (
-            <div className="space-y-4">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Featured</p>
+            <div className="space-y-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">Featured</p>
               <WorldWatchItemCard item={featured} variant="featured" />
             </div>
           ) : null}
 
           {rest.length > 0 ? (
-            <div className={`space-y-3 ${rest.length <= 2 ? "pb-2" : ""}`}>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">More from World Watch</p>
+            <div className={`space-y-4 ${rest.length <= 2 ? "pb-2" : ""}`}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">More in this edition</p>
               <div className={`grid sm:grid-cols-2 ${rest.length <= 2 ? "gap-8 sm:gap-10" : "gap-6"}`}>
                 {rest.map((item) => (
                   <WorldWatchItemCard key={item.id} item={item} variant="default" />

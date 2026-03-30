@@ -37,7 +37,7 @@ export default async function WorldWatchPage() {
   }
 
   return (
-    <main className="container-shell max-w-3xl space-y-12 py-12 sm:space-y-14 sm:py-16">
+    <main className="container-shell max-w-3xl space-y-12 py-12 sm:space-y-14 sm:py-16 lg:max-w-4xl">
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>
@@ -46,10 +46,10 @@ export default async function WorldWatchPage() {
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">
           <Globe className="h-6 w-6" aria-hidden />
         </div>
-        <div>
+        <div className="min-w-0 max-w-prose">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Premium</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight text-white sm:text-4xl">World Watch</h1>
-          <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted sm:text-base">
+          <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-base">
             {premium ? (
               <>
                 A quiet corner for you—reflective context on faith and public life, grounded in Scripture, with clarity instead of alarm. One steady

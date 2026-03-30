@@ -36,11 +36,8 @@ export default function JoinPage() {
             <h1 className="mt-6 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               Get notified about Premium &amp; new tools
             </h1>
-            <p className="mt-4 text-center text-sm leading-relaxed text-muted">
-              Join the Deep Well list for calm updates when study features ship or the curated library grows—never a flood of mail.
-            </p>
-            <p className="mt-3 text-center text-sm leading-relaxed text-muted/92">
-              One field below, no account required. We only send mail when it&apos;s worth opening—no unrelated promos.
+            <p className="mt-4 text-center text-sm leading-relaxed text-slate-400">
+              Join the list for calm updates when study features ship or the library grows. One short field below—no account required.
             </p>
 
             <ul className="mt-6 space-y-2.5 border-y border-line/35 py-6 text-left text-sm leading-relaxed text-slate-200/95">
@@ -54,16 +51,12 @@ export default function JoinPage() {
               ))}
             </ul>
 
-            <p className="mt-6 text-center text-xs leading-relaxed text-muted">
-              Your email is only used for this list—we don&apos;t sell it or show it anywhere.
-            </p>
-
-            <div className="mt-5">
+            <div className="mt-6">
               <JoinListForm />
             </div>
 
-            <p className="mt-8 text-center text-xs leading-relaxed text-slate-500">
-              Your email stays private: never sold or shown publicly. Only Deep Well Audio—unsubscribe anytime.
+            <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">
+              Used only for this list—never sold or shown publicly. From Deep Well Audio only; unsubscribe anytime.
             </p>
 
             <p className="mt-6 text-center">

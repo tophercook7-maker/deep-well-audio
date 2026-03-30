@@ -24,10 +24,25 @@ export async function GET(request: Request) {
 
   try {
     const result = await ingestWorldWatchRssFeeds(admin);
-    return NextResponse.json({ ok: true, ...result });
+    const hasErrors = result.errors.length > 0;
+    if (hasErrors) {
+      console.warn("[world-watch-ingest] route partial errors", { count: result.errors.length });
+    } else {
+      console.info("[world-watch-ingest] route ok", { inserted: result.inserted, durationMs: result.durationMs });
+    }
+    return NextResponse.json({
+      ok: true,
+      hasErrors,
+      feedsAttempted: result.feedsAttempted,
+      itemsScanned: result.itemsScanned,
+      inserted: result.inserted,
+      skippedDuplicates: result.skippedDuplicates,
+      errors: result.errors,
+      durationMs: result.durationMs,
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("[world-watch-ingest]", msg);
+    console.error("[world-watch-ingest] route fatal", msg);
     return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }

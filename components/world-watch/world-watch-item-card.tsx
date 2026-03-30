@@ -17,18 +17,32 @@ type Props = {
   item: WorldWatchItemPublic;
   /** Larger editorial treatment for the lead story. */
   variant?: "default" | "featured";
+  /** When set, only the first N paragraphs are shown (e.g. homepage / preview surfaces). */
+  maxSummaryParagraphs?: number;
+  /** When false, hides the reflection block (compact previews). Default true. */
+  showReflection?: boolean;
 };
 
-export function WorldWatchItemCard({ item, variant = "default" }: Props) {
+export function WorldWatchItemCard({
+  item,
+  variant = "default",
+  maxSummaryParagraphs,
+  showReflection = true,
+}: Props) {
   const categoryLabel = worldWatchCategoryLabel(item.category);
   const dateLabel = formatPublishedDate(item.published_at);
   const hero = worldWatchHeroImage(item);
   const featured = variant === "featured";
-  const reflection = typeof item.reflection === "string" ? item.reflection.trim() : "";
-  const summaryParas = item.summary
+  const reflectionRaw = typeof item.reflection === "string" ? item.reflection.trim() : "";
+  const reflection = showReflection ? reflectionRaw : "";
+  const allSummaryParas = item.summary
     .split("\n")
     .map((p) => p.trim())
     .filter(Boolean);
+  const summaryParas =
+    typeof maxSummaryParagraphs === "number"
+      ? allSummaryParas.slice(0, Math.max(0, maxSummaryParagraphs))
+      : allSummaryParas;
 
   return (
     <article
@@ -55,7 +69,7 @@ export function WorldWatchItemCard({ item, variant = "default" }: Props) {
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/50">Lead story</p>
         </div>
       ) : (
-        <div className="h-px bg-gradient-to-r from-line/50 via-line/25 to-transparent" aria-hidden />
+        <div className="h-px bg-gradient-to-r from-accent/35 via-line/45 to-transparent" aria-hidden />
       )}
       <div className={featured ? "space-y-6 p-7 sm:p-9" : "space-y-4 p-6 sm:p-7"}>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -103,7 +117,9 @@ export function WorldWatchItemCard({ item, variant = "default" }: Props) {
           </p>
         ) : null}
         <div
-          className={`max-w-prose leading-[1.65] text-slate-300/95 ${featured ? "text-base" : "text-sm"}`}
+          className={`max-w-prose leading-[1.65] text-slate-300/95 ${featured ? "text-base" : "text-sm"} ${
+            maxSummaryParagraphs != null && summaryParas.length > 0 ? "[&_p:last-child]:line-clamp-5" : ""
+          }`}
         >
           {summaryParas.map((para, i) => (
             <p key={i} className={i > 0 ? "mt-3" : ""}>
