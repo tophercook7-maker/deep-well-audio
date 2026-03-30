@@ -15,7 +15,7 @@ type Props = {
    */
   variant?: "header" | "inline" | "compact";
   priority?: boolean;
-  /** Real “Deep Well Audio” type under the mark (`true` by default; set `false` for icon-only). */
+  /** Real “Deep Well Audio” type under the wave (`true` by default). Crops bottom of raster so baked-in type doesn’t duplicate. */
   showWordmark?: boolean;
 };
 
@@ -28,15 +28,8 @@ const VARIANT_CLASSES: Record<NonNullable<Props["variant"]>, string> = {
     "h-9 w-auto max-w-[min(280px,78vw)] shrink-0 object-contain object-left sm:h-10 md:h-11 md:max-w-[300px]",
 };
 
-const wmHeaderInline =
-  "text-[1.6875rem] font-semibold leading-[1.08] tracking-tight text-slate-100 sm:text-[2.125rem] md:text-[2.625rem]";
-
-const WORDMARK_BY_VARIANT: Record<NonNullable<Props["variant"]>, string> = {
-  header: wmHeaderInline,
-  inline: wmHeaderInline,
-  /** Install strip: smaller line height so the bar stays compact. */
-  compact: "text-sm font-semibold leading-tight tracking-tight text-slate-100 sm:text-base",
-};
+/** Clip bottom of hero PNG (~wordmark band) so only the waveform shows above real HTML type. Tune if artboard changes. */
+const RASTER_WORDMARK_CLIP = "[clip-path:inset(0_0_36%_0)]";
 
 /**
  * Primary brand mark (raster). Intrinsic dimensions match `public/logo.png` for sharp Next/Image scaling.
@@ -49,25 +42,32 @@ export function DeepWellLogo({
   showWordmark = true,
 }: Props) {
   const base = VARIANT_CLASSES[variant];
+  const clipRaster = showWordmark ? RASTER_WORDMARK_CLIP : "";
   const img = (
     <Image
       src={LOGO_SRC}
       alt={showWordmark ? "" : "Deep Well Audio"}
       width={1024}
       height={682}
-      className={`${base} ${className ?? ""}`.trim()}
+      className={`${base} ${clipRaster} ${className ?? ""}`.trim()}
       priority={priority}
       sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
-      {...(showWordmark ? { "aria-hidden": true } : {})}
+      {...(showWordmark ? { "aria-hidden": true as const } : {})}
     />
   );
 
   if (!showWordmark) return img;
 
+  /** Full class strings here (not dynamic object lookup) so Tailwind’s scanner always emits utilities. */
+  const wordmarkClass =
+    variant === "compact"
+      ? "block text-sm font-semibold leading-tight tracking-tight text-white sm:text-base"
+      : "block text-xl font-semibold leading-tight tracking-tight text-white sm:text-3xl md:text-[2.625rem]";
+
   return (
-    <span className={`inline-flex flex-col items-start gap-1 sm:gap-1.5 ${brandClassName ?? ""}`.trim()}>
+    <span className={`inline-flex max-w-[min(100%,480px)] flex-col items-start gap-1 sm:gap-1.5 ${brandClassName ?? ""}`.trim()}>
       {img}
-      <span className={WORDMARK_BY_VARIANT[variant]}>Deep Well Audio</span>
+      <span className={wordmarkClass}>Deep Well Audio</span>
     </span>
   );
 }

@@ -29,9 +29,10 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
       <div className="container-shell flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
         <Link
           href="/"
-          className="flex shrink-0 items-center rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220]"
+          aria-label="Deep Well Audio — Home"
+          className="flex shrink-0 flex-col items-start gap-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220]"
         >
-          <DeepWellLogo variant="header" priority />
+          <DeepWellLogo variant="header" priority showWordmark />
         </Link>
 
         <nav className="flex min-w-0 flex-wrap items-center gap-2.5 sm:flex-1 sm:justify-end sm:gap-3" aria-label="Primary">
