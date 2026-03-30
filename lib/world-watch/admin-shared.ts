@@ -66,3 +66,20 @@ export function parseWorldWatchIsPublished(v: unknown, defaultTrue: boolean): bo
   if (v === "false" || v === 0) return false;
   return defaultTrue;
 }
+
+export function parseWorldWatchPinned(v: unknown, defaultFalse: boolean): boolean {
+  if (v === undefined) return defaultFalse;
+  if (typeof v === "boolean") return v;
+  if (v === "true" || v === 1) return true;
+  if (v === "false" || v === 0) return false;
+  return defaultFalse;
+}
+
+/** Valid rank 0–999 or null (unpinned ordering). */
+export function sanitizePinnedRankInput(v: unknown): number | null | undefined {
+  if (v === undefined) return undefined;
+  if (v === null) return null;
+  const n = typeof v === "number" ? v : Number(v);
+  if (!Number.isInteger(n) || n < 0 || n > 999) return undefined;
+  return n;
+}

@@ -16,7 +16,7 @@ export default async function AdminWorldWatchEditPage(ctx: { params: Promise<{ i
   const { data, error } = await admin
     .from("world_watch_items")
     .select(
-      "id, created_at, updated_at, published_at, title, slug, source_name, source_url, image_url, summary, reflection, category, is_published"
+      "id, created_at, updated_at, published_at, title, slug, source_name, source_url, image_url, external_image_url, summary, reflection, category, is_published, source_type, source_feed, source_guid, canonical_url, pinned, pinned_rank, ingestion_status"
     )
     .eq("id", id)
     .maybeSingle();

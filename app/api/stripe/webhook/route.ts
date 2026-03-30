@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 import type Stripe from "stripe";
 import { getStripeWebhookSecret } from "@/lib/env";
-import { createServiceClient } from "@/lib/db";
 import { getStripe } from "@/lib/stripe-server";
 import {
   profileFindUserIdByStripeCustomer,
@@ -45,11 +45,15 @@ export async function POST(request: Request) {
 
   console.info("[stripe:webhook] event", event.type, event.id);
 
-  const admin = createServiceClient();
-  if (!admin) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     console.error("[stripe:webhook] no service client");
     return NextResponse.json({ error: "Server misconfigured." }, { status: 503 });
   }
+
+  const admin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   try {
     switch (event.type) {

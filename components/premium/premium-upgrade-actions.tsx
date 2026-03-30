@@ -4,6 +4,7 @@ import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { useAccountPlanOptional } from "@/components/plan/plan-context";
+import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 
 const btnPrimary =
@@ -24,9 +25,14 @@ type Props = {
  */
 export function PremiumUpgradeActions({ className = "", align = "center", showJoinLink = true }: Props) {
   const ctx = useAccountPlanOptional();
+  const plan = ctx?.plan ?? "guest";
   const justify = align === "center" ? "justify-center" : "justify-start";
   const publishable = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
   const hintAlign = align === "center" ? "mx-auto text-center" : "text-left";
+
+  if (plan === "premium") {
+    return <PremiumActiveState className={className} align={align} />;
+  }
 
   return (
     <div className={className.trim()}>

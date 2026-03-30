@@ -40,7 +40,8 @@ export default async function AdminWorldWatchLayout({ children }: { children: Re
         <BackButton fallbackHref="/" label="Home" />
         <h1 className="mt-8 text-xl font-semibold text-white">Not configured</h1>
         <p className="mt-2 text-sm text-muted">
-          Set <code className="text-slate-400">FEEDBACK_ADMIN_EMAILS</code> in the server environment, then redeploy.
+          Set <code className="text-slate-400">FEEDBACK_ADMIN_EMAILS</code> in the server environment (same allowlist as feedback admin and World
+          Watch), then redeploy.
         </p>
       </main>
     );

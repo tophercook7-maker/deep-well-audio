@@ -36,32 +36,54 @@ function Section({
 
 export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) {
   const weekKey = digestWeekCampaignKeyUTC();
+  const featured = items[0] ?? null;
+  const rest = items.length > 1 ? items.slice(1) : [];
 
   return (
-    <div className="space-y-8">
-      <div className="rounded-2xl border border-accent/20 bg-accent/[0.04] px-5 py-4 sm:px-6">
-        <p className="text-xs font-medium text-amber-100/90">This week</p>
-        <p className="mt-1 text-sm text-muted">
-          Week of <span className="text-slate-200">{weekKey}</span> (Monday, UTC). Entries below are curated—measured, sourced where it helps, and
-          written for prayer and grounding rather than urgency. Read slowly; there is no scorecard for being &ldquo;caught up.&rdquo;
+    <div className="space-y-10">
+      <div className="rounded-2xl border border-line/60 bg-soft/10 px-5 py-4 sm:px-6">
+        <p className="text-xs font-medium text-slate-300">This week</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-muted">
+          Week of <span className="text-slate-400">{weekKey}</span> (Monday, UTC). These entries are curated—measured, linked to primary sources,
+          and meant for slow reading and prayer rather than urgency.
         </p>
       </div>
 
       {items.length === 0 ? (
-        <div className="card border-line/70 p-8 text-center">
-          <p className="text-sm font-medium text-slate-200">No editions here yet</p>
-          <p className="mt-2 text-sm leading-relaxed text-muted">
-            New items will appear when they&apos;re published. You can still use the prompts below—or browse the catalog while you wait.
+        <div className="card border-line/70 bg-soft/10 p-8 text-center sm:p-10">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/65">World Watch</p>
+          <p className="mt-3 text-base font-semibold text-white sm:text-lg">We&apos;re preparing the first edition</p>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+            Nothing to rush through yet. Entries are added from trusted public feeds and occasional hand curation so the feed stays calm. When pieces
+            are live, they appear here with the lead story up top and editor&apos;s pins when you set them. The sections below are still for you
+            while this space fills in.
           </p>
-          <Link href={"/explore" as Route} className="mt-4 inline-block text-sm font-medium text-amber-200/90 hover:underline">
+          <Link
+            href={"/explore" as Route}
+            className="mt-6 inline-block text-sm font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
+          >
             Browse the catalog →
           </Link>
         </div>
       ) : (
-        <div className="space-y-6" aria-label="World Watch entries">
-          {items.map((item) => (
-            <WorldWatchItemCard key={item.id} item={item} />
-          ))}
+        <div className="space-y-8">
+          {featured ? (
+            <div className="space-y-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Featured</p>
+              <WorldWatchItemCard item={featured} variant="featured" />
+            </div>
+          ) : null}
+
+          {rest.length > 0 ? (
+            <div className={`space-y-3 ${rest.length <= 2 ? "pb-2" : ""}`}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">More from World Watch</p>
+              <div className={`grid sm:grid-cols-2 ${rest.length <= 2 ? "gap-8 sm:gap-10" : "gap-6"}`}>
+                {rest.map((item) => (
+                  <WorldWatchItemCard key={item.id} item={item} variant="default" />
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
 

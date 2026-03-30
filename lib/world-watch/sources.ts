@@ -1,4 +1,4 @@
-import type { WorldWatchCategory } from "@/lib/world-watch/items";
+import type { WorldWatchCategory } from "@/lib/world-watch/category";
 
 export type WorldWatchRssSource = {
   id: string;
@@ -6,14 +6,17 @@ export type WorldWatchRssSource = {
   category_hint: WorldWatchCategory;
   rss_url: string;
   enabled: boolean;
-  /** Lower runs first among enabled sources in one ingest pass. */
+  /**
+   * Ordering: lower runs first in ingest; also tie-breaks Premium feed order for items on the same day.
+   * Pins always beat unpinned; among unpinned, newer `published_at` wins; same timestamp uses this priority.
+   */
   priority: number;
   source_type: "rss";
   /**
-   * When true, new items from this feed may be created as published (v1 keeps all false).
-   * Reserved for trusted internal mirrors only—not used in v1.
+   * When true, newly ingested RSS rows are published immediately (`is_published`, `ingestion_status = ready`).
+   * Trusted Agency/UN-style feeds only; set false to send a source back to manual review.
    */
-  safe_for_auto_publish: boolean;
+  auto_publish: boolean;
 };
 
 /**
@@ -33,7 +36,7 @@ export const WORLD_WATCH_RSS_SOURCES: WorldWatchRssSource[] = [
     enabled: true,
     priority: 10,
     source_type: "rss",
-    safe_for_auto_publish: false,
+    auto_publish: true,
   },
   {
     id: "un-news-climate-en",
@@ -43,7 +46,7 @@ export const WORLD_WATCH_RSS_SOURCES: WorldWatchRssSource[] = [
     enabled: true,
     priority: 20,
     source_type: "rss",
-    safe_for_auto_publish: false,
+    auto_publish: true,
   },
   {
     id: "who-news-en",
@@ -53,7 +56,7 @@ export const WORLD_WATCH_RSS_SOURCES: WorldWatchRssSource[] = [
     enabled: true,
     priority: 30,
     source_type: "rss",
-    safe_for_auto_publish: false,
+    auto_publish: true,
   },
   {
     id: "fao-news-placeholder",
@@ -63,9 +66,19 @@ export const WORLD_WATCH_RSS_SOURCES: WorldWatchRssSource[] = [
     enabled: false,
     priority: 40,
     source_type: "rss",
-    safe_for_auto_publish: false,
+    auto_publish: false,
   },
 ];
+
+/** Sort tie-break for Premium feed: lower value ranks earlier (after pins and `published_at`). Manual rows use 0. */
+const MANUAL_OR_UNKNOWN_FEED_ORDER = 0;
+
+export function getFeedOrderingPriority(sourceFeed: string | null | undefined): number {
+  if (!sourceFeed) return MANUAL_OR_UNKNOWN_FEED_ORDER;
+  const s = WORLD_WATCH_RSS_SOURCES.find((x) => x.id === sourceFeed);
+  if (s) return s.priority;
+  return 999;
+}
 
 export function getEnabledWorldWatchRssSources(): WorldWatchRssSource[] {
   return [...WORLD_WATCH_RSS_SOURCES].filter((s) => s.enabled).sort((a, b) => a.priority - b.priority);

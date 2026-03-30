@@ -166,7 +166,10 @@ export function isWorldWatchWeeklyDigestEnabled(): boolean {
   return trimStr(process.env.WORLD_WATCH_WEEKLY_DIGEST_ENABLED) === "1";
 }
 
-/** Protects `/api/cron/world-watch-weekly` when digest is enabled; use `Authorization: Bearer …`. */
+/**
+ * Bearer for cron routes: `/api/cron/world-watch-weekly` (digest), `/api/cron/world-watch-ingest` (RSS pull).
+ * Set in Vercel env; same secret can gate both.
+ */
 export function getCronSecret(): string | null {
   return trimStr(process.env.CRON_SECRET);
 }

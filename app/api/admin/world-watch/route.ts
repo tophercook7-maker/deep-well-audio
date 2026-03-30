@@ -85,6 +85,14 @@ export async function POST(req: Request) {
       category,
       is_published: isPublished,
       published_at: publishedAt,
+      source_type: "manual",
+      source_feed: null,
+      source_guid: null,
+      canonical_url: sourceUrl,
+      external_image_url: null,
+      pinned: false,
+      pinned_rank: null,
+      ingestion_status: "ready",
     } as never)
     .select("id")
     .maybeSingle();

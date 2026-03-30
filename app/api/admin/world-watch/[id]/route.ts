@@ -5,7 +5,9 @@ import { isFeedbackAdminEmail } from "@/lib/env";
 import {
   isWorldWatchCategory,
   parseWorldWatchIsPublished,
+  parseWorldWatchPinned,
   parseWorldWatchPublishedAt,
+  sanitizePinnedRankInput,
   sanitizeWorldWatchOptionalLong,
   sanitizeWorldWatchOptionalUrl,
   sanitizeWorldWatchSlugInput,
@@ -30,6 +32,8 @@ const ALLOWED_PATCH_KEYS = new Set([
   "category",
   "is_published",
   "published_at",
+  "pinned",
+  "pinned_rank",
 ]);
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }> }) {
@@ -69,7 +73,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     return NextResponse.json({ error: "Server misconfigured." }, { status: 503 });
   }
 
-  const patch: Record<string, string | boolean | null> = {};
+  const patch: Record<string, string | boolean | number | null> = {};
 
   if (body.title !== undefined) {
     const title = sanitizeWorldWatchTitle(body.title);
@@ -112,7 +116,27 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   }
 
   if (body.is_published !== undefined) {
-    patch.is_published = parseWorldWatchIsPublished(body.is_published, true);
+    const pub = parseWorldWatchIsPublished(body.is_published, true);
+    patch.is_published = pub;
+    if (pub) {
+      patch.ingestion_status = "ready";
+    }
+  }
+
+  if (body.pinned !== undefined) {
+    patch.pinned = parseWorldWatchPinned(body.pinned, false);
+  }
+
+  if (body.pinned_rank !== undefined) {
+    const rank = sanitizePinnedRankInput(body.pinned_rank);
+    if (rank === undefined) {
+      return NextResponse.json({ error: "Invalid pinned_rank." }, { status: 400 });
+    }
+    patch.pinned_rank = rank;
+  }
+
+  if (patch.pinned === false) {
+    patch.pinned_rank = null;
   }
 
   if (body.published_at !== undefined) {

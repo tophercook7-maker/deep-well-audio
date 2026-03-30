@@ -40,11 +40,16 @@ function LoginFormFields({ authAvailable }: { authAvailable: boolean }) {
       setMessage("Auth client could not start. Check Supabase environment variables.");
       return;
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
     if (error) {
       setMessage(error.message);
+      return;
+    }
+
+    if (!data.session) {
+      setMessage("Sign-in succeeded but no session was stored. Check that cookies are enabled for this site.");
       return;
     }
 

@@ -91,18 +91,35 @@ create table public.world_watch_items (
   source_name text,
   source_url text,
   image_url text,
+  external_image_url text,
   summary text not null,
   reflection text,
   category text,
   is_published boolean not null default true,
+  source_type text not null default 'manual',
+  source_feed text,
+  source_guid text,
+  canonical_url text,
+  pinned boolean not null default false,
+  pinned_rank integer,
+  ingestion_status text not null default 'ready',
   constraint world_watch_items_category_check check (
     category is null
     or category in ('global', 'faith_public_life', 'culture', 'prayer_watch', 'other')
-  )
+  ),
+  constraint world_watch_items_source_type_check check (source_type in ('manual', 'rss')),
+  constraint world_watch_items_ingestion_status_check check (ingestion_status in ('review', 'ready'))
 );
 
 create index world_watch_items_published_at_desc_idx on public.world_watch_items (published_at desc);
 create index world_watch_items_is_published_idx on public.world_watch_items (is_published) where is_published = true;
+create unique index world_watch_items_feed_guid_unique on public.world_watch_items (source_feed, source_guid)
+  where source_feed is not null and source_guid is not null;
+create unique index world_watch_items_canonical_url_unique on public.world_watch_items (canonical_url)
+  where canonical_url is not null;
+create index world_watch_items_created_at_desc_idx on public.world_watch_items (created_at desc);
+create index world_watch_items_review_queue_idx on public.world_watch_items (ingestion_status, created_at desc)
+  where ingestion_status = 'review';
 
 create trigger world_watch_items_set_updated_at
   before update on public.world_watch_items

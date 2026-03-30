@@ -43,6 +43,10 @@ export function WorldWatchAdminEditor(props: Props) {
   const [reflection, setReflection] = useState(initial?.reflection ?? "");
   const [category, setCategory] = useState(initial?.category ?? "");
   const [isPublished, setIsPublished] = useState(initial?.is_published ?? true);
+  const [pinned, setPinned] = useState(initial?.pinned ?? false);
+  const [pinnedRank, setPinnedRank] = useState(
+    initial?.pinned ? (initial.pinned_rank != null ? String(initial.pinned_rank) : "0") : ""
+  );
   const [publishedAtLocal, setPublishedAtLocal] = useState(
     initial ? isoToDatetimeLocalValue(initial.published_at) : isoToDatetimeLocalValue(new Date().toISOString())
   );
@@ -62,21 +66,33 @@ export function WorldWatchAdminEditor(props: Props) {
         }
 
         if (isEdit && editItemId) {
+          const patchBody: Record<string, unknown> = {
+            title: title.trim(),
+            slug: slug.trim(),
+            source_name: sourceName.trim() || null,
+            source_url: sourceUrl.trim() || null,
+            image_url: imageUrl.trim() || null,
+            summary: summary.trim(),
+            reflection: reflection.trim() || null,
+            category: category || null,
+            is_published: isPublished,
+            published_at: publishedIso,
+            pinned,
+          };
+          if (pinned) {
+            const n = pinnedRank.trim() === "" ? 0 : Number.parseInt(pinnedRank, 10);
+            if (!Number.isInteger(n) || n < 0 || n > 999) {
+              setError("Pin rank must be a whole number from 0 to 999 (lower shows earlier).");
+              setBusy(false);
+              return;
+            }
+            patchBody.pinned_rank = n;
+          }
+
           const res = await fetch(`/api/admin/world-watch/${editItemId}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: title.trim(),
-              slug: slug.trim(),
-              source_name: sourceName.trim() || null,
-              source_url: sourceUrl.trim() || null,
-              image_url: imageUrl.trim() || null,
-              summary: summary.trim(),
-              reflection: reflection.trim() || null,
-              category: category || null,
-              is_published: isPublished,
-              published_at: publishedIso,
-            }),
+            body: JSON.stringify(patchBody),
           });
           const data = (await res.json().catch(() => ({}))) as { error?: string };
           if (!res.ok) {
@@ -120,12 +136,49 @@ export function WorldWatchAdminEditor(props: Props) {
         setBusy(false);
       }
     },
-    [category, editItemId, imageUrl, isEdit, isPublished, listHref, publishedAtLocal, reflection, router, slug, sourceName, sourceUrl, summary, title]
+    [
+      category,
+      editItemId,
+      imageUrl,
+      isEdit,
+      isPublished,
+      listHref,
+      pinned,
+      pinnedRank,
+      publishedAtLocal,
+      reflection,
+      router,
+      slug,
+      sourceName,
+      sourceUrl,
+      summary,
+      title,
+    ]
   );
 
   return (
     <form onSubmit={(ev) => void onSubmit(ev)} className="card border-line/80 p-6 sm:p-8">
       <div className="space-y-5">
+        {isEdit && initial?.source_type === "rss" ? (
+          <div className="rounded-xl border border-line/60 bg-soft/15 px-4 py-3 text-xs text-slate-400">
+            <p className="font-semibold uppercase tracking-[0.14em] text-amber-200/60">Ingested (RSS)</p>
+            <p className="mt-2 font-mono text-[11px] leading-relaxed">
+              feed <span className="text-slate-300">{initial.source_feed ?? "—"}</span>
+              <br />
+              guid <span className="text-slate-300">{initial.source_guid ?? "—"}</span>
+              <br />
+              canonical <span className="break-all text-slate-300">{initial.canonical_url ?? "—"}</span>
+              <br />
+              feed image <span className="break-all text-slate-300">{initial.external_image_url ?? "—"}</span>
+              <br />
+              queue <span className="text-slate-300">{initial.ingestion_status}</span>
+            </p>
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+              Use <span className="text-slate-400">Image URL</span> above to override the feed thumbnail. Display prefers your manual image, then the
+              feed image.
+            </p>
+          </div>
+        ) : null}
         <div>
           <label htmlFor="ww-title" className={fieldLabel}>
             Title
@@ -223,7 +276,7 @@ export function WorldWatchAdminEditor(props: Props) {
               className={inputClass}
             />
           </div>
-          <div className="flex flex-col justify-end pb-1">
+          <div className="flex flex-col justify-end gap-3 pb-1">
             <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-300">
               <input
                 type="checkbox"
@@ -233,6 +286,37 @@ export function WorldWatchAdminEditor(props: Props) {
               />
               Published (visible to Premium)
             </label>
+            {isEdit ? (
+              <>
+                <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-300">
+                  <input
+                    type="checkbox"
+                    checked={pinned}
+                    onChange={(e) => {
+                      setPinned(e.target.checked);
+                      if (!e.target.checked) setPinnedRank("");
+                    }}
+                    className="h-4 w-4 rounded border-line text-accent focus:ring-accent/50"
+                  />
+                  Pin to top of World Watch
+                </label>
+                {pinned ? (
+                  <div>
+                    <label htmlFor="ww-pin-rank" className={fieldLabel}>
+                      Pin rank (lower first)
+                    </label>
+                    <input
+                      id="ww-pin-rank"
+                      inputMode="numeric"
+                      value={pinnedRank}
+                      onChange={(e) => setPinnedRank(e.target.value.replace(/\D/g, "").slice(0, 3))}
+                      placeholder="0"
+                      className={inputClass}
+                    />
+                  </div>
+                ) : null}
+              </>
+            ) : null}
           </div>
         </div>
       </div>

@@ -2,16 +2,28 @@
 
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
+import type { UserPlan } from "@/lib/permissions";
 
 const btnPrimary =
   "inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:w-auto";
 
 type Props = {
   stripeReady: boolean;
+  plan: UserPlan;
 };
 
-export function PricingPremiumCheckout({ stripeReady }: Props) {
+export function PricingPremiumCheckout({ stripeReady, plan }: Props) {
+  if (plan === "premium") {
+    return (
+      <div id="subscribe" className="mt-6 scroll-mt-28 space-y-3">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Your membership</p>
+        <PremiumActiveState align="start" />
+      </div>
+    );
+  }
+
   return (
     <div id="subscribe" className="mt-6 scroll-mt-28 space-y-3">
       <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Subscribe</p>

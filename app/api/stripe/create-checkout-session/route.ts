@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getStripePriceMonthly, getStripePriceYearly, resolvePublicSiteUrlStrict } from "@/lib/env";
+import { resolvePublicSiteUrlStrict } from "@/lib/env";
 import { getStripe } from "@/lib/stripe-server";
 
 export const dynamic = "force-dynamic";
@@ -23,13 +23,22 @@ export async function POST(request: Request) {
     );
   }
 
-  const priceMonthly = getStripePriceMonthly();
-  const priceYearly = getStripePriceYearly();
-  if (!priceMonthly) {
-    return NextResponse.json({ error: "The monthly plan is not configured yet." }, { status: 503 });
-  }
-  if (!priceYearly) {
-    return NextResponse.json({ error: "The yearly plan is not configured yet." }, { status: 503 });
+  // TEMP: hardcoded Stripe test prices to verify checkout flow ($9/mo, $90/yr)
+  const priceMonthly = "price_1TG3MX2LVfewrTUsepuRzk33";
+  const priceYearly = "price_1TG76I2LVfewrTUslk95dddk";
+  if (!priceMonthly || !priceYearly) {
+    return NextResponse.json(
+      {
+        error: !priceMonthly ? "The monthly plan is not configured yet." : "The yearly plan is not configured yet.",
+        debug: {
+          hasMonthly: Boolean(priceMonthly),
+          hasYearly: Boolean(priceYearly),
+          monthlyPrefix: priceMonthly ? priceMonthly.slice(0, 8) : null,
+          yearlyPrefix: priceYearly ? priceYearly.slice(0, 8) : null,
+        },
+      },
+      { status: 503 }
+    );
   }
 
   const supabase = await createClient();

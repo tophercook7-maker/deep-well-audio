@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import Parser from "rss-parser";
 import { ensureUniqueWorldWatchSlug } from "@/lib/world-watch/ensure-slug-unique";
-import { normalizeFeedSummary } from "@/lib/world-watch/normalize-summary";
+import { normalizeFeedSummary, normalizeFeedTitle } from "@/lib/world-watch/normalize-summary";
 import { getEnabledWorldWatchRssSources, type WorldWatchRssSource } from "@/lib/world-watch/sources";
 
 const ITEMS_PER_FEED = 18;
@@ -125,7 +125,9 @@ export async function ingestWorldWatchRssFeeds(admin: SupabaseClient): Promise<W
 
     for (const item of items) {
       result.itemsScanned += 1;
-      const title = typeof item.title === "string" ? item.title.trim() : "";
+      const titleRaw = typeof item.title === "string" ? item.title.trim() : "";
+      if (!titleRaw) continue;
+      const title = normalizeFeedTitle(titleRaw, source.name);
       if (!title) continue;
 
       const canonical = itemCanonicalUrl(item);
@@ -141,7 +143,7 @@ export async function ingestWorldWatchRssFeeds(admin: SupabaseClient): Promise<W
       const publishedAt = itemPublishedAt(item);
       const summary = normalizeFeedSummary(rawDescription(item), title);
       const externalImage = pickExternalImageUrl(item);
-      const autoPublish = Boolean(source.safe_for_auto_publish);
+      const autoPublish = Boolean(source.auto_publish);
       const slug = await ensureUniqueWorldWatchSlug(admin, title, null);
 
       const { error: insErr } = await admin.from("world_watch_items").insert({

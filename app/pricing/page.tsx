@@ -5,6 +5,7 @@ import { BackButton } from "@/components/buttons/back-button";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { PricingBuiltInPublic } from "@/components/pricing/pricing-built-in-public";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
+import { getUserPlan } from "@/lib/auth";
 import { getPremiumWaitlistMailto } from "@/lib/env";
 
 export const metadata = {
@@ -13,9 +14,10 @@ export const metadata = {
     "Listen free. Premium adds study tools, topic packs, World Watch, and advanced filters—$9/mo or $90/yr, calm Stripe checkout.",
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
   const mailto = getPremiumWaitlistMailto();
   const stripeReady = true;
+  const plan = await getUserPlan();
 
   return (
     <main className="container-shell max-w-3xl space-y-14 py-12 sm:py-16">
@@ -124,7 +126,7 @@ export default function PricingPage() {
             Cancel anytime through Stripe—links in your subscription receipts or email us for billing help. No separate add-on or second product.
           </p>
         </div>
-        <PricingPremiumCheckout stripeReady={stripeReady} />
+        <PricingPremiumCheckout stripeReady={stripeReady} plan={plan} />
         <p className="mt-5 max-w-prose text-center text-xs leading-relaxed text-slate-500 sm:text-left">
           Prefer a direct link?{" "}
           <Link href={"/feedback" as Route} className="text-amber-200/75 underline-offset-2 hover:text-amber-100 hover:underline">

@@ -4,6 +4,8 @@ import { useCallback } from "react";
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { X } from "lucide-react";
+import { useAccountPlan } from "@/components/plan/plan-context";
+import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 
 const btnPrimary =
@@ -19,8 +21,43 @@ type Props = {
 export function UpgradeModal({ open, onOpenChange }: Props) {
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
   const publishable = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+  const { plan } = useAccountPlan();
 
   if (!open) return null;
+
+  if (plan === "premium") {
+    return (
+      <div
+        className="fixed inset-0 z-[200] flex items-end justify-center bg-black/55 p-4 sm:items-center"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="upgrade-modal-premium-title"
+      >
+        <button type="button" className="absolute inset-0 cursor-default" aria-label="Close" onClick={close} />
+
+        <div className="relative z-10 w-full max-w-md rounded-3xl border border-line/90 bg-[#0f172a] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.55)] sm:p-8">
+          <button
+            type="button"
+            onClick={close}
+            className="absolute right-4 top-4 rounded-full p-2 text-slate-400 transition hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          <div id="upgrade-modal-premium-title" className="sr-only">
+            Premium membership active
+          </div>
+          <PremiumActiveState align="start" />
+          <div className="mt-6 flex justify-end">
+            <button type="button" onClick={close} className={btnGhost}>
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
