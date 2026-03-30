@@ -7,6 +7,8 @@ type Props = {
   className?: string;
   /** Wraps image + wordmark; applies when `showWordmark` is true. */
   brandClassName?: string;
+  /** Merged after built-in wordmark styles (e.g. responsive type scale in the header). */
+  wordmarkClassName?: string;
   /**
    * Sizing presets (height-driven, responsive; all use `object-contain` + `w-auto`):
    * - `header` — ~64–80px: main nav (h-16 → sm:h-[4.5rem] → md:h-20)
@@ -57,6 +59,7 @@ const COMPACT_WITH_WORDMARK_IMG =
 export function DeepWellLogo({
   className,
   brandClassName,
+  wordmarkClassName,
   variant = "header",
   priority = false,
   showWordmark = true,
@@ -109,7 +112,7 @@ export function DeepWellLogo({
         sizes="(max-width: 640px) 92vw, (max-width: 1024px) 480px, 560px"
         aria-hidden
       />
-      <span className={wordmarkClass}>Deep Well Audio</span>
+      <span className={`${wordmarkClass} ${wordmarkClassName ?? ""}`.trim()}>Deep Well Audio</span>
     </span>
   );
 }

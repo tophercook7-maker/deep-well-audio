@@ -27,6 +27,7 @@ import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
 import { WorldWatchHomePreview } from "@/components/home/world-watch-home-preview";
 import { HomePremiumValue } from "@/components/home/home-premium-value";
 import { HomeFeedbackNote } from "@/components/home/home-feedback-note";
+import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 
 const HOMEPAGE_FEATURED_LIMIT = 6;
 const HOMEPAGE_RECENT_EPISODES = 8;
@@ -91,15 +92,29 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="container-shell py-16 sm:py-20 lg:py-24">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-          <div>
+      <section className="container-shell py-12 sm:py-16 lg:py-20">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start lg:gap-12">
+          <div className="min-w-0">
+            <div className="relative mx-auto mb-6 max-w-md lg:mx-0 lg:max-w-lg">
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 h-[min(12rem,42vw)] w-[min(24rem,88vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.14),transparent_68%)] opacity-90 blur-[2px]"
+                aria-hidden
+              />
+              <div className="relative flex justify-center lg:justify-start">
+                <DeepWellLogo
+                  variant="inline"
+                  showWordmark
+                  brandClassName="mx-auto items-center lg:mx-0 lg:items-start"
+                  className="!max-h-12 w-auto sm:!max-h-14 md:!max-h-[4.25rem]"
+                />
+              </div>
+            </div>
             <span className="tag">Curated Bible audio</span>
-            <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight sm:mt-6 sm:text-5xl lg:text-6xl">
               Find real Bible teaching{" "}
               <span className="text-amber-200">without the noise.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-[1.65] text-muted">
+            <p className="mt-5 max-w-2xl text-lg leading-[1.65] text-muted sm:mt-6">
               Deep Well gathers trusted sermons, podcasts, and Bible teaching in one place—sources we choose on purpose, not an endless sweep of
               the web. Listening and browsing stay{" "}
               <span className="text-slate-300">free</span>; sign in when you want favorites and saved shows to follow you.
@@ -144,11 +159,11 @@ export default async function HomePage() {
               </Link>
             </div>
             <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-400">
-              Listening is free—no account needed to press play.{" "}
-              <Link href={"/library" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
-                Your library
-              </Link>{" "}
-              when you sign in.
+              No account needed to press play. Sign in when you want{" "}
+              <Link href={"/library" as Route} className="text-slate-300 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
+                your own library
+              </Link>
+              .
             </p>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
               <span className="text-slate-500">Optional:</span>{" "}
@@ -190,12 +205,17 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="card p-6">
-            <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Topics</p>
-            <p className="mt-2 text-sm text-muted">
-              New teachers and ministries join as feeds are verified—no rush, no filler.
-            </p>
-            <div className="mt-5 grid gap-4">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-line/40 bg-gradient-to-br from-soft/[0.14] via-bg/80 to-accent/[0.04] p-6 shadow-[0_28px_64px_-36px_rgba(0,0,0,0.75)] sm:p-7">
+            <div
+              className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-accent/[0.06] blur-3xl"
+              aria-hidden
+            />
+            <div className="relative">
+              <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Topics</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                New teachers and ministries join as feeds are verified—no rush, no filler.
+              </p>
+              <div className="mt-5 grid gap-4">
               {CATEGORY_OPTIONS.map((category) => (
                 <Link
                   key={category.key}
@@ -227,6 +247,7 @@ export default async function HomePage() {
                   <Star className="h-4 w-4 shrink-0 text-amber-200/80 transition group-hover:text-amber-200" aria-hidden />
                 </Link>
               ))}
+              </div>
             </div>
           </div>
         </div>
