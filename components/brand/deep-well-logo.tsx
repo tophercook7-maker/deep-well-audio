@@ -5,6 +5,8 @@ const LOGO_SRC = "/logo.png";
 
 type Props = {
   className?: string;
+  /** Wraps image + wordmark; applies when `showWordmark` is true. */
+  brandClassName?: string;
   /**
    * Sizing presets (height-driven, responsive; all use `object-contain` + `w-auto`):
    * - `header` — ~64–80px: main nav (h-16 → sm:h-[4.5rem] → md:h-20)
@@ -13,6 +15,8 @@ type Props = {
    */
   variant?: "header" | "inline" | "compact";
   priority?: boolean;
+  /** Real “Deep Well Audio” type under the mark (`true` by default; set `false` for icon-only). */
+  showWordmark?: boolean;
 };
 
 const VARIANT_CLASSES: Record<NonNullable<Props["variant"]>, string> = {
@@ -24,20 +28,46 @@ const VARIANT_CLASSES: Record<NonNullable<Props["variant"]>, string> = {
     "h-9 w-auto max-w-[min(280px,78vw)] shrink-0 object-contain object-left sm:h-10 md:h-11 md:max-w-[300px]",
 };
 
+const wmHeaderInline =
+  "text-[1.6875rem] font-semibold leading-[1.08] tracking-tight text-slate-100 sm:text-[2.125rem] md:text-[2.625rem]";
+
+const WORDMARK_BY_VARIANT: Record<NonNullable<Props["variant"]>, string> = {
+  header: wmHeaderInline,
+  inline: wmHeaderInline,
+  /** Install strip: smaller line height so the bar stays compact. */
+  compact: "text-sm font-semibold leading-tight tracking-tight text-slate-100 sm:text-base",
+};
+
 /**
  * Primary brand mark (raster). Intrinsic dimensions match `public/logo.png` for sharp Next/Image scaling.
  */
-export function DeepWellLogo({ className, variant = "header", priority = false }: Props) {
+export function DeepWellLogo({
+  className,
+  brandClassName,
+  variant = "header",
+  priority = false,
+  showWordmark = true,
+}: Props) {
   const base = VARIANT_CLASSES[variant];
-  return (
+  const img = (
     <Image
       src={LOGO_SRC}
-      alt="Deep Well Audio"
+      alt={showWordmark ? "" : "Deep Well Audio"}
       width={1024}
       height={682}
       className={`${base} ${className ?? ""}`.trim()}
       priority={priority}
       sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
+      {...(showWordmark ? { "aria-hidden": true } : {})}
     />
+  );
+
+  if (!showWordmark) return img;
+
+  return (
+    <span className={`inline-flex flex-col items-start gap-1 sm:gap-1.5 ${brandClassName ?? ""}`.trim()}>
+      {img}
+      <span className={WORDMARK_BY_VARIANT[variant]}>Deep Well Audio</span>
+    </span>
   );
 }

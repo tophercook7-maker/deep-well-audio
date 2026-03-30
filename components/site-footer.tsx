@@ -11,11 +11,10 @@ export function SiteFooter() {
       <InstallHint />
       <div className="container-shell py-7 text-center text-[13px] leading-relaxed text-slate-400 sm:py-8">
         <div className="mb-6 flex justify-center">
-          <DeepWellLogo variant="inline" className="mx-auto" />
+          <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
         </div>
         <p>
-          © {year}{" "}
-          <span className="text-slate-400">Deep Well Audio</span>
+          © {year}
           {" · "}
           <Link href="/explore" className="text-muted transition hover:text-amber-100/80">
             Explore

@@ -26,7 +26,11 @@ export default async function PricingPage() {
       </div>
 
       <header className="max-w-2xl">
-        <DeepWellLogo variant="header" className="mb-6 mx-auto object-center sm:mx-0 sm:object-left" />
+        <DeepWellLogo
+          variant="header"
+          brandClassName="items-center sm:items-start mx-auto sm:mx-0 mb-6"
+          className="object-center sm:object-left"
+        />
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Pricing</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
           Listen freely. <span className="text-amber-200/95">Study more deeply.</span>
