@@ -21,7 +21,7 @@ type Props = {
 
 const VARIANT_CLASSES: Record<NonNullable<Props["variant"]>, string> = {
   header:
-    "h-16 w-auto max-w-[min(400px,88vw)] shrink-0 object-contain object-left sm:h-[4.5rem] sm:max-w-[min(440px,48vw)] md:h-20 md:max-w-[min(480px,42vw)]",
+    "h-[4.25rem] w-auto max-w-[min(400px,88vw)] shrink-0 object-contain object-left sm:h-20 sm:max-w-[min(440px,48vw)] md:h-[5.25rem] md:max-w-[min(520px,46vw)]",
   inline:
     "h-11 w-auto max-w-[min(340px,90vw)] shrink-0 object-contain object-left sm:h-12 md:h-14 md:max-w-[380px]",
   compact:
@@ -33,11 +33,11 @@ const RASTER_WORDMARK_CLIP = "[clip-path:inset(0_0_36%_0)]";
 
 /** Shared column width so the wave scales to the same line length as “Deep Well Audio” (header scale). */
 const HEADER_WORDMARK_SHELL =
-  "inline-flex w-[min(92vw,17.25rem)] flex-col items-center gap-1 sm:w-[min(92vw,18.75rem)] sm:gap-1.5 md:w-[min(92vw,20.85rem)]";
+  "inline-flex w-[min(92vw,19.75rem)] flex-col items-center gap-1.5 sm:w-[min(92vw,22rem)] sm:gap-2 md:w-[min(92vw,24.5rem)]";
 
-/** Wave only: fills shell width, height caps keep proportion vs type. */
+/** Wave only: fills shell width; taller caps so the hero mark reads clearly above the wordmark. */
 const HEADER_WITH_WORDMARK_IMG =
-  "block h-auto w-full max-h-12 object-contain object-center sm:max-h-[3.85rem] md:max-h-[4.45rem]";
+  "block h-auto w-full max-h-16 object-contain object-center sm:max-h-20 md:max-h-[5.35rem]";
 
 /** Inline / footer / auth: slightly narrower shell. */
 const INLINE_WORDMARK_SHELL =
@@ -79,7 +79,7 @@ export function DeepWellLogo({
         height={682}
         className={`${base} ${className ?? ""}`.trim()}
         priority={priority}
-        sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
+        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 480px, 560px"
       />
     );
   }
@@ -106,7 +106,7 @@ export function DeepWellLogo({
         height={682}
         className={imgClass}
         priority={priority}
-        sizes="(max-width: 640px) 88vw, (max-width: 1024px) 440px, 480px"
+        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 480px, 560px"
         aria-hidden
       />
       <span className={wordmarkClass}>Deep Well Audio</span>
