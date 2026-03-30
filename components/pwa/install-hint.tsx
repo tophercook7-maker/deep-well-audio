@@ -71,7 +71,7 @@ export function InstallHint() {
       aria-label="Install app"
     >
       <div className="container-shell mx-auto flex max-w-3xl flex-col items-center justify-center gap-3 sm:flex-row sm:items-center sm:gap-5">
-        <DeepWellLogo variant="compact" className="shrink-0 opacity-90" />
+        <DeepWellLogo variant="compact" className="shrink-0" />
         <p className="text-xs text-slate-400 sm:text-left">
           Install for a focused, app-like window on this device—same catalog, calmer chrome.
         </p>
