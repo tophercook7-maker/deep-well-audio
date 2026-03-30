@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build:icons": "node scripts/generate-pwa-icons.mjs",
+    "logo:knockout-black": "node scripts/knockout-logo-black.mjs && npm run build:icons",
     "prebuild": "npm run build:icons",
     "build": "next build",
     "start": "next start",
