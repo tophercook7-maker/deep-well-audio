@@ -44,7 +44,20 @@ export function RevealOnScroll({ className = "", children, delayMs = 0 }: Props)
     };
 
     const rootMarginBottomFrac = 0.06;
+    /** Fraction of the target box that must be visible for short blocks (guest preview grids). */
     const minRatio = 0.12;
+    /**
+     * For tall blocks (e.g. Premium World Watch full video grid), the visible strip can be far less
+     * than 12% of total height while still showing a full row — without this, IO never fires and the
+     * section stays opacity:0 forever.
+     */
+    const minVisibleHeightPx = 96;
+
+    const entryReveals = (e: IntersectionObserverEntry) => {
+      if (!e.isIntersecting) return false;
+      if (e.intersectionRatio >= minRatio) return true;
+      return e.intersectionRect.height >= minVisibleHeightPx;
+    };
 
     const visibleEnoughByGeometry = () => {
       const r = el.getBoundingClientRect();
@@ -58,13 +71,14 @@ export function RevealOnScroll({ className = "", children, delayMs = 0 }: Props)
       const intersectRight = Math.min(r.right, vw);
       const h = Math.max(0, intersectBottom - intersectTop);
       const w = Math.max(0, intersectRight - intersectLeft);
-      return (h * w) / (r.height * r.width) >= minRatio;
+      const areaRatio = (h * w) / (r.height * r.width);
+      return areaRatio >= minRatio || h >= minVisibleHeightPx;
     };
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (!e.isIntersecting || e.intersectionRatio < minRatio) continue;
+          if (!entryReveals(e)) continue;
           io.disconnect();
           reveal();
           break;
@@ -79,7 +93,7 @@ export function RevealOnScroll({ className = "", children, delayMs = 0 }: Props)
     const tryDrain = () => {
       if (cancelled || done) return;
       for (const e of io.takeRecords()) {
-        if (e.isIntersecting && e.intersectionRatio >= minRatio) {
+        if (entryReveals(e)) {
           io.disconnect();
           reveal();
           return;

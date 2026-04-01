@@ -46,6 +46,10 @@ export default async function WorldWatchPage() {
   const ytCap = plan === "premium" ? youtubePool.length : plan === "free" ? 12 : 4;
   const youtubeItems = youtubePool.slice(0, ytCap);
 
+  if (process.env.NODE_ENV === "development") {
+    console.info("[world-watch] video lens (server)", { plan, pool: youtubePool.length, ytCap, shown: youtubeItems.length });
+  }
+
   return (
     <main className="container-shell max-w-3xl space-y-12 py-12 sm:space-y-14 sm:py-16 lg:max-w-5xl">
       <div className="border-b border-line/50 pb-5">

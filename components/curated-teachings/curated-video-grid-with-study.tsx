@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 import type { UserPlan } from "@/lib/permissions";
 import { CuratedStudyBatchProvider } from "@/components/curated-teachings/curated-study-batch-context";
@@ -24,6 +25,12 @@ export function CuratedVideoGridWithStudy({
   gridClassName?: string;
 }) {
   const videoIds = items.map((i) => i.videoId);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    console.info("[world-watch] video lens (client mount)", { plan, itemCount: items.length });
+  }, [items.length, plan]);
+
   return (
     <RevealOnScroll delayMs={revealDelayMs}>
       <CuratedStudyBatchProvider videoIds={videoIds} plan={plan}>
