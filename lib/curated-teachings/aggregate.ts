@@ -9,11 +9,17 @@ import { fetchYoutubeChannelRssItems } from "@/lib/curated-teachings/fetch-youtu
 import { fetchYoutubeChannelViaApi } from "@/lib/curated-teachings/youtube-api-curated";
 import type { CuratedVideoItem, CuratedYoutubeFeedItem } from "@/lib/curated-teachings/types";
 import { getOptionalYoutubeApiKey } from "@/lib/env";
+import { unstable_cache } from "next/cache";
+
+/** Align with `youtube-api-curated` fetch revalidate so cached HTML/API routes stay roughly in sync with Data API caching. */
+const CURATED_AGGREGATE_CACHE_SECONDS = 900;
 
 const DEFAULT_MAX_PER_SOURCE = 24;
 const DEFAULT_MAX_TOTAL = 80;
 const EXCERPT_MAX = 220;
 const DESCRIPTION_MAX = 4000;
+
+const ALL_SOURCES_CACHE_KEY = "__all__";
 
 function truncateExcerpt(text: string, max: number): string {
   const t = text.replace(/\s+/g, " ").trim();
@@ -95,13 +101,21 @@ function dedupeByVideoId(items: CuratedYoutubeFeedItem[]): CuratedYoutubeFeedIte
   return Array.from(map.values());
 }
 
-async function ingestOneSource(
+type IngestOutcome = {
+  items: CuratedYoutubeFeedItem[];
+  skipped: boolean;
+  apiFallback: boolean;
+  rssError: boolean;
+};
+
+async function ingestOneSourceWithMeta(
   source: CuratedYoutubeSource,
   maxPerSource: number,
   apiKey: string | null
-): Promise<CuratedYoutubeFeedItem[]> {
+): Promise<IngestOutcome> {
   const channelReady = Boolean(source.channelId?.trim());
   const useApiFirst = !source.rssOnly && Boolean(apiKey) && channelReady;
+  let apiFallback = false;
 
   if (useApiFirst) {
     try {
@@ -112,25 +126,97 @@ async function ingestOneSource(
         `items=${items.length}`,
         `channelId=${source.channelId ?? ""}`
       );
-      return items;
+      return { items, skipped: false, apiFallback: false, rssError: false };
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       console.warn("curated: YouTube API ingest failed, falling back to RSS", source.id, msg);
+      apiFallback = true;
     }
   }
 
   const rssUrl = resolveCuratedYoutubeRssUrl(source);
   if (!rssUrl) {
     console.warn("curated: skip source (no channelId/rssUrl)", source.id);
-    return [];
+    return { items: [], skipped: true, apiFallback, rssError: false };
   }
   try {
-    return await fetchYoutubeChannelRssItems(source, rssUrl, maxPerSource);
+    const items = await fetchYoutubeChannelRssItems(source, rssUrl, maxPerSource);
+    return { items, skipped: false, apiFallback, rssError: false };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("curated: RSS ingest failed", source.id, rssUrl, msg);
-    return [];
+    return { items: [], skipped: false, apiFallback, rssError: true };
   }
+}
+
+async function runIngestionAndBuildVideos(
+  maxPerSource: number,
+  sourceIdFilter?: string
+): Promise<{ videos: CuratedVideoItem[] }> {
+  const t0 = performance.now();
+  const apiKey = getOptionalYoutubeApiKey();
+
+  let sources = getActiveCuratedYoutubeSourcesSorted();
+  if (sourceIdFilter) {
+    const one = getCuratedYoutubeSourceById(sourceIdFilter);
+    sources = one && one.active !== false ? [one] : [];
+  }
+
+  const outcomes = await Promise.all(sources.map((s) => ingestOneSourceWithMeta(s, maxPerSource, apiKey)));
+
+  const skippedCount = outcomes.filter((o) => o.skipped).length;
+  const apiFallbackCount = outcomes.filter((o) => o.apiFallback).length;
+  const sourcesOk = outcomes.filter((o) => !o.skipped && !o.rssError).length;
+  const durationMs = performance.now() - t0;
+
+  const merged = outcomes.flatMap((o) => o.items);
+  if (merged.length === 0) {
+    console.info(
+      "curated: aggregation summary",
+      `sourcesOk=${sourcesOk}`,
+      `apiFallbackCount=${apiFallbackCount}`,
+      `skippedCount=${skippedCount}`,
+      `durationMs=${Math.round(durationMs)}`,
+      `videos=0`
+    );
+    return { videos: [] };
+  }
+
+  const deduped = dedupeByVideoId(merged);
+  deduped.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
+  const videos = deduped.map(feedItemToVideoItem);
+
+  console.info(
+    "curated: aggregation summary",
+    `sourcesOk=${sourcesOk}`,
+    `apiFallbackCount=${apiFallbackCount}`,
+    `skippedCount=${skippedCount}`,
+    `durationMs=${Math.round(durationMs)}`,
+    `videos=${videos.length}`
+  );
+
+  return { videos };
+}
+
+const getCuratedBaseVideosCached = unstable_cache(
+  async (maxPerSource: number, sourceScope: string) => {
+    const sourceIdFilter = sourceScope === ALL_SOURCES_CACHE_KEY ? undefined : sourceScope;
+    return runIngestionAndBuildVideos(maxPerSource, sourceIdFilter);
+  },
+  ["curated-youtube-ingest"],
+  { revalidate: CURATED_AGGREGATE_CACHE_SECONDS }
+);
+
+async function getCuratedBaseVideos(maxPerSource: number, sourceIdFilter?: string): Promise<CuratedVideoItem[]> {
+  const scope = sourceIdFilter ?? ALL_SOURCES_CACHE_KEY;
+  const { videos } = await getCuratedBaseVideosCached(maxPerSource, scope);
+  return videos;
+}
+
+function sortFeaturedFirst(pool: CuratedVideoItem[]): CuratedVideoItem[] {
+  const featured = pool.filter((v) => v.featured);
+  const rest = pool.filter((v) => !v.featured);
+  return [...featured, ...rest];
 }
 
 export type AggregateCuratedOptions = {
@@ -147,6 +233,7 @@ export type AggregateCuratedOptions = {
 /**
  * Server-only: merge configured channels, normalize, dedupe by video ID, sort by date.
  * Uses YouTube Data API v3 first when `YOUTUBE_API_KEY` is set (unless `rssOnly` on the source); otherwise Atom RSS.
+ * All-sources runs share `unstable_cache` (revalidate aligned with Data API fetches, currently 900s) keyed by maxPerSource + source scope.
  */
 export async function getAggregatedCuratedYoutubeItems(
   options: AggregateCuratedOptions = {}
@@ -161,23 +248,7 @@ export async function getAggregatedCuratedYoutubeItems(
   const worldWatchOnly = options.worldWatchOnly === true;
   const search = options.search?.trim().toLowerCase() ?? "";
 
-  const apiKey = getOptionalYoutubeApiKey();
-
-  let sources = getActiveCuratedYoutubeSourcesSorted();
-  if (sourceFilter) {
-    const one = getCuratedYoutubeSourceById(sourceFilter);
-    sources = one && one.active !== false ? [one] : [];
-  }
-
-  const buckets = await Promise.all(sources.map((s) => ingestOneSource(s, maxPerSource, apiKey)));
-
-  const merged = buckets.flat();
-  if (merged.length === 0) return [];
-
-  const deduped = dedupeByVideoId(merged);
-  deduped.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
-
-  let videos = deduped.map(feedItemToVideoItem);
+  let videos = await getCuratedBaseVideos(maxPerSource, sourceFilter);
 
   if (categoryFilter) {
     videos = videos.filter((v) => v.categories.includes(categoryFilter));
@@ -205,25 +276,56 @@ export async function getAggregatedCuratedYoutubeItems(
   return videos;
 }
 
+export type HomepageCuratedSliceParams = {
+  featuredCount: number;
+  worldWatchLimit: number;
+  recentlyAddedLimit: number;
+};
+
+/** One ingest + cache hit serves all three homepage curated strips (caps must match previous `getHomepageFeaturedCuratedVideos` / `getWorldWatchYoutubeVideos` / `getRecentlyAddedCuratedVideos` behavior). */
+export async function getHomepageCuratedVideoSlices(
+  params: HomepageCuratedSliceParams
+): Promise<{
+  homepageFeaturedVideos: CuratedVideoItem[];
+  worldWatchYoutube: CuratedVideoItem[];
+  recentlyAddedCuratedPool: CuratedVideoItem[];
+}> {
+  const { featuredCount, worldWatchLimit, recentlyAddedLimit } = params;
+  const featuredPoolMax = Math.max(featuredCount * 4, 24);
+  const wwPoolMax = worldWatchLimit * 2;
+  const recentPoolMax = Math.max(recentlyAddedLimit * 3, 48);
+
+  const full = await getCuratedBaseVideos(DEFAULT_MAX_PER_SOURCE);
+
+  const poolFeatured = full.slice(0, featuredPoolMax);
+  const homepageFeaturedVideos = sortFeaturedFirst(poolFeatured).slice(0, featuredCount);
+
+  const worldWatchYoutube = full
+    .filter((v) => v.worldWatch)
+    .slice(0, wwPoolMax)
+    .slice(0, worldWatchLimit);
+
+  const recentlyAddedCuratedPool = full.slice(0, recentPoolMax).slice(0, recentlyAddedLimit);
+
+  return { homepageFeaturedVideos, worldWatchYoutube, recentlyAddedCuratedPool };
+}
+
 /** Featured-first helper for the homepage strip (still obeys global date order among featured). */
 export async function getHomepageFeaturedCuratedVideos(count: number): Promise<CuratedVideoItem[]> {
-  const pool = await getAggregatedCuratedYoutubeItems({
-    maxTotal: Math.max(count * 4, 24),
-  });
-  const featured = pool.filter((v) => v.featured);
-  const rest = pool.filter((v) => !v.featured);
-  const merged = [...featured, ...rest];
-  return merged.slice(0, count);
+  const full = await getCuratedBaseVideos(DEFAULT_MAX_PER_SOURCE);
+  const poolMax = Math.max(count * 4, 24);
+  const pool = full.slice(0, poolMax);
+  return sortFeaturedFirst(pool).slice(0, count);
 }
 
 export async function getWorldWatchYoutubeVideos(limit: number): Promise<CuratedVideoItem[]> {
-  return getAggregatedCuratedYoutubeItems({ worldWatchOnly: true, limit, maxTotal: limit * 2 });
+  const full = await getCuratedBaseVideos(DEFAULT_MAX_PER_SOURCE);
+  return full.filter((v) => v.worldWatch).slice(0, limit * 2).slice(0, limit);
 }
 
 /** Newest uploads across all active sources (for “Recently added”). */
 export async function getRecentlyAddedCuratedVideos(limit: number): Promise<CuratedVideoItem[]> {
-  return getAggregatedCuratedYoutubeItems({
-    limit,
-    maxTotal: Math.max(limit * 3, 48),
-  });
+  const full = await getCuratedBaseVideos(DEFAULT_MAX_PER_SOURCE);
+  const maxTotal = Math.max(limit * 3, 48);
+  return full.slice(0, maxTotal).slice(0, limit);
 }

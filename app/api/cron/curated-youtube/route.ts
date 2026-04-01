@@ -24,7 +24,8 @@ export async function GET(request: Request) {
     const items = await getAggregatedCuratedYoutubeItems({
       limit: 24,
       maxTotal: 80,
-      maxPerSource: 12,
+      /** Align with default site ingest so `unstable_cache` warms the same key as homepage / curated pages. */
+      maxPerSource: 24,
     });
     return NextResponse.json({
       ok: true,
