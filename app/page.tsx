@@ -172,12 +172,12 @@ export default async function HomePage() {
               the web. Listening and browsing stay{" "}
               <span className="text-slate-300">free</span>; sign in when you want favorites and saved shows to follow you.
             </p>
-            <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-400 sm:text-base">
-              <span className="text-slate-300">Premium</span> is optional: bookmarks, notes, guided topic packs on hubs, richer filters on Explore,
+            <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-300 sm:text-base">
+              <span className="text-slate-200">Premium</span> is optional: bookmarks, notes, guided topic packs on hubs, richer filters on Explore,
               and <span className="text-slate-300">World Watch</span>—calm reads on faith and public life—when you want that layer on top of
               listening.
             </p>
-            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-400">
+            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-400/95">
               Curated sources · No random feeds · Calm, trustworthy listening
             </p>
 
@@ -211,7 +211,7 @@ export default async function HomePage() {
                 Explore the directory
               </Link>
             </div>
-            <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-400">
+            <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-300/90">
               No account needed to press play. Sign in when you want{" "}
               <Link href={"/library" as Route} className="text-slate-300 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
                 your own library
@@ -258,14 +258,14 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-line/40 bg-gradient-to-br from-soft/[0.14] via-bg/80 to-accent/[0.04] p-6 shadow-[0_28px_64px_-36px_rgba(0,0,0,0.75)] sm:p-7">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-line/40 bg-gradient-to-br from-soft/[0.1] via-[rgba(11,18,32,0.38)] to-accent/[0.06] p-6 shadow-[0_28px_64px_-36px_rgba(0,0,0,0.6)] backdrop-blur-md backdrop-saturate-125 sm:p-7">
             <div
               className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-accent/[0.06] blur-3xl"
               aria-hidden
             />
             <div className="relative">
               <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Topics</p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">
+              <p className="mt-2 text-sm leading-relaxed text-slate-300/95">
                 New teachers and ministries join as feeds are verified—no rush, no filler.
               </p>
               <div className="mt-5 grid gap-4">
@@ -273,7 +273,7 @@ export default async function HomePage() {
                 <Link
                   key={category.key}
                   href={`/explore?category=${category.key}` as Route}
-                  className="group flex cursor-pointer items-center justify-between rounded-2xl border border-line bg-soft/40 p-4 text-inherit no-underline outline-none transition duration-200 hover:border-accent/45 hover:bg-accent/[0.06] hover:shadow-[0_0_24px_-4px_rgba(251,191,36,0.18)] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+                  className="group flex cursor-pointer items-center justify-between rounded-2xl border border-line/80 bg-[rgba(15,20,28,0.42)] p-4 text-inherit no-underline outline-none transition duration-200 hover:border-accent/45 hover:bg-accent/[0.08] hover:shadow-[0_0_24px_-4px_rgba(251,191,36,0.18)] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg backdrop-blur-sm"
                 >
                   <div className="flex items-center gap-3">
                     <div className="rounded-2xl border border-accent/25 bg-accent/10 p-2 text-accent transition group-hover:border-accent/40 group-hover:bg-accent/15">
@@ -363,7 +363,7 @@ export default async function HomePage() {
 
       {quickListenEpisodes.length > 0 ? (
         <section className="container-shell pb-10 pt-2 sm:pb-12 sm:pt-0" aria-labelledby="home-quick-list-heading">
-          <div className="card overflow-hidden border-accent/25 bg-gradient-to-b from-accent/[0.07] via-soft/20 to-bg/80 p-6 shadow-[0_20px_48px_-24px_rgba(0,0,0,0.55)] sm:p-8">
+          <div className="card overflow-hidden border-accent/25 bg-gradient-to-b from-accent/[0.08] via-soft/12 to-[rgba(10,14,22,0.36)] p-6 shadow-[0_20px_48px_-24px_rgba(0,0,0,0.48)] backdrop-blur-md sm:p-8">
             <div className="mb-6 max-w-2xl sm:mb-7">
               <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/80">Listen</p>
               <h2 id="home-quick-list-heading" className="mt-2.5 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
@@ -397,7 +397,7 @@ export default async function HomePage() {
       <HomeSetupStatusPanel showCount={showCount} />
 
       <section className="container-shell section-divider py-12 sm:py-14">
-        <div className="card border-accent/25 bg-soft/25 p-8 sm:p-10">
+        <div className="card border-accent/25 bg-soft/15 p-8 shadow-[0_20px_50px_-28px_rgba(0,0,0,0.35)] backdrop-blur-md sm:p-10">
           <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/70">The catalog</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">What you&apos;ll find here</h2>
           <p className="mt-4 max-w-3xl text-sm leading-[1.65] text-muted sm:text-base">
@@ -529,7 +529,7 @@ export default async function HomePage() {
               "Curated RSS ingestion",
               "Premium tools when you choose them",
             ].map((item) => (
-              <div key={item} className="rounded-2xl border border-line bg-soft/30 p-4 text-sm leading-snug text-slate-200">
+              <div key={item} className="rounded-2xl border border-line/80 bg-[rgba(15,20,28,0.45)] p-4 text-sm leading-snug text-slate-100 backdrop-blur-sm">
                 {item}
               </div>
             ))}

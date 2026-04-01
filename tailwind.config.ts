@@ -23,6 +23,20 @@ const config: Config = {
       boxShadow: {
         glow: "0 0 0 1px rgba(212,175,55,0.18), 0 12px 30px rgba(0,0,0,0.28)",
       },
+      keyframes: {
+        "dwa-drift": {
+          "0%, 100%": { opacity: "0.05", transform: "translate3d(0, 0, 0)" },
+          "50%": { opacity: "0.12", transform: "translate3d(0, -8px, 0)" },
+        },
+        "dwa-drift-slow": {
+          "0%, 100%": { opacity: "0.04", transform: "translate3d(0, 0, 0)" },
+          "50%": { opacity: "0.1", transform: "translate3d(0, -6px, 0)" },
+        },
+      },
+      animation: {
+        "dwa-drift": "dwa-drift 16s ease-in-out infinite",
+        "dwa-drift-slow": "dwa-drift-slow 24s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

@@ -39,21 +39,18 @@ export default async function PricingPage() {
           The full curated catalog is free to explore and listen to—no paywall on the teaching itself. Premium is for when you want{" "}
           <span className="text-slate-300">structure, clarity, and control</span>: hold onto what mattered, keep notes beside the audio, follow
           clear paths through hard topics, and filter your way to richer episodes without more endless scrolling.
-          <span className="mt-3 block text-sm text-slate-400">
+          <span className="mt-3 block text-sm text-slate-300/95">
             Subscriptions run through Stripe—you are not charged until you complete checkout.
           </span>
         </p>
       </header>
 
-      <section
-        className="card border-line/85 bg-soft/[0.04] p-6 sm:p-8"
-        aria-labelledby="free-plan-heading"
-      >
+      <section className="card border-line/85 p-6 sm:p-8" aria-labelledby="free-plan-heading">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Always free</p>
         <h2 id="free-plan-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
           Free — listening first
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
           The catalog stays open: serious Bible teaching and curated sources are here for everyone, without watering down what free means.
         </p>
         <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-200">
@@ -73,15 +70,12 @@ export default async function PricingPage() {
 
       <PricingBuiltInPublic />
 
-      <section
-        className="card border-accent/30 bg-accent/[0.04] p-6 sm:p-8"
-        aria-labelledby="premium-plan-heading"
-      >
+      <section className="card border-accent/30 p-6 sm:p-8" aria-labelledby="premium-plan-heading">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Premium</p>
         <h2 id="premium-plan-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
           Deep Well Premium
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
           Go deeper with tools for serious listening, reflection, and study—including{" "}
           <span className="text-slate-300">full access to World Watch</span>, our calm read on faith and public life, alongside bookmarks, guided
           packs, and filters—all in one membership. The catalog itself stays free; Premium shapes how you keep and revisit what matters.
@@ -110,7 +104,7 @@ export default async function PricingPage() {
           </li>
         </ul>
 
-        <div className="mt-6 rounded-2xl border border-accent/25 bg-accent/[0.05] px-4 py-4 sm:px-5">
+        <div className="mt-6 rounded-2xl border border-accent/25 bg-[rgba(212,175,55,0.07)] px-4 py-4 backdrop-blur-sm sm:px-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/65">Built to be understood step by step</p>
           <p className="mt-2 text-sm leading-relaxed text-slate-200">
             Example: our <span className="text-amber-100/90">End Times</span> pack—“End Times — A Clear Path Through the Confusion”—walks you
@@ -125,7 +119,7 @@ export default async function PricingPage() {
           </Link>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-line/70 bg-soft/20 px-4 py-4 text-sm text-slate-200">
+        <div className="mt-6 rounded-2xl border border-line/70 bg-[rgba(15,20,28,0.5)] px-4 py-4 text-sm text-slate-100 backdrop-blur-sm">
           <p className="font-medium text-amber-100/90">Simple pricing</p>
           <p className="mt-2 text-base font-semibold text-white">
             <span className="tabular-nums">$9</span>/month &nbsp;·&nbsp; <span className="tabular-nums">$90</span>/year
@@ -135,7 +129,7 @@ export default async function PricingPage() {
           </p>
         </div>
         <PricingPremiumCheckout stripeReady={stripeReady} plan={plan} />
-        <p className="mt-6 max-w-prose text-center text-xs leading-relaxed text-slate-400 sm:text-left">
+        <p className="mt-6 max-w-prose text-center text-xs leading-relaxed text-slate-300/95 sm:text-left">
           Prefer a direct link?{" "}
           <Link href={"/feedback" as Route} className="text-amber-200/75 underline-offset-2 hover:text-amber-100 hover:underline">
             Open the feedback form
@@ -146,7 +140,7 @@ export default async function PricingPage() {
 
       <section
         id="notify"
-        className="scroll-mt-28 rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/[0.06] via-soft/12 to-transparent p-8 sm:p-10"
+        className="scroll-mt-28 rounded-3xl border border-accent/25 bg-gradient-to-br from-[rgba(12,16,24,0.48)] via-[rgba(10,14,20,0.34)] to-[rgba(8,11,17,0.26)] p-8 shadow-[0_18px_48px_-24px_rgba(0,0,0,0.42)] backdrop-blur-md backdrop-saturate-125 sm:p-10"
         aria-labelledby="notify-heading"
       >
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Stay in the loop</p>

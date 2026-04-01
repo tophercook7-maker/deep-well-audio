@@ -22,16 +22,16 @@ export default async function SignupPage({
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Back" />
       </div>
-      <div className="mx-auto mt-8 max-w-xl card p-8 sm:p-10">
+      <div className="card card-dense mx-auto mt-8 max-w-xl p-8 sm:p-10">
         <DeepWellLogo variant="inline" brandClassName="mb-6 sm:mb-7" />
         <span className="tag">Members</span>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Create your account</h1>
-        <p className="mt-4 leading-relaxed text-slate-400">
+        <p className="mt-4 leading-relaxed text-slate-300">
           Deep Well Audio uses Supabase for secure sign-in. Pick a strong password; if your project requires email confirmation, you&apos;ll
           get a link from Supabase before your first login.
         </p>
         <SignupForm authAvailable={authAvailable} nextHref={next} />
-        <p className="mt-6 text-sm text-slate-400">
+        <p className="mt-6 text-sm text-slate-300">
           Already registered?{" "}
           <Link href={loginHref as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">
             Sign in

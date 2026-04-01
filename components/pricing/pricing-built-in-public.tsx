@@ -11,7 +11,7 @@ export function PricingBuiltInPublic() {
       className="mx-auto w-full max-w-2xl space-y-5 text-center"
       aria-labelledby="built-in-public-heading"
     >
-      <div className="overflow-hidden rounded-2xl border border-line/55 bg-[#0b1220]/50 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.5)]">
+      <div className="overflow-hidden rounded-2xl border border-line/50 bg-[rgba(10,14,22,0.38)] shadow-[0_12px_40px_-20px_rgba(0,0,0,0.42)] backdrop-blur-md backdrop-saturate-125 supports-[backdrop-filter]:bg-[rgba(10,14,22,0.28)]">
         {/* eslint-disable-next-line @next/next/no-img-element -- local SVG; use next/image if you replace with PNG/WebP */}
         <img
           src="/pricing/built-in-public.svg"

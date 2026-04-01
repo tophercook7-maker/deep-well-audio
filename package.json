@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build:icons": "node scripts/generate-pwa-icons.mjs",
+    "build:atmosphere": "node scripts/generate-atmosphere-bg.mjs",
     "logo:knockout-black": "node scripts/knockout-logo-black.mjs && npm run build:icons",
-    "prebuild": "npm run build:icons",
+    "prebuild": "npm run build:icons && npm run build:atmosphere",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

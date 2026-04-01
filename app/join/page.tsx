@@ -24,7 +24,7 @@ export default function JoinPage() {
           <BackButton fallbackHref="/" label="Back" />
         </div>
 
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-accent/20 bg-gradient-to-b from-[#0f172a]/95 via-[#0b1220] to-[#0b1220] p-8 shadow-[0_24px_64px_-20px_rgba(0,0,0,0.65)] sm:p-10">
+        <div className="card card-dense relative overflow-hidden rounded-[1.75rem] border-accent/25 p-8 shadow-[0_24px_64px_-20px_rgba(0,0,0,0.65)] sm:p-10">
           <div
             className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/[0.07] blur-3xl"
             aria-hidden
@@ -36,7 +36,7 @@ export default function JoinPage() {
             <h1 className="mt-6 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               Get notified about Premium &amp; new tools
             </h1>
-            <p className="mt-4 text-center text-sm leading-relaxed text-slate-400">
+            <p className="mt-4 text-center text-sm leading-relaxed text-slate-300">
               Join the list for calm updates when study features ship or the library grows. One short field below—no account required.
             </p>
 
@@ -55,7 +55,7 @@ export default function JoinPage() {
               <JoinListForm />
             </div>
 
-            <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">
+            <p className="mt-6 text-center text-xs leading-relaxed text-slate-400">
               Used only for this list—never sold or shown publicly. From Deep Well Audio only; unsubscribe anytime.
             </p>
 

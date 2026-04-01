@@ -75,23 +75,23 @@ export default async function WorldWatchPage() {
           <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-white sm:mt-1 sm:text-4xl">World Watch</h1>
           {premium ? (
             <>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400 md:hidden">
+              <p className="mt-2 text-sm leading-relaxed text-slate-300 md:hidden">
                 A quiet read on current events through a biblical lens—curated, not a headline firehose.
               </p>
-              <p className="mt-2 hidden text-sm leading-relaxed text-slate-400 sm:mt-3 sm:text-base md:block">
+              <p className="mt-2 hidden text-sm leading-relaxed text-slate-300 sm:mt-3 sm:text-base md:block">
                 See current events, culture, and global developments through a biblical lens. Thoughtful, relevant, and intentionally curated—a
                 quiet place to read, pray, and return when the headlines feel loud.
               </p>
             </>
           ) : (
             <>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400 md:hidden">
+              <p className="mt-2 text-sm leading-relaxed text-slate-300 md:hidden">
                 Faith &amp; public life, curated—preview clips below. Full written digest is{" "}
                 <span className="text-slate-300">Premium</span>.
               </p>
-              <p className="mt-2 hidden text-sm leading-relaxed text-slate-400 sm:mt-3 sm:text-base md:block">
+              <p className="mt-2 hidden text-sm leading-relaxed text-slate-300 sm:mt-3 sm:text-base md:block">
                 See current events, culture, and global developments through a biblical lens. Thoughtful, relevant, and intentionally curated.
-                The full written digest is <span className="text-slate-300">for Premium members</span>; below is a preview and how to join when
+                The full written digest is <span className="text-slate-200">for Premium members</span>; below is a preview and how to join when
                 you&apos;re ready.
               </p>
             </>
@@ -100,7 +100,7 @@ export default async function WorldWatchPage() {
       </header>
 
       <section
-        className="space-y-2.5 rounded-xl border border-rose-500/20 bg-gradient-to-br from-rose-950/20 via-bg/80 to-bg p-3 max-md:rounded-lg sm:space-y-5 sm:rounded-[1.5rem] sm:p-8"
+        className="space-y-2.5 rounded-xl border border-rose-500/20 bg-gradient-to-br from-rose-950/18 via-[rgba(11,18,32,0.32)] to-[rgba(10,14,22,0.24)] p-3 shadow-[0_20px_48px_-30px_rgba(0,0,0,0.45)] backdrop-blur-md max-md:rounded-lg sm:space-y-5 sm:rounded-[1.5rem] sm:p-8"
         aria-labelledby="ww-video-lens"
       >
         <div className="flex items-start gap-2 sm:gap-3">
@@ -111,7 +111,7 @@ export default async function WorldWatchPage() {
             <p id="ww-video-lens" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-rose-200/75 sm:text-xs">
               Video lens
             </p>
-            <p className="mt-1 text-[11px] leading-snug text-slate-400 md:hidden">
+            <p className="mt-1 text-[11px] leading-snug text-slate-300 md:hidden">
               {premium ? (
                 <>Clips from channels we trust for calm, faithful cultural commentary.</>
               ) : (
@@ -126,7 +126,7 @@ export default async function WorldWatchPage() {
                 </>
               )}
             </p>
-            <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-400 md:block sm:mt-2">
+            <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-300 md:block sm:mt-2">
               Curated clips from channels flagged for biblical cultural commentary.
               {!premium && youtubePool.length > youtubeItems.length ? (
                 <span className="text-slate-500"> Premium unlocks the full clip list.</span>
@@ -148,7 +148,7 @@ export default async function WorldWatchPage() {
           <div className="rounded-2xl border border-line/60 bg-soft/10 p-5">
             <div className="flex gap-3">
               <Globe className="h-5 w-5 shrink-0 text-rose-200/60" aria-hidden />
-              <div className="text-sm leading-relaxed text-slate-400">
+              <div className="text-sm leading-relaxed text-slate-300">
                 <p>
                   No video picks loaded yet—feeds may still be warming, or{" "}
                   <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">YOUTUBE_API_KEY</code>{" "}
@@ -169,7 +169,7 @@ export default async function WorldWatchPage() {
       </section>
 
       {!premium ? (
-        <div className="rounded-lg border border-line/45 bg-[rgba(11,14,18,0.5)] p-3 md:hidden">
+        <div className="rounded-lg border border-line/45 bg-[rgba(12,16,24,0.42)] p-3 shadow-[0_12px_32px_-20px_rgba(0,0,0,0.35)] backdrop-blur-md md:hidden">
           <WorldWatchTeaserLead compact />
           <div className="mt-3 border-t border-line/40 pt-3">
             <WorldWatchMemberStudyCue compact />

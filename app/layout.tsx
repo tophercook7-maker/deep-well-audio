@@ -92,7 +92,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const [user, plan] = await Promise.all([getSessionUser(), getUserPlan()]);
 
   return (
-    <html lang="en" className="h-full" style={{ backgroundColor: "#0a0d10", color: "#f8fafc" }}>
+    <html lang="en" className="h-full bg-transparent text-text" style={{ color: "#f8fafc" }}>
       <body
         className="flex min-h-full flex-col antialiased"
         style={{
@@ -104,10 +104,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <SiteAtmosphere />
         <PlayerProvider>
           <AccountPlanProvider initialPlan={plan}>
-            <SiteHeader user={user} plan={plan} />
-            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-            <SiteFooter />
-            <Analytics />
+            {/* Single stacking layer above the fixed atmosphere so all pages scroll over the Bible backdrop */}
+            <div className="relative z-10 flex min-h-full flex-1 flex-col">
+              <SiteHeader user={user} plan={plan} />
+              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+              <SiteFooter />
+              <Analytics />
+            </div>
           </AccountPlanProvider>
         </PlayerProvider>
       </body>

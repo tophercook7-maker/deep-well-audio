@@ -17,9 +17,12 @@
   --dwa-panel: rgba(14, 18, 24, 0.72);
   --dwa-line: #2c3544;
   --dwa-accent: #c9a44a;
+  /* Cinematic background parallax (optional; default 0). Set on .dwa-site-atmosphere or :root via JS. */
+  --dwa-atmosphere-parallax-y: 0px;
 }
 
 html {
+  /* Canvas fallback (overscroll / before paint); main scene is SiteAtmosphere + transparent body */
   background-color: var(--dwa-bg);
   color: var(--dwa-text);
   min-height: 100%;
@@ -28,16 +31,29 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   padding-bottom: var(--dwa-player-h, 0px);
   background-color: transparent;
   color: var(--dwa-text);
-  /* Atmosphere is fixed behind content (see SiteAtmosphere). Fallback if it fails: */
-  background-image: linear-gradient(180deg, var(--dwa-bg) 0%, var(--dwa-bg-deep) 100%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  /* No second fixed gradient here — it would cover the fixed atmosphere. Image + overlays live in SiteAtmosphere. */
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Sitewide cinematic layer (components/site/site-atmosphere.tsx)
+ * Uses position:fixed + next/image — NOT background-attachment:fixed — so mobile Safari keeps a stable,
+ * non-jittery full-bleed scene. dvh / fill-available help when the URL bar shows or hides.
+ */
+.dwa-site-atmosphere {
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* Promote own layer to reduce repaint flicker while scrolling content above */
+  transform: translateZ(0);
 }
 
 /* Range inputs in the global player */
@@ -118,11 +134,21 @@ textarea {
 .card {
   border-radius: 1rem;
   border: 1px solid var(--dwa-line);
-  background-color: rgba(12, 16, 22, 0.78);
+  /* Airier glass — image stays visible through panels; blur still lifts type */
+  background-color: rgba(10, 14, 22, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(201, 164, 74, 0.1),
+    0 14px 36px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(12px) saturate(135%);
+}
+
+/* Dense copy / forms: readable but not a slab; still see-through vs solid wall */
+.card.card-dense {
+  background-color: rgba(7, 10, 16, 0.68);
+  backdrop-filter: blur(16px) saturate(128%);
   box-shadow:
     0 0 0 1px rgba(201, 164, 74, 0.12),
-    0 14px 36px rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(12px);
+    0 18px 44px rgba(0, 0, 0, 0.4);
 }
 
 .section-divider {

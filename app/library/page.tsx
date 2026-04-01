@@ -60,7 +60,7 @@ export default async function LibraryPage() {
           </div>
         ) : null}
 
-        <div className="card overflow-hidden">
+        <div className="card card-dense overflow-hidden shadow-[0_24px_56px_-28px_rgba(0,0,0,0.45)]">
           <div className="grid gap-8 p-8 lg:grid-cols-[1fr_0.85fr] lg:items-center">
             <div>
               <span className="tag">Library</span>
@@ -87,7 +87,7 @@ export default async function LibraryPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-accent/25 bg-accent/10 p-6">
+            <div className="rounded-3xl border border-accent/25 bg-[rgba(212,175,55,0.08)] p-6 backdrop-blur-sm">
               <div className="flex items-center gap-3 text-amber-200">
                 <LockKeyhole className="h-5 w-5" />
                 <p className="font-medium">{authConfigured ? "Sign-in required" : "Setup required"}</p>
@@ -237,10 +237,7 @@ export default async function LibraryPage() {
       ) : null}
 
       {plan === "premium" ? (
-        <section
-          className="card border-accent/30 bg-accent/[0.04] p-6 sm:p-8"
-          aria-labelledby="library-premium-state"
-        >
+        <section className="card border-accent/30 p-6 ring-1 ring-amber-200/10 sm:p-8" aria-labelledby="library-premium-state">
           <div className="flex flex-wrap items-start gap-4 sm:gap-5">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">
               <Sparkles className="h-6 w-6" aria-hidden />
