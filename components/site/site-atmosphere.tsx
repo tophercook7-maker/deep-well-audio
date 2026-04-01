@@ -39,7 +39,8 @@ export function SiteAtmosphere() {
               fill
               sizes="100vw"
               quality={62}
-              priority={false}
+              priority
+              fetchPriority="high"
               className="object-cover object-[center_32%]"
             />
           </div>

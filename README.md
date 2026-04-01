@@ -4,12 +4,11 @@ Next.js app for curated Christian audio (RSS sync, Supabase catalog, dark UI).
 
 ## Project root
 
-The deployable app lives in **`deep-well-audio-starter/`**. Open this folder in your editor and point Vercel’s **Root Directory** here if your repo also contains other files.
+This repository **is** the Next.js app (no nested `starter` folder). Clone, open this directory in your editor, and set Vercel **Root Directory** to **`.`** (repo root) or leave it empty.
 
 ## Local setup
 
-1. `cd deep-well-audio-starter`
-2. `npm install`
+1. `npm install`
 3. Copy env template: `cp .env.example .env.local`
 4. Fill **all required** variables in `.env.local` (see `.env.example` comments).
 5. Apply `supabase/schema.sql` in the Supabase SQL editor (if not already).
@@ -42,7 +41,7 @@ Accessors live in `lib/env.ts`.
 
 ## Vercel
 
-1. New Project → import the repo → set **Root Directory** to `deep-well-audio-starter`.
+1. New Project → import the repo → **Root Directory:** `.` (repository root).
 2. **Environment Variables:** add every key from `.env.example` (use Production + Preview as needed).
 3. `NEXT_PUBLIC_SITE_URL` should be your Vercel URL (e.g. `https://<project>.vercel.app`) or your **custom domain** once connected.
 4. Deploy. Re-run deploy after changing env vars.
