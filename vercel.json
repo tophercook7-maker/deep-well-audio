@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/world-watch-ingest",
       "schedule": "0 */3 * * *"
+    },
+    {
+      "path": "/api/cron/curated-youtube",
+      "schedule": "20 */4 * * *"
     }
   ]
 }
