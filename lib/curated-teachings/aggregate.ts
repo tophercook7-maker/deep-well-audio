@@ -219,6 +219,41 @@ const getCuratedBaseVideosCached = unstable_cache(
   { revalidate: CURATED_AGGREGATE_CACHE_SECONDS }
 );
 
+/** World Watch video lens uses its own cache so it never depends on merged `worldWatch` flags or a cold/empty all-sources cache. */
+const getWorldWatchPoolCached = unstable_cache(
+  async () => {
+    const sources = getWorldWatchYoutubeSources();
+    if (sources.length === 0) return { videos: [] as CuratedVideoItem[] };
+    return runIngestionForSources(sources, DEFAULT_MAX_PER_SOURCE, "world-watch-pool");
+  },
+  ["curated-youtube-world-watch-pool"],
+  { revalidate: CURATED_AGGREGATE_CACHE_SECONDS }
+);
+
+async function loadWorldWatchDedicatedVideoList(): Promise<CuratedVideoItem[]> {
+  const sources = getWorldWatchYoutubeSources();
+  if (sources.length === 0) return [];
+  try {
+    const row = await getWorldWatchPoolCached();
+    if (row && Array.isArray(row.videos) && row.videos.length > 0) return row.videos;
+    if (row && Array.isArray(row.videos) && row.videos.length === 0) {
+      console.warn("curated: world-watch cache empty; direct ingest", sources.map((s) => s.id).join(","));
+    } else {
+      console.warn("curated: world-watch cache invalid shape; direct ingest");
+    }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    if (msg.includes("incrementalCache")) {
+      console.warn("curated: world-watch unstable_cache unavailable; direct ingest", msg);
+      const { videos } = await runIngestionForSources(sources, DEFAULT_MAX_PER_SOURCE, "world-watch-direct");
+      return videos;
+    }
+    throw e;
+  }
+  const { videos } = await runIngestionForSources(sources, DEFAULT_MAX_PER_SOURCE, "world-watch-fallback");
+  return videos;
+}
+
 async function getCuratedBaseVideos(maxPerSource: number, sourceIdFilter?: string): Promise<CuratedVideoItem[]> {
   const scope = sourceIdFilter ?? ALL_SOURCES_CACHE_KEY;
   try {
@@ -273,16 +308,21 @@ export async function getAggregatedCuratedYoutubeItems(
   const worldWatchOnly = options.worldWatchOnly === true;
   const search = options.search?.trim().toLowerCase() ?? "";
 
-  let videos = await getCuratedBaseVideos(maxPerSource, sourceFilter);
+  let videos: CuratedVideoItem[];
+  if (worldWatchOnly && !sourceFilter) {
+    videos = await loadWorldWatchDedicatedVideoList();
+  } else {
+    videos = await getCuratedBaseVideos(maxPerSource, sourceFilter);
+    if (worldWatchOnly) {
+      videos = videos.filter((v) => v.worldWatch);
+    }
+  }
 
   if (categoryFilter) {
     videos = videos.filter((v) => v.categories.includes(categoryFilter));
   }
   if (featuredOnly) {
     videos = videos.filter((v) => v.featured);
-  }
-  if (worldWatchOnly) {
-    videos = videos.filter((v) => v.worldWatch);
   }
   if (search) {
     videos = videos.filter(
@@ -307,26 +347,9 @@ export type HomepageCuratedSliceParams = {
   recentlyAddedLimit: number;
 };
 
-/**
- * Prefer WW-tagged rows from the merged ingest cache; if none (stale empty cache, ingest edge cases),
- * ingest only `isWorldWatchSource` channels so Video lens / World Watch still populate.
- */
-async function getWorldWatchVideosResolvingMergedFeed(
-  sliceBeforeLimit: number,
-  finalLimit: number
-): Promise<CuratedVideoItem[]> {
-  const full = await getCuratedBaseVideos(DEFAULT_MAX_PER_SOURCE);
-  let ww = full.filter((v) => v.worldWatch);
-  const wwSources = getWorldWatchYoutubeSources();
-  if (ww.length === 0 && wwSources.length > 0) {
-    console.warn(
-      "curated: World Watch pool empty after merged ingest; running WW-source-only ingest",
-      wwSources.map((s) => s.id).join(",")
-    );
-    const { videos } = await runIngestionForSources(wwSources, DEFAULT_MAX_PER_SOURCE, "world-watch-only");
-    ww = videos;
-  }
-  return ww.slice(0, sliceBeforeLimit).slice(0, finalLimit);
+async function getWorldWatchVideosForLens(sliceBeforeLimit: number, finalLimit: number): Promise<CuratedVideoItem[]> {
+  const all = await loadWorldWatchDedicatedVideoList();
+  return all.slice(0, sliceBeforeLimit).slice(0, finalLimit);
 }
 
 /** One ingest + cache hit serves all three homepage curated strips (caps must match previous `getHomepageFeaturedCuratedVideos` / `getWorldWatchYoutubeVideos` / `getRecentlyAddedCuratedVideos` behavior). */
@@ -347,7 +370,7 @@ export async function getHomepageCuratedVideoSlices(
   const poolFeatured = full.slice(0, featuredPoolMax);
   const homepageFeaturedVideos = sortFeaturedFirst(poolFeatured).slice(0, featuredCount);
 
-  const worldWatchYoutube = await getWorldWatchVideosResolvingMergedFeed(wwPoolMax, worldWatchLimit);
+  const worldWatchYoutube = await getWorldWatchVideosForLens(wwPoolMax, worldWatchLimit);
 
   const recentlyAddedCuratedPool = full.slice(0, recentPoolMax).slice(0, recentlyAddedLimit);
 
@@ -363,7 +386,7 @@ export async function getHomepageFeaturedCuratedVideos(count: number): Promise<C
 }
 
 export async function getWorldWatchYoutubeVideos(limit: number): Promise<CuratedVideoItem[]> {
-  return getWorldWatchVideosResolvingMergedFeed(limit * 2, limit);
+  return getWorldWatchVideosForLens(limit * 2, limit);
 }
 
 /** Newest uploads across all active sources (for “Recently added”). */
