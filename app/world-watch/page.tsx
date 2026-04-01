@@ -4,6 +4,7 @@ import { WorldWatchPremium } from "@/components/world-watch/world-watch-premium"
 import { WorldWatchMemberStudyCue } from "@/components/world-watch/world-watch-member-study-cue";
 import { WorldWatchTeaser } from "@/components/world-watch/world-watch-teaser";
 import { CuratedVideoGridWithStudy } from "@/components/curated-teachings/curated-video-grid-with-study";
+import { WorldWatchVideoLensShell } from "@/components/world-watch/world-watch-video-lens-shell";
 import { getUserPlan } from "@/lib/auth";
 import { createServiceClient } from "@/lib/db";
 import { canUseFeature } from "@/lib/permissions";
@@ -39,6 +40,10 @@ export default async function WorldWatchPage() {
     }
   }
 
+  /**
+   * Video lens data path is identical for guest / free / premium: one YouTube aggregate call.
+   * Only `ytCap` (slice length) changes by plan; there is no alternate ingest or auth filter here.
+   */
   const youtubePool = await getWorldWatchYoutubeVideos(48).catch((err) => {
     console.error("world-watch youtube:", err instanceof Error ? err.message : err);
     return [];
@@ -46,8 +51,13 @@ export default async function WorldWatchPage() {
   const ytCap = plan === "premium" ? youtubePool.length : plan === "free" ? 12 : 4;
   const youtubeItems = youtubePool.slice(0, ytCap);
 
-  if (process.env.NODE_ENV === "development") {
-    console.info("[world-watch] video lens (server)", { plan, pool: youtubePool.length, ytCap, shown: youtubeItems.length });
+  if (process.env.NODE_ENV === "development" || process.env.WORLD_WATCH_SERVER_LENS_LOG === "1") {
+    console.info("[world-watch] video lens (server)", {
+      plan,
+      pool: youtubePool.length,
+      ytCap,
+      shown: youtubeItems.length,
+    });
   }
 
   return (
@@ -100,14 +110,17 @@ export default async function WorldWatchPage() {
           </div>
         </div>
         {youtubeItems.length > 0 ? (
-          <CuratedVideoGridWithStudy
-            items={youtubeItems}
-            plan={plan}
-            loginNext="/world-watch"
-            premiumTeaser={!premium}
-            thumbnailPriorityFirstN={1}
-            gridClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-          />
+          <WorldWatchVideoLensShell serverPool={youtubePool.length} serverShown={youtubeItems.length} plan={plan}>
+            <CuratedVideoGridWithStudy
+              items={youtubeItems}
+              plan={plan}
+              loginNext="/world-watch"
+              premiumTeaser={!premium}
+              thumbnailPriorityFirstN={1}
+              scrollReveal={false}
+              gridClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            />
+          </WorldWatchVideoLensShell>
         ) : (
           <div className="rounded-2xl border border-line/60 bg-soft/10 p-5">
             <div className="flex gap-3">
