@@ -127,7 +127,11 @@ async function ingestOneSourceWithMeta(
         `items=${items.length}`,
         `channelId=${source.channelId ?? ""}`
       );
-      return { items, skipped: false, apiFallback: false, rssError: false };
+      if (items.length > 0) {
+        return { items, skipped: false, apiFallback: false, rssError: false };
+      }
+      console.warn("curated: YouTube API returned 0 items, falling back to RSS", source.id);
+      apiFallback = true;
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       console.warn("curated: YouTube API ingest failed, falling back to RSS", source.id, msg);
@@ -167,6 +171,18 @@ async function runIngestionForSources(
   const durationMs = performance.now() - t0;
 
   const merged = outcomes.flatMap((o) => o.items);
+  if (scopeLabel.startsWith("world-watch")) {
+    const perSource = sources.map((s, i) => `${s.id}=${outcomes[i]?.items.length ?? 0}`);
+    console.info(
+      "curated: world-watch ingest detail",
+      `scope=${scopeLabel}`,
+      `sourceCount=${sources.length}`,
+      `sourceIds=${sources.map((s) => s.id).join(",")}`,
+      `perSource=${perSource.join(";")}`,
+      `mergedRaw=${merged.length}`
+    );
+  }
+
   if (merged.length === 0) {
     console.info(
       "curated: aggregation summary",
