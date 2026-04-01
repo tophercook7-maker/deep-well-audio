@@ -211,19 +211,22 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     id: "ww-tier3-albert-mohler",
     title: "Albert Mohler",
     channelTitle: "Albert Mohler",
-    /** Official: https://www.youtube.com/@AlbertMohlerOfficial */
+    /**
+     * Verified 2026-04: https://www.youtube.com/@AlbertMohlerOfficial → UCzH05TIlVgb3fNFMb10LYvg
+     * Atom title: "Albert Mohler" (The Briefing / cultural commentary).
+     */
     channelId: "UCzH05TIlVgb3fNFMb10LYvg",
     sourceType: "youtube_rss",
     categoryDefaults: ["world-watch", "discernment", "christian-living"],
     tier: 3,
-    active: false,
-    priority: 4,
+    active: true,
+    priority: 3,
     isFeatured: false,
     isWorldWatchSource: true,
     membersOnlyDefault: false,
     thumbnailFallback: null,
     notes:
-      "The Briefing and related uploads—daily/worldview commentary; sober tone. Paused for Tier 3 rollout; set active:true to re-enable.",
+      "Daily worldview and cultural commentary—high biblical seriousness, sober tone; strongest WW fit among this set. Activated 2026-04 after channel ID verification.",
     rssUrl: null,
     websiteUrl: "https://albertmohler.com",
   },
@@ -231,30 +234,12 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     id: "ww-tier3-tgc",
     title: "The Gospel Coalition",
     channelTitle: "The Gospel Coalition",
-    /** Official: https://www.youtube.com/@TheGospelCoalition */
+    /**
+     * Verified 2026-04: https://www.youtube.com/@TheGospelCoalition → UCQMwm-DeHyFK5VPp6KySR5Q
+     */
     channelId: "UCQMwm-DeHyFK5VPp6KySR5Q",
     sourceType: "youtube_rss",
-    categoryDefaults: ["world-watch", "discernment", "bible-foundations"],
-    tier: 3,
-    active: true,
-    priority: 5,
-    isFeatured: false,
-    isWorldWatchSource: true,
-    membersOnlyDefault: false,
-    thumbnailFallback: null,
-    notes:
-      "Main TGC channel—teaching, conversations, conference content. Activated for World Watch pool (verify feed periodically).",
-    rssUrl: null,
-    websiteUrl: "https://www.thegospelcoalition.org",
-  },
-  {
-    id: "ww-tier3-colson-breakpoint",
-    title: "Colson Center / Breakpoint",
-    channelTitle: "Colson Center",
-    /** Official org channel: https://www.youtube.com/user/ColsonCenter (Breakpoint + broader Colson media) */
-    channelId: "UCyyiGFXJkVuSWiXIaIJ7MaQ",
-    sourceType: "youtube_rss",
-    categoryDefaults: ["world-watch", "discernment", "apologetics"],
+    categoryDefaults: ["world-watch", "bible-foundations", "discernment", "sermons-preaching"],
     tier: 3,
     active: true,
     priority: 6,
@@ -263,7 +248,29 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     membersOnlyDefault: false,
     thumbnailFallback: null,
     notes:
-      "Colson Center official uploads (incl. Breakpoint-related video). Worldview-centered cultural analysis—measured framing. Activated for World Watch pool.",
+      "Broad TGC catalog (teaching, culture, conferences). Excellent quality; slightly lower WW-only fit than Mohler/Colson—priority 6 so tie-break favors commentary sources.",
+    rssUrl: null,
+    websiteUrl: "https://www.thegospelcoalition.org",
+  },
+  {
+    id: "ww-tier3-colson-breakpoint",
+    title: "Colson Center / Breakpoint",
+    channelTitle: "Colson Center",
+    /**
+     * Verified 2026-04: https://www.youtube.com/user/ColsonCenter → UCyyiGFXJkVuSWiXIaIJ7MaQ
+     */
+    channelId: "UCyyiGFXJkVuSWiXIaIJ7MaQ",
+    sourceType: "youtube_rss",
+    categoryDefaults: ["world-watch", "discernment", "apologetics"],
+    tier: 3,
+    active: true,
+    priority: 4,
+    isFeatured: false,
+    isWorldWatchSource: true,
+    membersOnlyDefault: false,
+    thumbnailFallback: null,
+    notes:
+      "Colson Center official (Breakpoint lineage). Calm cultural/worldview analysis—strong WW fit. Priority 4 for tie-break after Mohler.",
     rssUrl: null,
     websiteUrl: "https://colsoncenter.org",
   },
@@ -271,9 +278,14 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     id: "ww-tier3-reasonable-faith",
     title: "Reasonable Faith",
     channelTitle: "Reasonable Faith",
-    channelId: null,
+    /**
+     * Verified 2026-04: Reasonable Faith lists full-length uploads at
+     * https://www.youtube.com/user/ReasonableFaithOrg → externalId UCXHkMZGwB9g4rW4BV45ISbA
+     * (Short clips: /user/drcraigvideos — not used here.)
+     */
+    channelId: "UCXHkMZGwB9g4rW4BV45ISbA",
     sourceType: "youtube_rss",
-    categoryDefaults: ["world-watch", "apologetics", "discernment"],
+    categoryDefaults: ["apologetics", "discernment", "world-watch"],
     tier: 3,
     active: false,
     priority: 7,
@@ -282,7 +294,7 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     membersOnlyDefault: false,
     thumbnailFallback: null,
     notes:
-      "POST-APPROVAL: Official Reasonable Faith channel (primary uploads). Philosophy-forward responses—helps discernment without sensational headlines.",
+      "Philosophy-first apologetics (debates, Q&A). Trustworthy but weaker WW fit—can read as argumentative vs. calm cultural commentary. Hold until feed mix is reviewed.",
     rssUrl: null,
     websiteUrl: "https://www.reasonablefaith.org",
   },
@@ -290,18 +302,22 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     id: "ww-tier3-stand-to-reason",
     title: "Stand to Reason",
     channelTitle: "Stand to Reason",
-    channelId: null,
+    /**
+     * Verified 2026-04: https://www.youtube.com/user/STRvideos → UCK9clHWD7H4HxFlr2KreJ2w
+     * Atom feed title: "Stand to Reason"
+     */
+    channelId: "UCK9clHWD7H4HxFlr2KreJ2w",
     sourceType: "youtube_rss",
-    categoryDefaults: ["world-watch", "apologetics", "discernment"],
+    categoryDefaults: ["apologetics", "discernment", "world-watch"],
     tier: 3,
-    active: false,
-    priority: 8,
+    active: true,
+    priority: 5,
     isFeatured: false,
     isWorldWatchSource: true,
     membersOnlyDefault: false,
     thumbnailFallback: null,
     notes:
-      "POST-APPROVAL: Official STR channel. Tactical, calm cultural apologetics—clarity over heat, trains listeners to think in categories.",
+      "STR official—tactical, calm apologetics; complements Mohler/Colson without duplicating TGC’s teaching volume. Activated 2026-04 after ID verification.",
     rssUrl: null,
     websiteUrl: "https://www.str.org",
   },

@@ -16,6 +16,10 @@ import { unstable_cache } from "next/cache";
 const CURATED_AGGREGATE_CACHE_SECONDS = 900;
 
 const DEFAULT_MAX_PER_SOURCE = 24;
+/** WW pool: cap each source so a high-volume channel (e.g. TGC) does not crowd out commentary-first sources after merge. */
+const WORLD_WATCH_MAX_PER_SOURCE = 10;
+/** Bumps WW `unstable_cache` when ordering or caps change. */
+const WORLD_WATCH_CACHE_ORDER_TAG = "rr-prio-v1";
 const DEFAULT_MAX_TOTAL = 80;
 const EXCERPT_MAX = 220;
 const DESCRIPTION_MAX = 4000;
@@ -100,6 +104,43 @@ function dedupeByVideoId(items: CuratedYoutubeFeedItem[]): CuratedYoutubeFeedIte
     else map.set(item.videoId, mergeFeedItems(existing, item));
   }
   return Array.from(map.values());
+}
+
+/**
+ * World Watch only: after N-per-source caps, a pure global date sort still lets one chatty channel
+ * own the top of the list. Round-robin in editorial `priority` order (lower = earlier slot in each cycle)
+ * keeps the lens varied while each source stays internally newest-first — deterministic, not shuffled.
+ */
+function orderWorldWatchFeedItems(deduped: CuratedYoutubeFeedItem[]): CuratedYoutubeFeedItem[] {
+  const bySource = new Map<string, CuratedYoutubeFeedItem[]>();
+  for (const item of deduped) {
+    const list = bySource.get(item.sourceId);
+    if (list) list.push(item);
+    else bySource.set(item.sourceId, [item]);
+  }
+  for (const list of bySource.values()) {
+    list.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
+  }
+  const sourceIds = [...bySource.keys()].sort((a, b) => {
+    const pa = getCuratedYoutubeSourceById(a)?.priority ?? 999;
+    const pb = getCuratedYoutubeSourceById(b)?.priority ?? 999;
+    if (pa !== pb) return pa - pb;
+    return a.localeCompare(b);
+  });
+  const queues = sourceIds.map((id) => bySource.get(id)!);
+  const out: CuratedYoutubeFeedItem[] = [];
+  let added = true;
+  while (added) {
+    added = false;
+    for (const q of queues) {
+      const next = q.shift();
+      if (next) {
+        out.push(next);
+        added = true;
+      }
+    }
+  }
+  return out;
 }
 
 type IngestOutcome = {
@@ -197,8 +238,12 @@ async function runIngestionForSources(
   }
 
   const deduped = dedupeByVideoId(merged);
-  deduped.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
-  const videos = deduped.map(feedItemToVideoItem);
+  const ordered =
+    scopeLabel.startsWith("world-watch") ? orderWorldWatchFeedItems(deduped) : deduped;
+  if (!scopeLabel.startsWith("world-watch")) {
+    ordered.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
+  }
+  const videos = ordered.map(feedItemToVideoItem);
 
   console.info(
     "curated: aggregation summary",
@@ -240,9 +285,13 @@ const getWorldWatchPoolCached = unstable_cache(
   async () => {
     const sources = getWorldWatchYoutubeSources();
     if (sources.length === 0) return { videos: [] as CuratedVideoItem[] };
-    return runIngestionForSources(sources, DEFAULT_MAX_PER_SOURCE, "world-watch-pool");
+    return runIngestionForSources(sources, WORLD_WATCH_MAX_PER_SOURCE, "world-watch-pool");
   },
-  ["curated-youtube-world-watch-pool"],
+  [
+    "curated-youtube-world-watch-pool",
+    `mps-${WORLD_WATCH_MAX_PER_SOURCE}`,
+    WORLD_WATCH_CACHE_ORDER_TAG,
+  ],
   { revalidate: CURATED_AGGREGATE_CACHE_SECONDS }
 );
 
@@ -261,12 +310,12 @@ async function loadWorldWatchDedicatedVideoList(): Promise<CuratedVideoItem[]> {
     const msg = e instanceof Error ? e.message : String(e);
     if (msg.includes("incrementalCache")) {
       console.warn("curated: world-watch unstable_cache unavailable; direct ingest", msg);
-      const { videos } = await runIngestionForSources(sources, DEFAULT_MAX_PER_SOURCE, "world-watch-direct");
+      const { videos } = await runIngestionForSources(sources, WORLD_WATCH_MAX_PER_SOURCE, "world-watch-direct");
       return videos;
     }
     throw e;
   }
-  const { videos } = await runIngestionForSources(sources, DEFAULT_MAX_PER_SOURCE, "world-watch-fallback");
+  const { videos } = await runIngestionForSources(sources, WORLD_WATCH_MAX_PER_SOURCE, "world-watch-fallback");
   return videos;
 }
 
