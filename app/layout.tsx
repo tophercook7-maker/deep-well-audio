@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteAtmosphere } from "@/components/site/site-atmosphere";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { AccountPlanProvider } from "@/components/plan/plan-context";
