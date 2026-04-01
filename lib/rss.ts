@@ -46,9 +46,10 @@ function pickDuration(item: Parser.Item & Record<string, unknown>): number | nul
   return parseDurationToSeconds(raw ?? null);
 }
 
-export async function fetchRssXml(url: string): Promise<string> {
+export async function fetchRssXml(url: string, options?: { revalidate?: number }): Promise<string> {
+  const revalidate = options?.revalidate ?? 0;
   const res = await fetch(url, {
-    next: { revalidate: 0 },
+    next: { revalidate },
     signal: AbortSignal.timeout(25000),
     headers: { Accept: "application/rss+xml, application/xml, text/xml, */*" },
   });
