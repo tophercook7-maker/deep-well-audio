@@ -16,6 +16,7 @@ import { BackButton } from "@/components/buttons/back-button";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
 import { RecentlyPlayedSection } from "@/components/listening/recently-played";
 import { LibraryCheckoutSuccess } from "@/components/library/library-checkout-success";
+import { LibraryCuratedStudySection } from "@/components/library/library-curated-study-section";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 
 export default async function LibraryPage() {
@@ -140,6 +141,8 @@ export default async function LibraryPage() {
       <ContinueListeningSection enabled={showSessionListening} />
       <RecentlyPlayedSection enabled={showSessionListening} />
 
+      {canUseFeature("curated_library", plan) ? <LibraryCuratedStudySection userId={user.id} /> : null}
+
       {!authConfigured ? (
         <div className="card border-amber-400/25 bg-amber-500/5 p-5 text-sm text-amber-100/90">
           Saved items below may not update until Supabase is configured. If something looks wrong, check your environment and refresh.
@@ -175,6 +178,14 @@ export default async function LibraryPage() {
           >
             Bookmarks &amp; notes
           </Link>
+          {canUseFeature("curated_library", plan) ? (
+            <Link
+              href={"/library/curated" as Route}
+              className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
+            >
+              Curated saves
+            </Link>
+          ) : null}
           {plan === "premium" ? (
             <Link
               href={"/explore" as Route}

@@ -27,7 +27,8 @@ export default async function LoginPage({
         <span className="tag">Members</span>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Sign in</h1>
         <p className="mt-4 leading-relaxed text-slate-400">
-          Welcome back. Use the email and password you registered with—we&apos;ll return you to your library or the page you were on.
+          Sign in to continue where you left off and access member-only features. Use the email and password you registered with—we&apos;ll
+          return you to your library or the page you were on.
         </p>
         <LoginForm authAvailable={authAvailable} />
         <p className="mt-6 text-sm text-slate-400">

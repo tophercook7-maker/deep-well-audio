@@ -9,6 +9,10 @@ export function getSupabaseAuthCookieOptions(): CookieOptionsWithName {
   return {
     path: "/",
     sameSite: "lax",
+    /**
+     * Production must be HTTPS so `Secure` cookies are stored. If `NEXT_PUBLIC_SITE_URL` uses `http://`
+     * in production, sessions will not persist in browsers that enforce Secure.
+     */
     secure: process.env.NODE_ENV === "production",
   };
 }

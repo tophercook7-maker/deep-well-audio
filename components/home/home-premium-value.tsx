@@ -4,6 +4,7 @@ import { CheckCircle2, Globe } from "lucide-react";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 
 const bullets: { text: string; icon: "check" | "globe" }[] = [
+  { text: "Free account: save curated Bible-teaching videos, private notes, and light watch progress", icon: "check" },
   { text: "Bookmarks at the moments you want to return to", icon: "check" },
   { text: "Notes beside episodes while you listen", icon: "check" },
   { text: "Guided topic packs on hubs with curated tracks", icon: "check" },

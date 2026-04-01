@@ -30,7 +30,7 @@ export default async function SignupPage({
           Deep Well Audio uses Supabase for secure sign-in. Pick a strong password; if your project requires email confirmation, you&apos;ll
           get a link from Supabase before your first login.
         </p>
-        <SignupForm authAvailable={authAvailable} />
+        <SignupForm authAvailable={authAvailable} nextHref={next} />
         <p className="mt-6 text-sm text-slate-400">
           Already registered?{" "}
           <Link href={loginHref as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">

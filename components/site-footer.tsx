@@ -26,6 +26,18 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
+          <Link href="/curated-teachings" className="transition hover:text-amber-100/85">
+            Curated teachings
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href="/world-watch" className="transition hover:text-amber-100/85">
+            World Watch
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
           <Link href="/library" className="transition hover:text-amber-100/85">
             Library
           </Link>

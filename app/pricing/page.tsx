@@ -89,7 +89,8 @@ export default async function PricingPage() {
         <ul className="mt-5 space-y-3 text-sm leading-relaxed text-slate-200">
           <li>
             · <span className="font-medium text-slate-100">World Watch</span> — member-only{" "}
-            <span className="text-slate-300">briefing on faith and public life</span>, thoughtful and unhurried, here on Deep Well.
+            <span className="text-slate-300">written digest</span> on faith and public life, with optional study blocks (commentary, Scripture lines,
+            discernment prompts, weekly takeaways) on select stories—thoughtful and unhurried, here on Deep Well.
           </li>
           <li>
             · <span className="font-medium text-slate-100">Guided topic packs</span> —{" "}

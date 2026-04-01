@@ -1,3 +1,11 @@
+/**
+ * Supabase Auth (SSR): refreshes short-lived access tokens on every matched request.
+ *
+ * The `setAll` handler must rebuild `NextResponse.next({ request })` before applying `Set-Cookie`
+ * on the response; otherwise refreshed cookies never reach the browser and sessions appear to “vanish” on refresh.
+ *
+ * @see https://supabase.com/docs/guides/auth/server-side/nextjs
+ */
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getPublicSupabaseAnonKey, getPublicSupabaseUrl } from "@/lib/env";
@@ -10,7 +18,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
-  let response = NextResponse.next({ request });
+  /** Must be reassigned whenever cookies change so refreshed tokens are sent to the browser (Supabase SSR pattern). */
+  let supabaseResponse = NextResponse.next({ request });
 
   try {
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
@@ -21,9 +30,13 @@ export async function middleware(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-            response = NextResponse.next({ request });
-            cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+            cookiesToSet.forEach(({ name, value }) => {
+              request.cookies.set(name, value);
+            });
+            supabaseResponse = NextResponse.next({ request });
+            cookiesToSet.forEach(({ name, value, options }) => {
+              supabaseResponse.cookies.set(name, value, options);
+            });
           } catch (e) {
             console.error("[middleware] cookie update skipped", e instanceof Error ? e.message : e);
           }
@@ -36,7 +49,7 @@ export async function middleware(request: NextRequest) {
     console.error("[middleware] auth refresh failed", e instanceof Error ? e.message : e);
   }
 
-  return response;
+  return supabaseResponse;
 }
 
 export const config = {

@@ -24,12 +24,24 @@ import { FunnelLink } from "@/components/analytics/funnel-link";
 import { createServiceClient } from "@/lib/db";
 import { fetchPublishedWorldWatchItems } from "@/lib/world-watch/items";
 import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
-import { WorldWatchHomePreview } from "@/components/home/world-watch-home-preview";
 import { HomePremiumValue } from "@/components/home/home-premium-value";
 import { HomeFeedbackNote } from "@/components/home/home-feedback-note";
+import { HomeJoinCta } from "@/components/home/home-join-cta";
+import { HomeFeaturedCurated } from "@/components/home/home-featured-curated";
+import { HomeCategoryCuratedPreview } from "@/components/home/home-category-curated-preview";
+import { HomeRecentlyAddedCurated } from "@/components/home/home-recently-added-curated";
+import { HomeWorldWatchHub } from "@/components/home/home-world-watch-hub";
+import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
+import { getHomepageCuratedVideoSlices } from "@/lib/curated-teachings/aggregate";
+import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 
-const HOMEPAGE_FEATURED_LIMIT = 6;
+/** Featured strip: calm cap between 3–6 items. */
+const HOMEPAGE_FEATURED_LIMIT = 5;
+/** Homepage World Watch YouTube pool (must match prior `getWorldWatchYoutubeVideos(12)`). */
+const HOMEPAGE_CURATED_WW_YT_LIMIT = 12;
+/** Homepage “recently added” curated pool before featured-ID dedupe (prior `getRecentlyAddedCuratedVideos(16)`). */
+const HOMEPAGE_CURATED_RECENT_SEED = 16;
 const HOMEPAGE_RECENT_EPISODES = 8;
 /** Fetch a few extra rows so quick-list can prefer featured sources without starving the recent list. */
 const HOMEPAGE_RECENT_POOL = 14;
@@ -65,9 +77,21 @@ export default async function HomePage() {
   let catalogProbe: Awaited<ReturnType<typeof probeCatalogBackend>> = "missing_env";
   let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   let worldWatchPreview: WorldWatchItemPublic[] = [];
+  let homepageFeaturedVideos: CuratedVideoItem[] = [];
+  let worldWatchYoutube: CuratedVideoItem[] = [];
+  let recentlyAddedCuratedPool: CuratedVideoItem[] = [];
   try {
     const adminClient = createServiceClient();
-    [featured, recentPool, showCount, episodeCount, catalogProbe, plan, worldWatchPreview] = await Promise.all([
+    const [
+      featuredRes,
+      recentPoolRes,
+      showCountRes,
+      episodeCountRes,
+      catalogProbeRes,
+      planRes,
+      worldWatchPreviewRes,
+      curatedSlices,
+    ] = await Promise.all([
       getFeaturedShows(HOMEPAGE_FEATURED_LIMIT),
       getHomeRecentEpisodes(HOMEPAGE_RECENT_POOL),
       getActiveShowCount(),
@@ -75,12 +99,34 @@ export default async function HomePage() {
       hasPublicSupabaseEnv() ? probeCatalogBackend() : Promise.resolve("missing_env" as const),
       getUserPlan(),
       adminClient
-        ? fetchPublishedWorldWatchItems(adminClient, 3).catch((err) => {
+        ? fetchPublishedWorldWatchItems(adminClient, 3, { audience: "teaser" }).catch((err) => {
             console.error("home world watch preview:", err instanceof Error ? err.message : err);
             return [] as WorldWatchItemPublic[];
           })
         : Promise.resolve([] as WorldWatchItemPublic[]),
+      getHomepageCuratedVideoSlices({
+        featuredCount: HOMEPAGE_FEATURED_LIMIT,
+        worldWatchLimit: HOMEPAGE_CURATED_WW_YT_LIMIT,
+        recentlyAddedLimit: HOMEPAGE_CURATED_RECENT_SEED,
+      }).catch((err) => {
+        console.error("home curated slices:", err instanceof Error ? err.message : err);
+        return {
+          homepageFeaturedVideos: [] as CuratedVideoItem[],
+          worldWatchYoutube: [] as CuratedVideoItem[],
+          recentlyAddedCuratedPool: [] as CuratedVideoItem[],
+        };
+      }),
     ]);
+    featured = featuredRes;
+    recentPool = recentPoolRes;
+    showCount = showCountRes;
+    episodeCount = episodeCountRes;
+    catalogProbe = catalogProbeRes;
+    plan = planRes;
+    worldWatchPreview = worldWatchPreviewRes;
+    homepageFeaturedVideos = curatedSlices.homepageFeaturedVideos;
+    worldWatchYoutube = curatedSlices.worldWatchYoutube;
+    recentlyAddedCuratedPool = curatedSlices.recentlyAddedCuratedPool;
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
     console.error("page home:", e instanceof Error ? e.message : e);
@@ -89,6 +135,13 @@ export default async function HomePage() {
   const recentForSection = recentPool.slice(0, HOMEPAGE_RECENT_EPISODES);
   const quickListenEpisodes = pickQuickListenEpisodes(recentPool, featured, HOMEPAGE_QUICK_LIST_MAX);
   const hasContent = featured.length > 0 || recentPool.length > 0;
+  const recentlyAddedCap = plan === "guest" ? 4 : 8;
+  const featuredIds = new Set(homepageFeaturedVideos.map((v) => v.videoId));
+  const recentlyAddedCurated = recentlyAddedCuratedPool
+    .filter((v) => !featuredIds.has(v.videoId))
+    .slice(0, recentlyAddedCap);
+
+  const worldWatchDigestPreview = worldWatchPreview.slice(0, plan === "guest" ? 2 : 3);
 
   return (
     <main>
@@ -253,48 +306,60 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <WorldWatchHomePreview items={worldWatchPreview} />
+      <HomeFeaturedCurated items={homepageFeaturedVideos} plan={plan} />
+
+      <HomeCategoryCuratedPreview />
+
+      <HomeWorldWatchHub youtubeItems={worldWatchYoutube} digestItems={worldWatchDigestPreview} plan={plan} />
+
+      <HomeRecentlyAddedCurated items={recentlyAddedCurated} plan={plan} />
+
+      <RevealOnScroll>
+        <HomeJoinCta plan={plan} />
+      </RevealOnScroll>
 
       <ContinueListeningSection enabled={showSessionListening} />
       <RecentlyPlayedSection enabled={showSessionListening} />
 
-      <section id="topics" className="container-shell section-divider scroll-mt-28 py-10 sm:py-12">
-        <div className="mb-7 max-w-2xl">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Explore by topic</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Topic collections</h2>
-          <p className="mt-3 text-sm leading-[1.65] text-muted">
-            Episode-level tags across your directory—different from program categories. Follow a theme (like end times or discernment)
-            across many teachers.
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {getDiscoverTopicCards().map((t) => (
-            <div
-              key={t.slug}
-              className="group card border-line/90 p-5 transition hover:border-accent/35 hover:bg-accent/[0.04]"
-            >
-              <FunnelLink
-                href={`/topics/${t.slug}` as Route}
-                funnelEvent="topic_card_click"
-                funnelData={{ slug: t.slug }}
-                className="block no-underline"
+      <RevealOnScroll>
+        <section id="topics" className="container-shell section-divider scroll-mt-28 py-10 sm:py-12">
+          <div className="mb-7 max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Explore by topic</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Topic collections</h2>
+            <p className="mt-3 text-sm leading-[1.65] text-muted">
+              Episode-level tags across your directory—different from program categories. Follow a theme (like end times or discernment)
+              across many teachers.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {getDiscoverTopicCards().map((t) => (
+              <div
+                key={t.slug}
+                className="group card border-line/90 p-5 transition hover:border-accent/35 hover:bg-accent/[0.04]"
               >
-                <p className="text-lg font-semibold text-white group-hover:text-amber-100">{t.label}</p>
-                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{t.description}</p>
-                <p className="mt-4 text-xs font-medium text-amber-200/80">Open topic hub →</p>
-              </FunnelLink>
-              <p className="mt-2 text-xs">
-                <Link
-                  href={`/explore?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}
-                  className="font-medium text-amber-200/70 underline-offset-2 transition hover:text-amber-100 hover:underline"
+                <FunnelLink
+                  href={`/topics/${t.slug}` as Route}
+                  funnelEvent="topic_card_click"
+                  funnelData={{ slug: t.slug }}
+                  className="block no-underline"
                 >
-                  Filter all Explore by this tag
-                </Link>
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+                  <p className="text-lg font-semibold text-white group-hover:text-amber-100">{t.label}</p>
+                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{t.description}</p>
+                  <p className="mt-4 text-xs font-medium text-amber-200/80">Open topic hub →</p>
+                </FunnelLink>
+                <p className="mt-2 text-xs">
+                  <Link
+                    href={`/explore?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}
+                    className="font-medium text-amber-200/70 underline-offset-2 transition hover:text-amber-100 hover:underline"
+                  >
+                    Filter all Explore by this tag
+                  </Link>
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </RevealOnScroll>
 
       {quickListenEpisodes.length > 0 ? (
         <section className="container-shell pb-10 pt-2 sm:pb-12 sm:pt-0" aria-labelledby="home-quick-list-heading">
@@ -362,7 +427,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HomePremiumValue />
+      <RevealOnScroll delayMs={40}>
+        <HomePremiumValue />
+      </RevealOnScroll>
 
       {!hasContent && showCount === 0 ? (
         <section className="container-shell py-10">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, Church, Globe, HeartHandshake } from "lucide-react";
+import { BookOpen, Church, Globe, HeartHandshake, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { WorldWatchItemCard } from "@/components/world-watch/world-watch-item-card";
 import { digestWeekCampaignKeyUTC } from "@/lib/world-watch/iso-week";
@@ -41,11 +41,21 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
 
   return (
     <div className="space-y-10 sm:space-y-12">
-      <div className="rounded-2xl border border-line/60 bg-soft/10 px-5 py-5 sm:px-7">
-        <p className="text-xs font-medium tracking-wide text-slate-300">This week</p>
-        <p className="mt-2 max-w-prose text-sm leading-[1.65] text-slate-400">
+      <div className="rounded-2xl border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-soft/[0.08] to-[rgba(8,11,16,0.65)] px-5 py-5 shadow-[0_20px_48px_-32px_rgba(0,0,0,0.5)] sm:px-7 sm:py-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-accent/35 bg-accent/[0.14] text-amber-100/90">
+            <Sparkles className="h-3.5 w-3.5" aria-hidden />
+          </span>
+          <p className="text-xs font-medium tracking-wide text-slate-200">This week · member edition</p>
+        </div>
+        <p className="mt-3 max-w-prose text-sm leading-[1.65] text-slate-400">
           Week of <span className="tabular-nums text-slate-300">{weekKey}</span> (Monday, UTC). Each item links out to primary sources—paced for
           reading and prayer, not breaking-news urgency.
+        </p>
+        <p className="mt-3 max-w-prose border-t border-line/35 pt-3 text-xs leading-[1.65] text-slate-500">
+          Stories below may include a <span className="text-slate-400">Member study</span> panel—pastoral commentary, Scripture lines, discernment
+          prompts, and takeaways you can carry into the week. They appear when we&apos;ve written them for that headline; the summary and reflection
+          are always the spine of the piece.
         </p>
       </div>
 

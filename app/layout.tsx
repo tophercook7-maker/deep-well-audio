@@ -3,6 +3,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Analytics } from "@vercel/analytics/react";
+import { SiteAtmosphere } from "@/components/site/site-atmosphere";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { AccountPlanProvider } from "@/components/plan/plan-context";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
@@ -78,8 +79,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0b1220" },
-    { color: "#0b1220" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0d10" },
+    { color: "#0a0d10" },
   ],
   colorScheme: "dark",
 };
@@ -91,15 +92,16 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const [user, plan] = await Promise.all([getSessionUser(), getUserPlan()]);
 
   return (
-    <html lang="en" className="h-full" style={{ backgroundColor: "#0b1220", color: "#f8fafc" }}>
+    <html lang="en" className="h-full" style={{ backgroundColor: "#0a0d10", color: "#f8fafc" }}>
       <body
         className="flex min-h-full flex-col antialiased"
         style={{
-          backgroundColor: "#0b1220",
+          backgroundColor: "transparent",
           color: "#f8fafc",
           minHeight: "100vh",
         }}
       >
+        <SiteAtmosphere />
         <PlayerProvider>
           <AccountPlanProvider initialPlan={plan}>
             <SiteHeader user={user} plan={plan} />

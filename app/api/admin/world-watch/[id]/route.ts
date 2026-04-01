@@ -29,6 +29,11 @@ const ALLOWED_PATCH_KEYS = new Set([
   "image_url",
   "summary",
   "reflection",
+  "public_teaser",
+  "member_commentary",
+  "scripture_refs",
+  "discernment_notes",
+  "key_takeaways",
   "category",
   "is_published",
   "published_at",
@@ -103,6 +108,26 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 
   if (body.reflection !== undefined) {
     patch.reflection = sanitizeWorldWatchOptionalLong(body.reflection, 8000);
+  }
+
+  if (body.public_teaser !== undefined) {
+    patch.public_teaser = sanitizeWorldWatchOptionalLong(body.public_teaser, 8000);
+  }
+
+  if (body.member_commentary !== undefined) {
+    patch.member_commentary = sanitizeWorldWatchOptionalLong(body.member_commentary, 12000);
+  }
+
+  if (body.scripture_refs !== undefined) {
+    patch.scripture_refs = sanitizeWorldWatchOptionalLong(body.scripture_refs, 8000);
+  }
+
+  if (body.discernment_notes !== undefined) {
+    patch.discernment_notes = sanitizeWorldWatchOptionalLong(body.discernment_notes, 12000);
+  }
+
+  if (body.key_takeaways !== undefined) {
+    patch.key_takeaways = sanitizeWorldWatchOptionalLong(body.key_takeaways, 8000);
   }
 
   if (body.category !== undefined) {

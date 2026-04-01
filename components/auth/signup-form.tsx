@@ -5,7 +5,13 @@ import { getPublicSiteUrl, normalizeSiteUrlBase } from "@/lib/env";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 
-function SignupFormFields({ authAvailable }: { authAvailable: boolean }) {
+function SignupFormFields({
+  authAvailable,
+  nextHref,
+}: {
+  authAvailable: boolean;
+  nextHref: string;
+}) {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -43,11 +49,11 @@ function SignupFormFields({ authAvailable }: { authAvailable: boolean }) {
       configuredSite ??
       (typeof window !== "undefined" ? normalizeSiteUrlBase(window.location.origin) : undefined);
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: site ? `${site}/auth/callback` : undefined,
+        emailRedirectTo: site ? `${site}/auth/callback?next=${encodeURIComponent(nextHref)}` : undefined,
         data: { display_name: displayName || email.split("@")[0] },
       },
     });
@@ -56,6 +62,12 @@ function SignupFormFields({ authAvailable }: { authAvailable: boolean }) {
 
     if (error) {
       setMessage(error.message);
+      return;
+    }
+
+    if (data.session) {
+      // Same pattern as password login: full navigation commits cookies before RSC reads session.
+      window.location.assign(nextHref);
       return;
     }
 
@@ -110,12 +122,19 @@ function SignupFormFields({ authAvailable }: { authAvailable: boolean }) {
   );
 }
 
-export function SignupForm({ authAvailable = true }: { authAvailable?: boolean }) {
+export function SignupForm({
+  authAvailable = true,
+  nextHref = "/library",
+}: {
+  authAvailable?: boolean;
+  /** Post-signup redirect when the project returns a session immediately (no email confirm gate). */
+  nextHref?: string;
+}) {
   return (
     <Suspense
       fallback={<div className="mt-8 h-56 animate-pulse rounded-2xl border border-line bg-soft/20" aria-hidden />}
     >
-      <SignupFormFields authAvailable={authAvailable} />
+      <SignupFormFields authAvailable={authAvailable} nextHref={nextHref} />
     </Suspense>
   );
 }

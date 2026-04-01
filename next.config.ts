@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com", pathname: "/**" },
+      { protocol: "https", hostname: "**.ytimg.com", pathname: "/**" },
       { protocol: "https", hostname: "**.googleusercontent.com", pathname: "/**" },
       { protocol: "https", hostname: "**.simplecast.com", pathname: "/**" },
       { protocol: "https", hostname: "**.buzzsprout.com", pathname: "/**" },

@@ -52,6 +52,11 @@ export async function POST(req: Request) {
   const sourceUrl = sanitizeWorldWatchOptionalUrl(body.source_url, 2048);
   const imageUrl = sanitizeWorldWatchOptionalUrl(body.image_url, 2048);
   const reflection = sanitizeWorldWatchOptionalLong(body.reflection, 8000);
+  const publicTeaser = sanitizeWorldWatchOptionalLong(body.public_teaser, 8000);
+  const memberCommentary = sanitizeWorldWatchOptionalLong(body.member_commentary, 12000);
+  const scriptureRefs = sanitizeWorldWatchOptionalLong(body.scripture_refs, 8000);
+  const discernmentNotes = sanitizeWorldWatchOptionalLong(body.discernment_notes, 12000);
+  const keyTakeaways = sanitizeWorldWatchOptionalLong(body.key_takeaways, 8000);
 
   let category: string | null = null;
   if (body.category !== undefined && body.category !== null && body.category !== "") {
@@ -82,6 +87,11 @@ export async function POST(req: Request) {
       image_url: imageUrl,
       summary,
       reflection,
+      public_teaser: publicTeaser,
+      member_commentary: memberCommentary,
+      scripture_refs: scriptureRefs,
+      discernment_notes: discernmentNotes,
+      key_takeaways: keyTakeaways,
       category,
       is_published: isPublished,
       published_at: publishedAt,

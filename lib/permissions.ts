@@ -11,7 +11,9 @@ export type FeatureKey =
   | "bookmarks"
   | "topic_packs"
   | "advanced_filters"
-  | "world_watch";
+  | "world_watch"
+  /** Curated YouTube: saves, notes, progress (signed-in free + premium). */
+  | "curated_library";
 
 const PREMIUM_ONLY = new Set<FeatureKey>([
   "playlists",
@@ -21,7 +23,7 @@ const PREMIUM_ONLY = new Set<FeatureKey>([
   "world_watch",
 ]);
 
-const FREE_AND_UP = new Set<FeatureKey>(["save", "continue_listening"]);
+const FREE_AND_UP = new Set<FeatureKey>(["save", "continue_listening", "curated_library"]);
 
 export function canUseFeature(feature: FeatureKey, plan: UserPlan): boolean {
   if (plan === "premium") return true;

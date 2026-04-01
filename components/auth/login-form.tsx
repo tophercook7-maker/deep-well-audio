@@ -2,12 +2,10 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { safeInternalNext } from "@/lib/nav-utils";
-import type { Route } from "next";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 function LoginFormFields({ authAvailable }: { authAvailable: boolean }) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = safeInternalNext(searchParams.get("next"), "/library");
 
@@ -53,8 +51,8 @@ function LoginFormFields({ authAvailable }: { authAvailable: boolean }) {
       return;
     }
 
-    router.push(next as Route);
-    router.refresh();
+    // Full navigation commits auth cookies before RSC runs (avoids "signed in but header still guest" races).
+    window.location.assign(next);
   }
 
   return (
