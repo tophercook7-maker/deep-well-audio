@@ -19,17 +19,17 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="card border-line/70 p-6 sm:p-7">
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-accent/[0.07] text-accent">
-          <Icon className="h-4 w-4" aria-hidden />
+    <section className="card border-line/70 p-4 sm:p-7">
+      <div className="flex items-start gap-2.5 sm:gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-accent/25 bg-accent/[0.07] text-accent sm:h-10 sm:w-10">
+          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
         </div>
         <div className="min-w-0">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">{kicker}</p>
-          <h2 className="mt-1 text-lg font-semibold text-white">{title}</h2>
+          <h2 className="mt-1 text-base font-semibold text-white sm:text-lg">{title}</h2>
         </div>
       </div>
-      <div className="mt-5 space-y-3 text-sm leading-[1.65] text-slate-300/95">{children}</div>
+      <div className="mt-4 space-y-2.5 text-sm leading-[1.65] text-slate-300/95 sm:mt-5 sm:space-y-3">{children}</div>
     </section>
   );
 }
@@ -40,8 +40,8 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
   const rest = items.length > 1 ? items.slice(1) : [];
 
   return (
-    <div className="space-y-10 sm:space-y-12">
-      <div className="rounded-2xl border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-soft/[0.08] to-[rgba(8,11,16,0.65)] px-5 py-5 shadow-[0_20px_48px_-32px_rgba(0,0,0,0.5)] sm:px-7 sm:py-6">
+    <div className="space-y-5 sm:space-y-10 lg:space-y-12">
+      <div className="rounded-lg border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-soft/[0.08] to-[rgba(8,11,16,0.65)] px-3.5 py-3.5 shadow-[0_20px_48px_-32px_rgba(0,0,0,0.5)] sm:rounded-2xl sm:px-7 sm:py-6">
         <div className="flex flex-wrap items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-accent/35 bg-accent/[0.14] text-amber-100/90">
             <Sparkles className="h-3.5 w-3.5" aria-hidden />
@@ -75,9 +75,9 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
           </Link>
         </div>
       ) : (
-        <div className="space-y-10 sm:space-y-12">
+        <div className="space-y-6 sm:space-y-10 lg:space-y-12">
           {featured ? (
-            <div className="space-y-5">
+            <div className="space-y-3 sm:space-y-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">Featured</p>
               <WorldWatchItemCard item={featured} variant="featured" />
             </div>

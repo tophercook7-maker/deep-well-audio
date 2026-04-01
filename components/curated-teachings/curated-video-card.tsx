@@ -23,6 +23,8 @@ export function CuratedVideoCard({
   loginNext = "/curated-teachings",
   showCategory = true,
   premiumTeaser = false,
+  /** Tighter thumbnail + copy on narrow screens (World Watch lens). */
+  density = "default",
 }: {
   item: CuratedVideoItem;
   plan: UserPlan;
@@ -30,6 +32,7 @@ export function CuratedVideoCard({
   loginNext?: string;
   showCategory?: boolean;
   premiumTeaser?: boolean;
+  density?: "default" | "compact";
 }) {
   const dateLabel = item.publishedAt ? formatPublished(item.publishedAt) : "";
   const primaryCat = CURATED_CATEGORY_META[item.category];
@@ -41,16 +44,25 @@ export function CuratedVideoCard({
   /** Guests hitting a Premium World Watch strip see sign-in / upgrade first; signed-in free users keep one-click Watch. */
   const premiumGated = premiumTeaser && plan === "guest";
   const premiumUpsell = premiumTeaser && plan === "free";
+  const compact = density === "compact";
 
   return (
     <article
       className={[
         "group flex h-full flex-col overflow-hidden rounded-2xl border border-line/55 bg-[rgba(11,14,18,0.58)] shadow-none backdrop-blur-md transition duration-300",
+        compact ? "max-md:rounded-[1.15rem]" : "",
         item.featured ? "border-accent/28 shadow-[0_20px_48px_-32px_rgba(212,175,55,0.28)]" : "",
         "hover:border-line/80 hover:shadow-[0_24px_56px_-36px_rgba(0,0,0,0.72)]",
       ].join(" ")}
     >
-      <div className="relative aspect-video w-full overflow-hidden border-b border-line/70 bg-gradient-to-br from-soft/50 to-bg/90">
+      <div
+        className={[
+          "relative w-full overflow-hidden border-b border-line/70 bg-gradient-to-br from-soft/50 to-bg/90",
+          compact
+            ? "h-[5.5rem] max-[389px]:h-[5.25rem] shrink-0 sm:aspect-video sm:h-auto lg:aspect-video"
+            : "aspect-video",
+        ].join(" ")}
+      >
         {item.thumbnail ? (
           <Image
             src={item.thumbnail}
@@ -62,10 +74,13 @@ export function CuratedVideoCard({
           />
         ) : (
           <div
-            className="flex h-full min-h-[9rem] items-center justify-center bg-soft/40 text-amber-200/40"
+            className={[
+              "flex h-full items-center justify-center bg-soft/40 text-amber-200/40",
+              compact ? "min-h-0 sm:min-h-[9rem]" : "min-h-[9rem]",
+            ].join(" ")}
             aria-hidden
           >
-            <PlayCircle className="h-12 w-12" strokeWidth={1.25} />
+            <PlayCircle className={compact ? "h-9 w-9 sm:h-12 sm:w-12" : "h-12 w-12"} strokeWidth={1.25} />
           </div>
         )}
         <div
@@ -80,26 +95,57 @@ export function CuratedVideoCard({
         ) : null}
       </div>
 
-      <div className="flex flex-1 flex-col p-5 pt-4 sm:p-6 sm:pt-5">
-        <h3 className="text-base font-semibold leading-snug tracking-tight text-white sm:text-[1.02rem]">
+      <div
+        className={[
+          "flex flex-1 flex-col",
+          compact ? "p-3 pt-2.5 sm:p-5 sm:pt-4 lg:p-6 lg:pt-5" : "p-5 pt-4 sm:p-6 sm:pt-5",
+        ].join(" ")}
+      >
+        <h3
+          className={[
+            "font-semibold leading-snug tracking-tight text-white",
+            compact
+              ? "line-clamp-2 text-sm sm:line-clamp-none sm:text-base lg:text-[1.02rem]"
+              : "text-base sm:text-[1.02rem]",
+          ].join(" ")}
+        >
           {item.title}
         </h3>
-        <p className="mt-1.5 text-xs font-medium text-amber-200/75">{item.sourceName}</p>
+        <p className={compact ? "mt-1 text-[11px] font-medium text-amber-200/75 sm:mt-1.5 sm:text-xs" : "mt-1.5 text-xs font-medium text-amber-200/75"}>
+          {item.sourceName}
+        </p>
         {dateLabel ? (
-          <p className="mt-1.5 text-[11px] tabular-nums text-slate-500">{dateLabel}</p>
+          <p className={compact ? "mt-1 text-[10px] tabular-nums text-slate-500 sm:mt-1.5 sm:text-[11px]" : "mt-1.5 text-[11px] tabular-nums text-slate-500"}>
+            {dateLabel}
+          </p>
         ) : null}
         {showCategory ? (
-          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500" title={item.categories.join(", ")}>
+          <p
+            className={[
+              "text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500",
+              compact ? "mt-1.5 max-md:hidden sm:mt-2" : "mt-2",
+            ].join(" ")}
+            title={item.categories.join(", ")}
+          >
             {categoryLine}
           </p>
         ) : null}
         {item.excerpt ? (
-          <p className="mt-2 flex-1 text-sm leading-relaxed text-muted line-clamp-2">{item.excerpt}</p>
+          <p
+            className={[
+              "mt-1.5 flex-1 leading-relaxed text-muted sm:mt-2",
+              compact
+                ? "hidden text-xs line-clamp-2 sm:block sm:text-sm"
+                : "text-sm line-clamp-2",
+            ].join(" ")}
+          >
+            {item.excerpt}
+          </p>
         ) : (
           <div className="flex-1" />
         )}
 
-        <div className="mt-5 space-y-2 border-t border-line/45 pt-4">
+        <div className={compact ? "mt-2.5 space-y-1.5 border-t border-line/45 pt-2.5 sm:mt-5 sm:space-y-2 sm:pt-4" : "mt-5 space-y-2 border-t border-line/45 pt-4"}>
           {guestGated ? (
             <Link
               href={`/login?next=${encodeURIComponent(loginNext)}` as Route}
