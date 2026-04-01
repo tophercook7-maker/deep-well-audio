@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { BackButton } from "@/components/buttons/back-button";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { JoinListForm } from "@/components/join/join-list-form";
@@ -19,6 +20,7 @@ const benefits = [
 export default function JoinPage() {
   return (
     <main className="container-shell flex min-h-[min(100vh-8rem,52rem)] flex-col justify-center py-14 sm:py-20">
+      <ConversionPageBeacon page="join" />
       <div className="mx-auto w-full max-w-md">
         <div className="mb-8 border-b border-line/50 pb-5">
           <BackButton fallbackHref="/" label="Back" />

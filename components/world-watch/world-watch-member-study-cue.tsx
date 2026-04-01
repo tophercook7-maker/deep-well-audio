@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Route } from "next";
 import { BookMarked } from "lucide-react";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 
 /**
  * Quiet invitation for guests / free users: written digest + study depth without hard sell.
@@ -29,9 +29,14 @@ export function WorldWatchMemberStudyCue({ compact = false }: { compact?: boolea
             Members also receive the{" "}
             <span className="text-slate-300">written digest</span>—curated links with reflection—plus optional study blocks (commentary, Scripture
             lines, and takeaways) when we&apos;ve prepared them for a story. No pressure;{" "}
-            <Link href={"/pricing" as Route} className="font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline">
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              funnelData={{ placement: "world_watch_member_cue" }}
+              className="font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline"
+            >
               see plans
-            </Link>{" "}
+            </FunnelLink>{" "}
             whenever you want to read that layer.
           </p>
         </div>

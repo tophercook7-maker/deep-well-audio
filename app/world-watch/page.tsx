@@ -1,5 +1,9 @@
+import Link from "next/link";
+import type { Route } from "next";
 import { Globe, Radar } from "lucide-react";
 import { BackButton } from "@/components/buttons/back-button";
+import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 import { WorldWatchPremium } from "@/components/world-watch/world-watch-premium";
 import { WorldWatchMemberStudyCue } from "@/components/world-watch/world-watch-member-study-cue";
 import { WorldWatchTeaser, WorldWatchTeaserLead } from "@/components/world-watch/world-watch-teaser";
@@ -15,7 +19,7 @@ import { getWorldWatchYoutubeVideos } from "@/lib/curated-teachings/aggregate";
 export const metadata = {
   title: "World Watch",
   description:
-    "Current events, culture, and global developments through a biblical lens—thoughtful, relevant, and intentionally curated on Deep Well Audio.",
+    "World Watch: faith and public life read through Scripture—calm member briefings and a curated video lens. No panic. No spin. Premium unlocks the full written digest.",
 };
 
 export const dynamic = "force-dynamic";
@@ -62,6 +66,7 @@ export default async function WorldWatchPage() {
 
   return (
     <main className="container-shell max-w-3xl space-y-6 py-8 max-md:space-y-3.5 max-md:py-6 sm:space-y-12 sm:py-12 lg:max-w-5xl lg:space-y-14 lg:py-16">
+      <ConversionPageBeacon page="world_watch" />
       <div className="border-b border-line/50 pb-4 max-md:pb-2.5 sm:pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>
@@ -70,29 +75,46 @@ export default async function WorldWatchPage() {
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent sm:h-12 sm:w-12">
           <Globe className="h-[1.15rem] w-[1.15rem] sm:h-6 sm:w-6" aria-hidden />
         </div>
-        <div className="min-w-0 max-w-prose">
+        <div className="min-w-0 max-w-2xl">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">World Watch</p>
-          <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-white sm:mt-1 sm:text-4xl">World Watch</h1>
+          <h1 className="mt-0.5 text-2xl font-semibold leading-[1.15] tracking-tight text-white sm:mt-1 sm:text-3xl md:text-4xl">
+            The world wants your pulse. World Watch wants your mind.
+          </h1>
           {premium ? (
             <>
               <p className="mt-2 text-sm leading-relaxed text-slate-300 md:hidden">
-                A quiet read on current events through a biblical lens—curated, not a headline firehose.
+                Member briefings: panic traded for prayer, spin traded for Scripture.
               </p>
               <p className="mt-2 hidden text-sm leading-relaxed text-slate-300 sm:mt-3 sm:text-base md:block">
-                See current events, culture, and global developments through a biblical lens. Thoughtful, relevant, and intentionally curated—a
-                quiet place to read, pray, and return when the headlines feel loud.
+                You get the facts framed honestly, the questions Scripture actually raises, and a tone that steadies you without lying about how hard
+                things are. Edited on purpose—so you come back steadier, not louder.
               </p>
             </>
           ) : (
             <>
               <p className="mt-2 text-sm leading-relaxed text-slate-300 md:hidden">
-                Faith &amp; public life, curated—preview clips below. Full written digest is{" "}
-                <span className="text-slate-300">Premium</span>.
+                Video lens below. The written digest—the part that holds your mind still—is{" "}
+                <span className="text-slate-200">Premium</span>.{" "}
+                <FunnelLink
+                  href={"/pricing" as Route}
+                  funnelEvent="view_plans_click"
+                  funnelData={{ placement: "world_watch_hero_mobile" }}
+                  className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
+                >
+                  Pricing →
+                </FunnelLink>
               </p>
               <p className="mt-2 hidden text-sm leading-relaxed text-slate-300 sm:mt-3 sm:text-base md:block">
-                See current events, culture, and global developments through a biblical lens. Thoughtful, relevant, and intentionally curated.
-                The full written digest is <span className="text-slate-200">for Premium members</span>; below is a preview and how to join when
-                you&apos;re ready.
+                Informed and grounded are not opposites. Below: our video lens. The full World Watch digest—written to cut through spin, not pile it
+                on—is <span className="text-slate-200">Premium</span>.{" "}
+                <FunnelLink
+                  href={"/pricing" as Route}
+                  funnelEvent="view_plans_click"
+                  funnelData={{ placement: "world_watch_hero" }}
+                  className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
+                >
+                  See Premium →
+                </FunnelLink>
               </p>
             </>
           )}
@@ -113,23 +135,23 @@ export default async function WorldWatchPage() {
             </p>
             <p className="mt-1 text-[11px] leading-snug text-slate-300 md:hidden">
               {premium ? (
-                <>Clips from channels we trust for calm, faithful cultural commentary.</>
+                <>Voices we trust—short clips, long obedience, zero hot-take training.</>
               ) : (
                 <>
-                  A short preview of curated commentary clips.
+                  Partial lens below.
                   {youtubePool.length > youtubeItems.length ? (
                     <>
                       {" "}
-                      <span className="text-slate-500">Premium: full list.</span>
+                      <span className="text-slate-400">Premium: all of it.</span>
                     </>
                   ) : null}
                 </>
               )}
             </p>
             <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-300 md:block sm:mt-2">
-              Curated clips from channels flagged for biblical cultural commentary.
+              Commentary we flag for biblical seriousness—light on heat, heavy on sense.
               {!premium && youtubePool.length > youtubeItems.length ? (
-                <span className="text-slate-500"> Premium unlocks the full clip list.</span>
+                <span className="text-slate-400"> Premium unlocks every clip.</span>
               ) : null}
             </p>
           </div>

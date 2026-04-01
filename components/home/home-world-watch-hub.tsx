@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { Globe, Radar } from "lucide-react";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 import type { UserPlan } from "@/lib/permissions";
 import { CuratedVideoGridWithStudy } from "@/components/curated-teachings/curated-video-grid-with-study";
@@ -37,12 +38,20 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
             <div className="min-w-0 max-w-3xl">
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-amber-200/65">World Watch</p>
               <h2 id="home-ww-hub-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                Scripture, culture, and the moment we&apos;re in
+                When culture screams, reach for ground you can stand on
               </h2>
               <p className="mt-3.5 text-sm leading-[1.7] text-slate-400 sm:text-[0.9375rem]">
-                See current events, culture, and global developments through a biblical lens. Thoughtful, relevant, and intentionally curated—
-                video picks alongside our written <span className="text-slate-300">World Watch</span> digest for members. Discernment-oriented,
-                not generic news noise.
+                Headlines train reaction; World Watch trains discernment—through Scripture first. Video lens for everyone; a taste of the written
+                digest below. <span className="text-slate-300">Premium</span> is the full written edition and every lens pick—the line between
+                &quot;I scrolled&quot; and &quot;I actually understand.&quot;{" "}
+                <FunnelLink
+                  href={"/pricing" as Route}
+                  funnelEvent="view_plans_click"
+                  funnelData={{ placement: "home_world_watch_hub" }}
+                  className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
+                >
+                  Premium →
+                </FunnelLink>
               </p>
             </div>
           </div>
@@ -67,10 +76,15 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
                     </Link>
                   ) : (
                     <>
-                      <Link href={"/pricing" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+                      <FunnelLink
+                        href={"/pricing" as Route}
+                        funnelEvent="view_plans_click"
+                        funnelData={{ placement: "home_world_watch_video_footer" }}
+                        className="font-medium text-amber-200/85 underline-offset-2 hover:underline"
+                      >
                         Premium
-                      </Link>{" "}
-                      unlocks the full World Watch video roster alongside written digests.
+                      </FunnelLink>{" "}
+                      unlocks every clip and the full digest—when the noise won't shut up.
                     </>
                   )}
                 </p>

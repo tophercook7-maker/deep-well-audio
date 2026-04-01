@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { BackButton } from "@/components/buttons/back-button";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
@@ -21,6 +22,7 @@ export default async function PricingPage() {
 
   return (
     <main className="container-shell max-w-3xl space-y-12 py-12 sm:space-y-14 sm:py-16">
+      <ConversionPageBeacon page="pricing" />
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Back" />
       </div>

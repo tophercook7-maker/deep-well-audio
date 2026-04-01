@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { safeInternalNext } from "@/lib/nav-utils";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -51,6 +52,7 @@ function LoginFormFields({ authAvailable }: { authAvailable: boolean }) {
       return;
     }
 
+    trackFunnelEvent("auth_login_complete");
     // Full navigation commits auth cookies before RSC runs (avoids "signed in but header still guest" races).
     window.location.assign(next);
   }

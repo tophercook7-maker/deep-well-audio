@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { Globe } from "lucide-react";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 import { PremiumUpgradeActions } from "@/components/premium/premium-upgrade-actions";
 
 /** Lead block: “Clarity without the noise” — reusable on /world-watch (mobile places this above the lens). */
@@ -30,7 +31,7 @@ export function WorldWatchTeaserLead({ compact = false }: { compact?: boolean })
             compact ? "mt-0.5 text-lg sm:mt-1 sm:text-xl lg:text-2xl" : "mt-1 text-xl sm:text-2xl",
           ].join(" ")}
         >
-          Clarity without the noise
+          Read the moment with Scripture—not with panic
         </h2>
         <p
           className={[
@@ -40,8 +41,8 @@ export function WorldWatchTeaserLead({ compact = false }: { compact?: boolean })
               : "mt-3 text-sm",
           ].join(" ")}
         >
-          A measured read on faith and public life—grounded, calm, for listeners who already love serious Bible teaching. The full edition is for{" "}
-          <span className="text-slate-300">Premium members</span> here on Deep Well: unhurried, prayerful, not another loud feed.
+          What happened, what God is saying through his Word about it, and what a steady Christian does next—not performance, not despair. The full
+          written digest is <span className="text-slate-300">Premium only</span>: slow where it should be slow, blunt where spin has to break.
         </p>
       </div>
     </div>
@@ -71,15 +72,15 @@ export function WorldWatchTeaserDetails({
       >
         <li className="flex gap-2 sm:gap-2.5">
           <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/80" aria-hidden />
-          <span>What happened, what it may mean for neighbors and institutions, and how to pray and stay grounded.</span>
+          <span>Truth about what happened—and what love, truth, and prayer demand of you now.</span>
         </li>
         <li className="flex gap-2 sm:gap-2.5">
           <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/80" aria-hidden />
-          <span>Hand-picked links with short context—not an endless scroll.</span>
+          <span>Links chosen to inform, not enrage; read, then think, then act like a Christian.</span>
         </li>
         <li className={condense ? "hidden gap-2 sm:gap-2.5 md:flex" : "flex gap-2.5"}>
           <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/80" aria-hidden />
-          <span>A gentle line to carry into the week, in the same spirit as the rest of Deep Well.</span>
+          <span>Carry the week with the same seriousness you bring to the pulpit in your earbuds.</span>
         </li>
       </ul>
       <p
@@ -114,13 +115,27 @@ export function WorldWatchTeaserUpgrade({ tight = false, condense = false }: { t
         id="ww-upgrade-heading"
         className={condense ? "mt-1.5 text-base font-semibold text-white sm:mt-2 sm:text-xl" : "mt-2 text-lg font-semibold text-white sm:text-xl"}
       >
-        World Watch is part of Premium
+        Premium is not extra content—it is a straighter mind
       </h2>
       <p className={condense ? "mt-2 max-w-prose text-xs leading-relaxed text-slate-400 sm:mt-3 sm:text-sm" : "mt-3 max-w-prose text-sm leading-relaxed text-slate-400"}>
-        One membership unlocks World Watch with bookmarks, notes, topic packs, and the rest—same account, no separate product.{" "}
-        <span className="text-slate-300">View plans</span> for details, or subscribe when you&apos;re ready.
+        Full World Watch written briefings, every lens clip, bookmarks, notes, guided topic paths, and filters that reward discernment—not one more
+        subscription bolted on the side. One account. One commitment: teaching and news that do not make a fool of your conscience.{" "}
+        <FunnelLink
+          href={"/pricing" as Route}
+          funnelEvent="view_plans_click"
+          funnelData={{ placement: "world_watch_teaser_body" }}
+          className="font-medium text-amber-200/90 underline-offset-2 hover:text-amber-100 hover:underline"
+        >
+          View plans
+        </FunnelLink>{" "}
+        when you&apos;re ready.
       </p>
-      <PremiumUpgradeActions className={condense ? "mt-4 sm:mt-6" : "mt-5 sm:mt-6"} align="start" showJoinLink={false} />
+      <PremiumUpgradeActions
+        className={condense ? "mt-4 sm:mt-6" : "mt-5 sm:mt-6"}
+        align="start"
+        showJoinLink={false}
+        analyticsPlacement="world_watch_teaser"
+      />
       <p className={condense ? "mt-3 max-w-prose text-[11px] leading-relaxed text-slate-400 sm:mt-5 sm:text-xs" : "mt-4 max-w-prose text-xs leading-relaxed text-slate-400 sm:mt-5"}>
         Cancel anytime through Stripe—billing links are in your Stripe receipts, or contact us if you need a hand.
       </p>

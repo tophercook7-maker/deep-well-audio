@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { getPublicSiteUrl, normalizeSiteUrlBase } from "@/lib/env";
 import { useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -66,6 +67,7 @@ function SignupFormFields({
     }
 
     if (data.session) {
+      trackFunnelEvent("auth_signup_complete");
       // Same pattern as password login: full navigation commits cookies before RSC reads session.
       window.location.assign(nextHref);
       return;

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { SignupForm } from "@/components/auth/signup-form";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { BackButton } from "@/components/buttons/back-button";
@@ -19,6 +20,7 @@ export default async function SignupPage({
 
   return (
     <main className="container-shell py-12 sm:py-16">
+      <ConversionPageBeacon page="signup" />
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Back" />
       </div>

@@ -162,23 +162,24 @@ export default async function HomePage() {
                 />
               </div>
             </div>
-            <span className="tag">Curated Bible audio</span>
+            <span className="tag">Clarity over chaos</span>
             <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight sm:mt-6 sm:text-5xl lg:text-6xl">
-              Find real Bible teaching{" "}
-              <span className="text-amber-200">without the noise.</span>
+              You were not made to live on noise and spin.{" "}
+              <span className="text-amber-200">Scripture-grounded teaching—and news you can think about.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-[1.65] text-muted sm:mt-6">
-              Deep Well gathers trusted sermons, podcasts, and Bible teaching in one place—sources we choose on purpose, not an endless sweep of
-              the web. Listening and browsing stay{" "}
-              <span className="text-slate-300">free</span>; sign in when you want favorites and saved shows to follow you.
+              Deep Well is sermons, Bible teaching, and apologetics from ministries we stand behind—<span className="text-slate-200">not</span>{" "}
+              platforms tuning your anger for clicks. <span className="font-medium text-slate-200">Listening is free.</span> Sign in and your
+              favorites and saved shows stay with you.
             </p>
             <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-300 sm:text-base">
-              <span className="text-slate-200">Premium</span> is optional: bookmarks, notes, guided topic packs on hubs, richer filters on Explore,
-              and <span className="text-slate-300">World Watch</span>—calm reads on faith and public life—when you want that layer on top of
-              listening.
+              <span className="font-medium text-slate-200">Free</span> gives you the teaching.{" "}
+              <span className="font-medium text-slate-200">Premium</span> gives you a way to live with it: mark what God used, walk hard topics with
+              guided paths, search with discernment that cannot be gamed—and read <span className="text-slate-200">World Watch</span> when the public
+              square comes for your attention.
             </p>
             <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-400/95">
-              Curated sources · No random feeds · Calm, trustworthy listening
+              Trusted ministries · No engagement traps · Room to think, weep, and obey
             </p>
 
             {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
@@ -204,48 +205,64 @@ export default async function HomePage() {
                 Start listening
                 <ArrowRight className="h-4 w-4" />
               </FunnelLink>
-              <Link
+              <FunnelLink
                 href={"/explore" as Route}
+                funnelEvent="explore_teaching_click"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
               >
-                Explore the directory
-              </Link>
+                Explore teaching
+              </FunnelLink>
+              {plan !== "premium" ? (
+              <FunnelLink
+                href={"/pricing" as Route}
+                funnelEvent="view_plans_click"
+                funnelData={{ placement: "home_hero" }}
+                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-accent/35 bg-accent/[0.06] px-5 py-3 text-sm font-medium text-amber-100/95 transition hover:border-accent/50 hover:bg-accent/[0.09]"
+              >
+                Unlock Premium
+                  <ArrowRight className="h-4 w-4 opacity-80" />
+                </FunnelLink>
+              ) : null}
             </div>
             <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-300/90">
-              No account needed to press play. Sign in when you want{" "}
+              Play without an account. Sign in and{" "}
               <Link href={"/library" as Route} className="text-slate-300 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
-                your own library
-              </Link>
-              .
+                your library
+              </Link>{" "}
+              travels with you.
             </p>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-              <span className="text-slate-500">Optional:</span>{" "}
               <FunnelLink
                 href={"/join" as Route}
                 funnelEvent="join_list_click"
+                funnelData={{ placement: "home_hero" }}
                 className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
               >
-                Get updates
-              </FunnelLink>{" "}
-              on Premium and study tools—one short form, no inbox noise, your email stays private.
+                Join the list
+              </FunnelLink>
+              —short updates on Premium and tools. One field. No junk. Your email stays private.
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {[
                 showCount > 0
                   ? {
-                      label: "Catalog",
+                      label: "Everyone",
                       value:
                         episodeCount > 0
-                          ? `${showCount} live sources · ${episodeCount} episodes`
-                          : `${showCount} live sources synced`,
+                          ? `${showCount} ministries we trust · ${episodeCount} episodes—no rage loop, no bait`
+                          : `${showCount} ministries we trust—depth over volume`,
                     }
-                  : { label: "Curated", value: "Official feeds only" },
+                  : {
+                      label: "Everyone",
+                      value: "The full teaching catalog—vetted voices, zero outrage engineering",
+                    },
                 {
                   label: "Premium",
-                  value: "Bookmarks, notes, topic packs, World Watch, richer Explore filters",
+                  value:
+                    "Anchors in the audio: bookmarks, notes, topic paths, truer search—and World Watch when culture tries to steal your peace",
                 },
-                { label: "Your picks", value: "Favorites & saved shows (signed in)" },
+                { label: "Signed in", value: "Favorites and saved shows in one calm place" },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -266,7 +283,7 @@ export default async function HomePage() {
             <div className="relative">
               <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Topics</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-300/95">
-                New teachers and ministries join as feeds are verified—no rush, no filler.
+                Themes that orient you—not another bottomless scroll.
               </p>
               <div className="mt-5 grid gap-4">
               {CATEGORY_OPTIONS.map((category) => (

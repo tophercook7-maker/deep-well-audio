@@ -34,6 +34,15 @@ export default async function AdminWorldWatchPage() {
     <main className="container-shell max-w-3xl space-y-10 py-12 sm:py-14">
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Home" />
+        <p className="mt-3 text-xs text-muted">
+          <Link href={"/admin/metrics" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+            Conversion metrics
+          </Link>
+          <span className="text-slate-600"> · </span>
+          <Link href={"/admin/feedback" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+            Feedback
+          </Link>
+        </p>
       </div>
       <header className="flex flex-col gap-5 rounded-2xl border border-line/60 bg-soft/10 px-5 py-5 sm:flex-row sm:items-end sm:justify-between sm:px-6 sm:py-6">
         <div className="min-w-0">

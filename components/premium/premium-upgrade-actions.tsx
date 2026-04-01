@@ -19,17 +19,25 @@ type Props = {
   align?: "center" | "start";
   /** Subtle line with link to /join (default true). Set false if the parent already promotes the list. */
   showJoinLink?: boolean;
+  /** Passed to Vercel funnel events as `placement` (e.g. world_watch_teaser). */
+  analyticsPlacement?: string;
 };
 
 /**
  * Subscribe opens Stripe Checkout when configured; "View plans" goes to pricing. Optional join hint for updates only.
  */
-export function PremiumUpgradeActions({ className = "", align = "center", showJoinLink = true }: Props) {
+export function PremiumUpgradeActions({
+  className = "",
+  align = "center",
+  showJoinLink = true,
+  analyticsPlacement,
+}: Props) {
   const ctx = useAccountPlanOptional();
   const plan = ctx?.plan ?? "guest";
   const justify = align === "center" ? "justify-center" : "justify-start";
   const checkoutOk = isClientCheckoutConfigured();
   const hintAlign = align === "center" ? "mx-auto text-center" : "text-left";
+  const funnelPlacement = analyticsPlacement ? { placement: analyticsPlacement } : undefined;
 
   if (plan === "premium") {
     return <PremiumActiveState className={className} align={align} />;
@@ -41,7 +49,10 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
         <button
           type="button"
           onClick={() => {
-            trackFunnelEvent("premium_feature_click", { intent: "upgrade_modal" });
+            trackFunnelEvent("premium_feature_click", {
+              intent: "upgrade_modal",
+              ...(analyticsPlacement ? { placement: analyticsPlacement } : {}),
+            });
             ctx?.openUpgradeModal();
           }}
           className={btnGhost}
@@ -51,7 +62,12 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
         <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
           Subscribe — $9/month
         </StartCheckoutButton>
-        <FunnelLink href={"/pricing#subscribe" as Route} funnelEvent="view_plans_click" className={btnGhost}>
+        <FunnelLink
+          href={"/pricing#subscribe" as Route}
+          funnelEvent="view_plans_click"
+          funnelData={funnelPlacement}
+          className={btnGhost}
+        >
           View plans
         </FunnelLink>
       </div>
@@ -60,6 +76,7 @@ export function PremiumUpgradeActions({ className = "", align = "center", showJo
           <FunnelLink
             href={"/join" as Route}
             funnelEvent="join_list_click"
+            funnelData={funnelPlacement}
             className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
           >
             Join the Deep Well list

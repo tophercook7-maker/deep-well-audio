@@ -58,11 +58,12 @@ export function JoinListForm() {
         return;
       }
       setStatus("loading");
+      const source = "join_page";
       try {
         const res = await fetch("/api/premium-waitlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: trimmed, source: "join_page" }),
+          body: JSON.stringify({ email: trimmed, source }),
         });
         const body = (await res.json().catch(() => ({}))) as { error?: string; duplicate?: boolean };
         if (!res.ok) {
@@ -70,7 +71,7 @@ export function JoinListForm() {
           setMessage(body.error ?? "Something went wrong. Try again later.");
           return;
         }
-        trackFunnelEvent("waitlist_submit");
+        trackFunnelEvent("waitlist_submit", { source });
         setStatus("ok");
         setMessage(null);
         setEmail("");

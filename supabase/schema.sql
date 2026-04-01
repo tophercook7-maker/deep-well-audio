@@ -36,6 +36,22 @@ create table public.premium_waitlist (
 create unique index premium_waitlist_email_lower_key on public.premium_waitlist (lower(email));
 
 -- ---------------------------------------------------------------------------
+-- conversion_beacon_events (anonymous page beacons; service role API insert only)
+-- ---------------------------------------------------------------------------
+create table public.conversion_beacon_events (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  page text not null
+);
+
+create index conversion_beacon_events_created_at_idx on public.conversion_beacon_events (created_at desc);
+create index conversion_beacon_events_page_created_at_idx on public.conversion_beacon_events (page, created_at desc);
+
+comment on table public.conversion_beacon_events is 'Anonymous page-load beacons for /admin/metrics; insert via service-role API only';
+
+alter table public.conversion_beacon_events enable row level security;
+
+-- ---------------------------------------------------------------------------
 -- world_watch_digest_sends (weekly email idempotency; service role / cron only)
 -- ---------------------------------------------------------------------------
 create table public.world_watch_digest_sends (
