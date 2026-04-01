@@ -76,26 +76,26 @@ export default async function WorldWatchPage() {
         </div>
       </header>
 
-      {youtubeItems.length > 0 ? (
-        <section className="space-y-5 rounded-[1.5rem] border border-rose-500/20 bg-gradient-to-br from-rose-950/20 via-bg/80 to-bg p-6 sm:p-8" aria-labelledby="ww-video-lens">
-          <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-400/35 bg-rose-500/10 text-rose-100">
-              <Radar className="h-5 w-5" aria-hidden />
-            </div>
-            <div>
-              <p id="ww-video-lens" className="text-xs font-semibold uppercase tracking-[0.22em] text-rose-200/75">
-                Video lens
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                Curated clips from channels flagged for biblical cultural commentary.{" "}
-                {!premium && youtubePool.length > youtubeItems.length ? (
-                  <span className="text-slate-500">
-                    Premium shows the full aggregated list; you&apos;re seeing a preview band.
-                  </span>
-                ) : null}
-              </p>
-            </div>
+      <section className="space-y-5 rounded-[1.5rem] border border-rose-500/20 bg-gradient-to-br from-rose-950/20 via-bg/80 to-bg p-6 sm:p-8" aria-labelledby="ww-video-lens">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-400/35 bg-rose-500/10 text-rose-100">
+            <Radar className="h-5 w-5" aria-hidden />
           </div>
+          <div>
+            <p id="ww-video-lens" className="text-xs font-semibold uppercase tracking-[0.22em] text-rose-200/75">
+              Video lens
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-400">
+              Curated clips from channels flagged for biblical cultural commentary.{" "}
+              {!premium && youtubePool.length > youtubeItems.length ? (
+                <span className="text-slate-500">
+                  Premium shows the full aggregated list; you&apos;re seeing a preview band.
+                </span>
+              ) : null}
+            </p>
+          </div>
+        </div>
+        {youtubeItems.length > 0 ? (
           <CuratedVideoGridWithStudy
             items={youtubeItems}
             plan={plan}
@@ -104,8 +104,29 @@ export default async function WorldWatchPage() {
             thumbnailPriorityFirstN={1}
             gridClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
           />
-        </section>
-      ) : null}
+        ) : (
+          <div className="rounded-2xl border border-line/60 bg-soft/10 p-5">
+            <div className="flex gap-3">
+              <Globe className="h-5 w-5 shrink-0 text-rose-200/60" aria-hidden />
+              <div className="text-sm leading-relaxed text-slate-400">
+                <p>
+                  No video picks loaded yet—feeds may still be warming, or{" "}
+                  <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">YOUTUBE_API_KEY</code>{" "}
+                  may be unset in production (RSS fallback should still run). Operators can warm caches with{" "}
+                  <code className="rounded bg-soft px-1 py-0.5 font-mono text-[0.65rem] text-slate-300">
+                    GET /api/cron/curated-youtube
+                  </code>{" "}
+                  using{" "}
+                  <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">CRON_SECRET</code>.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Written World Watch below is unchanged when video rows are quiet.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
 
       {premium ? (
         <WorldWatchPremium items={worldWatchItems} />
