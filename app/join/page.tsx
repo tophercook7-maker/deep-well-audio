@@ -2,74 +2,72 @@ import Link from "next/link";
 import type { Route } from "next";
 import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { BackButton } from "@/components/buttons/back-button";
-import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { JoinListForm } from "@/components/join/join-list-form";
 
 export const metadata = {
-  title: "Join the Deep Well list",
+  title: "Stay in the loop · Deep Well Audio",
   description:
-    "Thoughtful updates when Premium opens, study tools ship, and the library grows. No spam—only from Deep Well Audio.",
+    "Optional email updates when something meaningful ships. Short notes—no noise, easy to leave.",
 };
 
-const benefits = [
-  "A short note when Premium or pricing changes—no surprise clutter",
-  "Heads-up as topic packs and study tools go live",
-  "Occasional directory updates when we add meaningful teaching sources",
+const whatYoullGet = [
+  "Occasional updates when new tools are ready",
+  "Early access to features",
+  "A clearer sense of where this is going",
 ];
 
 export default function JoinPage() {
   return (
-    <main className="container-shell flex min-h-[min(100vh-8rem,52rem)] flex-col justify-center py-14 sm:py-20">
+    <main className="container-shell flex min-h-[min(100vh-8rem,52rem)] flex-col justify-center py-12 sm:py-16">
       <ConversionPageBeacon page="join" />
       <div className="mx-auto w-full max-w-md">
-        <div className="mb-8 border-b border-line/50 pb-5">
+        <div className="mb-6 border-b border-line/50 pb-4">
           <BackButton fallbackHref="/" label="Back" />
         </div>
 
-        <div className="card card-dense relative overflow-hidden rounded-[1.75rem] border-accent/25 p-8 shadow-[0_24px_64px_-20px_rgba(0,0,0,0.65)] sm:p-10">
-          <div
-            className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/[0.07] blur-3xl"
-            aria-hidden
-          />
-          <div className="relative">
-            <div className="flex justify-center">
-              <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
-            </div>
-            <h1 className="mt-6 text-center text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-              Get notified about Premium &amp; new tools
-            </h1>
-            <p className="mt-4 text-center text-sm leading-relaxed text-slate-300">
-              Join the list for calm updates when study features ship or the library grows. One short field below—no account required.
+        <div className="rounded-2xl border border-line/70 bg-soft/[0.12] p-7 shadow-[0_20px_48px_-28px_rgba(0,0,0,0.55)] sm:p-8">
+          <h1 className="text-center text-2xl font-semibold tracking-tight text-white sm:text-[1.65rem]">
+            Stay in the loop
+          </h1>
+          <div className="mt-5 space-y-3 text-center text-sm leading-relaxed text-slate-400">
+            <p>If you want to keep up with what&apos;s being built here, this is the simplest way.</p>
+            <p>
+              You&apos;ll get short updates when something meaningful is ready.
+              <br />
+              No noise. No constant emails.
             </p>
+          </div>
 
-            <ul className="mt-6 space-y-2.5 border-y border-line/35 py-6 text-left text-sm leading-relaxed text-slate-200/95">
-              {benefits.map((line) => (
+          <div className="mt-8">
+            <JoinListForm />
+          </div>
+
+          <p className="mt-5 text-center text-xs leading-relaxed text-slate-500">
+            Most people just listen for free. Some want to stay closer to what&apos;s being built.
+          </p>
+
+          <section className="mt-8 border-t border-line/40 pt-6" aria-labelledby="join-what-heading">
+            <h2 id="join-what-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/55">
+              What you&apos;ll get
+            </h2>
+            <ul className="mt-3 space-y-2 text-left text-sm leading-relaxed text-slate-300">
+              {whatYoullGet.map((line) => (
                 <li key={line} className="flex gap-2.5">
-                  <span className="mt-0.5 shrink-0 text-accent" aria-hidden>
-                    ·
-                  </span>
+                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/70" aria-hidden />
                   <span>{line}</span>
                 </li>
               ))}
             </ul>
+          </section>
 
-            <div className="mt-6">
-              <JoinListForm />
-            </div>
-
-            <p className="mt-6 text-center text-xs leading-relaxed text-slate-400">
-              Used only for this list—never sold or shown publicly. From Deep Well Audio only; unsubscribe anytime.
-            </p>
-
-            <p className="mt-6 text-center">
-              <Link
-                href={"/" as Route}
-                className="text-sm font-medium text-amber-200/80 underline-offset-4 transition hover:text-amber-100 hover:underline"
-              >
-                ← Back to Home
-              </Link>
-            </p>
-          </div>
+          <p className="mt-8 text-center">
+            <Link
+              href={"/" as Route}
+              className="text-xs font-medium text-amber-200/75 underline-offset-4 transition hover:text-amber-100/90 hover:underline"
+            >
+              ← Home
+            </Link>
+          </p>
         </div>
       </div>
     </main>

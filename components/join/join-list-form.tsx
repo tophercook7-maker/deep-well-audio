@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CheckCircle2, Loader2, Mail } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { trackFunnelEvent } from "@/lib/funnel-analytics";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -86,26 +86,25 @@ export function JoinListForm() {
 
   if (status === "ok") {
     return (
-      <div className="space-y-6 transition-opacity duration-500" role="status" aria-live="polite">
+      <div className="space-y-5 transition-opacity duration-500" role="status" aria-live="polite">
         <div className="flex justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent shadow-[0_0_40px_-12px_rgba(212,175,55,0.45)]">
-            <CheckCircle2 className="h-8 w-8" strokeWidth={1.75} aria-hidden />
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-accent/35 bg-accent/[0.08] text-accent">
+            <CheckCircle2 className="h-7 w-7" strokeWidth={1.75} aria-hidden />
           </div>
         </div>
-        <div className="space-y-2 text-center">
-          <p className="text-base font-semibold leading-relaxed text-white sm:text-lg">
-            You&apos;re on the list. We&apos;ll let you know when new features are ready.
-          </p>
-          <p className="text-sm text-amber-200/85">
-            Taking you home{countdown != null && countdown > 0 ? ` in ${countdown}s…` : "…"}
+        <div className="space-y-1.5 text-center">
+          <p className="text-base font-medium leading-relaxed text-white">You&apos;re on the list.</p>
+          <p className="text-sm text-slate-400">Short updates only, when it matters.</p>
+          <p className="text-xs text-amber-200/75">
+            Back home{countdown != null && countdown > 0 ? ` in ${countdown}s` : "…"}
           </p>
         </div>
-        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <div className="flex justify-center pt-1">
           <Link
             href={"/" as Route}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
           >
-            Back to home
+            Home
           </Link>
         </div>
       </div>
@@ -113,25 +112,19 @@ export function JoinListForm() {
   }
 
   return (
-    <form onSubmit={(e) => void submit(e)} className="space-y-5">
-      <label className="block">
-        <span className="sr-only">Email address</span>
-        <div className="relative">
-          <Mail
-            className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-amber-200/45"
-            aria-hidden
-          />
-          <input
-            type="email"
-            name="email"
-            autoComplete="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-2xl border border-line/85 bg-soft/25 py-3.5 pl-11 pr-4 text-sm text-white outline-none ring-accent/25 placeholder:text-slate-500 focus:border-accent/35 focus:ring-2"
-          />
-        </div>
+    <form onSubmit={(e) => void submit(e)} className="space-y-4">
+      <label className="grid gap-2 text-left">
+        <span className="text-xs font-medium text-slate-400">Your email</span>
+        <input
+          type="email"
+          name="email"
+          autoComplete="email"
+          required
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-2xl border border-line/85 bg-soft/25 px-4 py-3.5 text-sm text-white outline-none ring-accent/20 placeholder:text-slate-500 focus:border-accent/35 focus:ring-2"
+        />
       </label>
       {message ? (
         <p className="text-sm text-amber-200/90" role="alert">
@@ -146,12 +139,15 @@ export function JoinListForm() {
         {status === "loading" ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Saving…
+            Adding you…
           </>
         ) : (
-          "Get notified"
+          "Join the list"
         )}
       </button>
+      <p className="text-center text-xs leading-relaxed text-slate-500">
+        One field. No spam. You can leave at any time.
+      </p>
     </form>
   );
 }

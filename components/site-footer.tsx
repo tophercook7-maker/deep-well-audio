@@ -7,7 +7,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-line/35 bg-[rgba(8,11,18,0.34)] backdrop-blur-md backdrop-saturate-125 supports-[backdrop-filter]:bg-[rgba(8,11,18,0.26)]">
+    <footer className="mt-auto border-t border-line/35 bg-[rgba(8,11,18,0.22)] backdrop-blur-md backdrop-saturate-120 supports-[backdrop-filter]:bg-[rgba(8,11,18,0.18)]">
       <InstallHint />
       <div className="container-shell py-8 text-center sm:py-9">
         <div className="mb-7 flex justify-center sm:mb-8">

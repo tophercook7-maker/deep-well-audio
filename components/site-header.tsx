@@ -86,13 +86,13 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
       <header
         ref={headerRef}
         className={[
-          "z-50 border-b border-line/75 bg-bg/55 shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-md backdrop-saturate-150 max-md:border-line/55 max-md:shadow-[0_4px_22px_rgba(0,0,0,0.16)]",
+          "z-50 border-b border-line/70 bg-transparent shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-md backdrop-saturate-125 max-md:border-line/50 max-md:shadow-[0_4px_22px_rgba(0,0,0,0.12)]",
           "md:sticky md:top-0 md:translate-y-0",
           "max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:w-full",
           "max-md:transition-transform max-md:duration-300 max-md:ease-in-out",
           scrollHiddenMobile ? "max-md:-translate-y-full" : "max-md:translate-y-0",
         ].join(" ")}
-        style={{ backgroundColor: "rgba(11, 18, 32, 0.72)" }}
+        style={{ backgroundColor: "rgba(11, 18, 32, 0.38)" }}
       >
         <div className="container-shell flex flex-col gap-2 max-md:gap-1.5 max-md:py-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 md:py-[1.125rem]">
           <Link

@@ -2,8 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 
 /**
- * Hero-style strip above the Premium card.
- * Swap `/public/pricing/built-in-public.svg` for a photo or custom graphic (same path or change `src`).
+ * Visual strip on /pricing; copy stays factual and calm.
  */
 export function PricingBuiltInPublic() {
   return (
@@ -26,21 +25,14 @@ export function PricingBuiltInPublic() {
           id="built-in-public-heading"
           className="text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl"
         >
-          Built in real time—getting better every day.
+          Still built in public
         </h2>
         <p className="text-sm leading-relaxed text-muted">
-          If something feels off, use{" "}
+          If something is confusing or broken, say so—we read{" "}
           <Link href={"/feedback" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:text-amber-100 hover:underline">
             feedback
           </Link>{" "}
-          and I&apos;ll fix it fast.
-        </p>
-        <p className="mx-auto max-w-md pt-1 text-xs leading-relaxed text-slate-500">
-          I&apos;m on this as fast as lightning—if anything feels broken, confusing, or missing,{" "}
-          <Link href={"/feedback" as Route} className="text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline">
-            tell me
-          </Link>{" "}
-          and I&apos;ll fix it.
+          and use it to improve the site.
         </p>
       </div>
     </section>

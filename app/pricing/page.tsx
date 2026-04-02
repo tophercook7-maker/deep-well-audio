@@ -12,8 +12,24 @@ import { getPremiumWaitlistMailto, hasStripeBillingConfigured } from "@/lib/env"
 export const metadata = {
   title: "Pricing · Deep Well Audio",
   description:
-    "Listen free. Premium adds study tools, topic packs, World Watch, and advanced filters—$9/mo or $90/yr, calm Stripe checkout.",
+    "Listen free. Premium adds bookmarks, guided paths, honest search, and full World Watch—tools for remembering and understanding, not more noise.",
 };
+
+function PremiumSubsection({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div>
+      <h3 className="text-base font-semibold text-white sm:text-lg">{title}</h3>
+      <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-200">
+        {items.map((line) => (
+          <li key={line} className="flex gap-2.5">
+            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/75" aria-hidden />
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default async function PricingPage() {
   const mailto = getPremiumWaitlistMailto();
@@ -34,34 +50,74 @@ export default async function PricingPage() {
           className="object-center sm:object-left"
         />
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Pricing</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Listen freely. <span className="text-amber-200/95">Study more deeply.</span>
+        <h1 className="mt-2 text-3xl font-semibold leading-snug tracking-tight text-white sm:text-4xl">
+          Built for people who don&apos;t want to stay at the surface
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
-          The full curated catalog is free to explore and listen to—no paywall on the teaching itself. Premium is for when you want{" "}
-          <span className="text-slate-300">structure, clarity, and control</span>: hold onto what mattered, keep notes beside the audio, follow
-          clear paths through hard topics, and filter your way to richer episodes without more endless scrolling.
-          <span className="mt-3 block text-sm text-slate-300/95">
-            Subscriptions run through Stripe—you are not charged until you complete checkout.
-          </span>
-        </p>
+        <div className="mt-4 space-y-4 text-base leading-relaxed text-muted sm:text-lg">
+          <p>You can listen for free.</p>
+          <p>
+            Premium is for when you don&apos;t want to forget what you heard, and you don&apos;t want the moment to pass without understanding it.
+          </p>
+        </div>
       </header>
 
-      <section className="card border-line/85 p-6 sm:p-8" aria-labelledby="free-plan-heading">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Always free</p>
-        <h2 id="free-plan-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
-          Free — listening first
+      <section className="card border-line/85 p-6 sm:p-8" aria-labelledby="premium-gives-heading">
+        <h2 id="premium-gives-heading" className="text-2xl font-semibold tracking-tight text-white">
+          What Premium gives you
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
-          The catalog stays open: serious Bible teaching and curated sources are here for everyone, without watering down what free means.
-        </p>
-        <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-200">
-          <li>· Listen freely to sermons, series, and teaching from hand-picked sources</li>
-          <li>· Explore the full directory and topic hubs</li>
-          <li>· Save favorites when you&apos;re signed in</li>
-          <li>· Continue listening and pick up where you left off (signed in)</li>
-          <li>· Build your library—favorite episodes and save whole shows to follow</li>
+        <div className="mt-8 space-y-10">
+          <PremiumSubsection
+            title="Stay with what matters"
+            items={[
+              "Save teaching and return to it",
+              "Mark the exact moment something stood out",
+              "Keep track of what you're working through",
+            ]}
+          />
+          <PremiumSubsection
+            title="Walk through hard topics"
+            items={[
+              "Follow guided paths instead of jumping around",
+              "Stay in one place long enough to understand it",
+            ]}
+          />
+          <PremiumSubsection
+            title="Search without being pushed"
+            items={["Find what you're looking for", "No trending results", "No algorithm deciding what you should care about"]}
+          />
+          <PremiumSubsection
+            title="World Watch (full access)"
+            items={[
+              "Complete video lens",
+              "Full written digest for each story",
+              "Scripture, notes, and takeaways included",
+            ]}
+          />
+        </div>
+      </section>
+
+      <PricingBuiltInPublic />
+
+      <section className="card border-line/85 p-6 sm:p-8" aria-labelledby="free-stays-heading">
+        <h2 id="free-stays-heading" className="text-2xl font-semibold tracking-tight text-white">
+          What stays free
+        </h2>
+        <p className="mt-3 text-sm font-medium text-slate-300">You can always:</p>
+        <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-slate-200">
+          <li className="flex gap-2.5">
+            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/75" aria-hidden />
+            <span>Listen to teaching</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/75" aria-hidden />
+            <span>Explore ministries</span>
+          </li>
+          <li className="flex gap-2.5">
+            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/75" aria-hidden />
+            <span>Browse topics</span>
+          </li>
         </ul>
+        <p className="mt-5 text-sm leading-relaxed text-slate-400">Nothing is taken away.</p>
         <Link
           href={"/signup" as Route}
           className="mt-6 inline-flex rounded-full border border-line/90 px-5 py-2.5 text-sm font-medium text-muted transition hover:border-accent/35 hover:text-white"
@@ -70,69 +126,54 @@ export default async function PricingPage() {
         </Link>
       </section>
 
-      <PricingBuiltInPublic />
+      <section
+        className="card border-accent/30 p-6 sm:p-8"
+        aria-labelledby="why-premium-heading"
+      >
+        <h2 id="why-premium-heading" className="text-2xl font-semibold tracking-tight text-white">
+          Why people choose Premium
+        </h2>
+        <div className="mt-4 max-w-xl space-y-4 text-sm leading-relaxed text-slate-300 sm:text-base">
+          <p>Not for more content. For a different way of using it.</p>
+          <p>To slow down. To remember. To apply what they&apos;re hearing.</p>
+        </div>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <a
+            href="#subscribe"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:opacity-90"
+          >
+            View plans
+          </a>
+          <FunnelLink
+            href={"/join" as Route}
+            funnelEvent="join_list_click"
+            funnelData={{ placement: "pricing_cta_secondary" }}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-6 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
+          >
+            Join the list instead
+          </FunnelLink>
+        </div>
+      </section>
 
-      <section className="card border-accent/30 p-6 sm:p-8" aria-labelledby="premium-plan-heading">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Premium</p>
-        <h2 id="premium-plan-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
-          Deep Well Premium
+      <section className="card border-line/85 p-6 sm:p-8" aria-labelledby="subscribe-heading">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/65">Subscribe</p>
+        <h2 id="subscribe-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
+          Simple pricing
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
-          Go deeper with tools for serious listening, reflection, and study—including{" "}
-          <span className="text-slate-300">full access to World Watch</span>, our calm read on faith and public life, alongside bookmarks, guided
-          packs, and filters—all in one membership. The catalog itself stays free; Premium shapes how you keep and revisit what matters.
+          Subscriptions run through Stripe—you are not charged until you complete checkout.
         </p>
-        <ul className="mt-5 space-y-3 text-sm leading-relaxed text-slate-200">
-          <li>
-            · <span className="font-medium text-slate-100">World Watch</span> — member-only{" "}
-            <span className="text-slate-300">written digest</span> on faith and public life, with optional study blocks (commentary, Scripture lines,
-            discernment prompts, weekly takeaways) on select stories—thoughtful and unhurried, here on Deep Well.
-          </li>
-          <li>
-            · <span className="font-medium text-slate-100">Guided topic packs</span> —{" "}
-            <span className="text-slate-300">clear paths through hard topics</span> with curated episodes, not an endless scroll.
-          </li>
-          <li>
-            · <span className="font-medium text-slate-100">Bookmarks and notes</span> — save key moments with timestamps and keep private reflections{" "}
-            <span className="text-slate-300">beside the teaching</span>.
-          </li>
-          <li>
-            · <span className="font-medium text-slate-100">Advanced filters</span> — including meaty score on Explore, to surface richer episodes when
-            you&apos;re ready to focus.
-          </li>
-          <li>
-            · <span className="font-medium text-slate-100">Deeper study tools</span> —{" "}
-            <span className="text-slate-300">structure and control</span> around the same calm player you already use.
-          </li>
-        </ul>
-
-        <div className="mt-6 rounded-2xl border border-accent/25 bg-[rgba(212,175,55,0.07)] px-4 py-4 backdrop-blur-sm sm:px-5">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/65">Built to be understood step by step</p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-200">
-            Example: our <span className="text-amber-100/90">End Times</span> pack—“End Times — A Clear Path Through the Confusion”—walks you
-            from foundations through key passages and common misunderstandings to living with clarity, with trusted episodes matched from your
-            catalog. <span className="text-slate-300">Move from confusion to clarity</span> without hype or a separate app.
-          </p>
-          <Link
-            href={"/topics/end-times#end-times-pack" as Route}
-            className="mt-3 inline-flex text-sm font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
-          >
-            See the End Times topic path →
-          </Link>
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-line/70 bg-[rgba(15,20,28,0.5)] px-4 py-4 text-sm text-slate-100 backdrop-blur-sm">
-          <p className="font-medium text-amber-100/90">Simple pricing</p>
+        <div className="mt-6 rounded-2xl border border-line/70 bg-[rgba(15,20,28,0.5)] px-4 py-4 text-sm text-slate-100 backdrop-blur-sm sm:px-5">
           <p className="mt-2 text-base font-semibold text-white">
             <span className="tabular-nums">$9</span>/month &nbsp;·&nbsp; <span className="tabular-nums">$90</span>/year
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted">
-            Cancel anytime through Stripe—links in your subscription receipts or email us for billing help. No separate add-on or second product.
+            Cancel anytime through Stripe—links in your subscription receipts or email us for billing help.
           </p>
         </div>
         <PricingPremiumCheckout stripeReady={stripeReady} plan={plan} />
         <p className="mt-6 max-w-prose text-center text-xs leading-relaxed text-slate-300/95 sm:text-left">
-          Prefer a direct link?{" "}
+          Questions?{" "}
           <Link href={"/feedback" as Route} className="text-amber-200/75 underline-offset-2 hover:text-amber-100 hover:underline">
             Open the feedback form
           </Link>
@@ -145,24 +186,23 @@ export default async function PricingPage() {
         className="scroll-mt-28 rounded-3xl border border-accent/25 bg-gradient-to-br from-[rgba(12,16,24,0.48)] via-[rgba(10,14,20,0.34)] to-[rgba(8,11,17,0.26)] p-8 shadow-[0_18px_48px_-24px_rgba(0,0,0,0.42)] backdrop-blur-md backdrop-saturate-125 sm:p-10"
         aria-labelledby="notify-heading"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Stay in the loop</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Email list</p>
         <h2 id="notify-heading" className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-          Join the Deep Well list
+          Calm updates only
         </h2>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-          Not ready to subscribe? Join the list for calm updates when study tools evolve or billing options change. No spam—your email stays
-          private, and this step never charges you.
+          If you&apos;re not ready to subscribe, you can still get short notes when tools or options change. No spam; your email stays private.
         </p>
         <FunnelLink
           href={"/join" as Route}
           funnelEvent="join_list_click"
           className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
         >
-          Get notified
+          Join the list
         </FunnelLink>
         {mailto ? (
           <p className="mt-6 text-sm text-muted">
-            Prefer to reach out directly?{" "}
+            Prefer email direct?{" "}
             <a href={mailto} className="font-medium text-amber-200/85 underline-offset-2 hover:text-amber-100 hover:underline">
               Send a message
             </a>

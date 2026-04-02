@@ -14,7 +14,7 @@
   --dwa-bg-deep: #0f1419;
   --dwa-text: #f8fafc;
   --dwa-muted: #b8c3d4;
-  --dwa-panel: rgba(14, 18, 24, 0.72);
+  --dwa-panel: rgba(12, 16, 22, 0.5);
   --dwa-line: #2c3544;
   --dwa-accent: #c9a44a;
   /* Cinematic background parallax (optional; default 0). Set on .dwa-site-atmosphere or :root via JS. */
@@ -134,21 +134,21 @@ textarea {
 .card {
   border-radius: 1rem;
   border: 1px solid var(--dwa-line);
-  /* Airier glass — image stays visible through panels; blur still lifts type */
-  background-color: rgba(10, 14, 22, 0.4);
+  /* Glass: let the Bible backdrop read through while keeping type legible */
+  background-color: rgba(10, 14, 20, 0.28);
   box-shadow:
-    0 0 0 1px rgba(201, 164, 74, 0.1),
-    0 14px 36px rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(12px) saturate(135%);
+    0 0 0 1px rgba(201, 164, 74, 0.09),
+    0 14px 36px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px) saturate(130%);
 }
 
-/* Dense copy / forms: readable but not a slab; still see-through vs solid wall */
+/* Dense copy / forms: slightly more opacity for inputs; still not a solid slab */
 .card.card-dense {
-  background-color: rgba(7, 10, 16, 0.68);
-  backdrop-filter: blur(16px) saturate(128%);
+  background-color: rgba(7, 10, 15, 0.52);
+  backdrop-filter: blur(14px) saturate(125%);
   box-shadow:
-    0 0 0 1px rgba(201, 164, 74, 0.12),
-    0 18px 44px rgba(0, 0, 0, 0.4);
+    0 0 0 1px rgba(201, 164, 74, 0.11),
+    0 18px 44px rgba(0, 0, 0, 0.34);
 }
 
 .section-divider {

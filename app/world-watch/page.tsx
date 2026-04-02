@@ -3,10 +3,8 @@ import type { Route } from "next";
 import { Globe, Radar } from "lucide-react";
 import { BackButton } from "@/components/buttons/back-button";
 import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
-import { FunnelLink } from "@/components/analytics/funnel-link";
 import { WorldWatchPremium } from "@/components/world-watch/world-watch-premium";
-import { WorldWatchMemberStudyCue } from "@/components/world-watch/world-watch-member-study-cue";
-import { WorldWatchTeaser, WorldWatchTeaserLead } from "@/components/world-watch/world-watch-teaser";
+import { WorldWatchTeaser } from "@/components/world-watch/world-watch-teaser";
 import { WorldWatchVideoLensShell } from "@/components/world-watch/world-watch-video-lens-shell";
 import { WorldWatchVideoLensGrid } from "@/components/world-watch/world-watch-video-lens-grid";
 import { getUserPlan } from "@/lib/auth";
@@ -19,10 +17,30 @@ import { getWorldWatchYoutubeVideos } from "@/lib/curated-teachings/aggregate";
 export const metadata = {
   title: "World Watch",
   description:
-    "World Watch: faith and public life read through Scripture—calm member briefings and a curated video lens. No panic. No spin. Premium unlocks the full written digest.",
+    "World Watch: a slower read on a few stories—video lens plus, for members, a full written digest with Scripture and notes. Think before reacting; stay grounded.",
 };
 
 export const dynamic = "force-dynamic";
+
+function HeroBody() {
+  return (
+    <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-base">
+      <p>
+        The news moves fast and speaks loud.
+        <br />
+        Most of it is built to keep you reacting.
+      </p>
+      <p>This is a slower read.</p>
+      <p>
+        World Watch gathers a small number of stories and holds them in place long enough to think about them.
+        <br />
+        Not to win arguments. Not to predict outcomes.
+        <br />
+        To understand what is happening and stay grounded in it.
+      </p>
+    </div>
+  );
+}
 
 export default async function WorldWatchPage() {
   let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
@@ -44,10 +62,6 @@ export default async function WorldWatchPage() {
     }
   }
 
-  /**
-   * Video lens data path is identical for guest / free / premium: one YouTube aggregate call.
-   * Only `ytCap` (slice length) changes by plan; there is no alternate ingest or auth filter here.
-   */
   const youtubePool = await getWorldWatchYoutubeVideos(48).catch((err) => {
     console.error("world-watch youtube:", err instanceof Error ? err.message : err);
     return [];
@@ -77,46 +91,22 @@ export default async function WorldWatchPage() {
         </div>
         <div className="min-w-0 max-w-2xl">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">World Watch</p>
-          <h1 className="mt-0.5 text-2xl font-semibold leading-[1.15] tracking-tight text-white sm:mt-1 sm:text-3xl md:text-4xl">
-            The world wants your pulse. World Watch wants your mind.
+          <h1 className="mt-0.5 text-2xl font-semibold leading-snug tracking-tight text-white sm:mt-1 sm:text-3xl md:text-[2rem] md:leading-tight">
+            See what&apos;s happening—without getting pulled into it
           </h1>
           {premium ? (
             <>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300 md:hidden">
-                Member briefings: panic traded for prayer, spin traded for Scripture.
-              </p>
-              <p className="mt-2 hidden text-sm leading-relaxed text-slate-300 sm:mt-3 sm:text-base md:block">
-                You get the facts framed honestly, the questions Scripture actually raises, and a tone that steadies you without lying about how hard
-                things are. Edited on purpose—so you come back steadier, not louder.
+              <HeroBody />
+              <p className="mt-4 text-sm text-slate-400">
+                Below is your full digest for members. Need billing help?{" "}
+                <Link href={"/feedback" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+                  Contact us
+                </Link>
+                .
               </p>
             </>
           ) : (
-            <>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300 md:hidden">
-                Video lens below. The written digest—the part that holds your mind still—is{" "}
-                <span className="text-slate-200">Premium</span>.{" "}
-                <FunnelLink
-                  href={"/pricing" as Route}
-                  funnelEvent="view_plans_click"
-                  funnelData={{ placement: "world_watch_hero_mobile" }}
-                  className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
-                >
-                  Pricing →
-                </FunnelLink>
-              </p>
-              <p className="mt-2 hidden text-sm leading-relaxed text-slate-300 sm:mt-3 sm:text-base md:block">
-                Informed and grounded are not opposites. Below: our video lens. The full World Watch digest—written to cut through spin, not pile it
-                on—is <span className="text-slate-200">Premium</span>.{" "}
-                <FunnelLink
-                  href={"/pricing" as Route}
-                  funnelEvent="view_plans_click"
-                  funnelData={{ placement: "world_watch_hero" }}
-                  className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
-                >
-                  See Premium →
-                </FunnelLink>
-              </p>
-            </>
+            <HeroBody />
           )}
         </div>
       </header>
@@ -134,25 +124,17 @@ export default async function WorldWatchPage() {
               Video lens
             </p>
             <p className="mt-1 text-[11px] leading-snug text-slate-300 md:hidden">
-              {premium ? (
-                <>Voices we trust—short clips, long obedience, zero hot-take training.</>
-              ) : (
+              A few clips from voices worth listening to. Not everything—just enough to see clearly.
+              {!premium ? (
                 <>
-                  Partial lens below.
-                  {youtubePool.length > youtubeItems.length ? (
-                    <>
-                      {" "}
-                      <span className="text-slate-400">Premium: all of it.</span>
-                    </>
-                  ) : null}
+                  {" "}
+                  <span className="text-slate-400">Members get the full set.</span>
                 </>
-              )}
+              ) : null}
             </p>
             <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-300 md:block sm:mt-2">
-              Commentary we flag for biblical seriousness—light on heat, heavy on sense.
-              {!premium && youtubePool.length > youtubeItems.length ? (
-                <span className="text-slate-400"> Premium unlocks every clip.</span>
-              ) : null}
+              A few clips from voices worth listening to. Not everything—just enough to see clearly.
+              {!premium ? <span className="text-slate-400"> Members get the full set.</span> : null}
             </p>
           </div>
         </div>
@@ -181,30 +163,18 @@ export default async function WorldWatchPage() {
                   using{" "}
                   <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">CRON_SECRET</code>.
                 </p>
-                <p className="mt-2 text-xs text-slate-500">
-                  Written World Watch below is unchanged when video rows are quiet.
-                </p>
+                <p className="mt-2 text-xs text-slate-500">Written World Watch below is unchanged when video rows are quiet.</p>
               </div>
             </div>
           </div>
         )}
       </section>
 
-      {!premium ? (
-        <div className="rounded-lg border border-line/45 bg-[rgba(12,16,24,0.42)] p-3 shadow-[0_12px_32px_-20px_rgba(0,0,0,0.35)] backdrop-blur-md md:hidden">
-          <WorldWatchTeaserLead compact />
-          <div className="mt-3 border-t border-line/40 pt-3">
-            <WorldWatchMemberStudyCue compact />
-          </div>
-        </div>
-      ) : null}
-
       {premium ? (
         <WorldWatchPremium items={worldWatchItems} />
       ) : (
         <>
-          <div className="hidden space-y-8 md:block lg:space-y-10">
-            <WorldWatchMemberStudyCue />
+          <div className="hidden md:block">
             <WorldWatchTeaser />
           </div>
           <div className="md:hidden">

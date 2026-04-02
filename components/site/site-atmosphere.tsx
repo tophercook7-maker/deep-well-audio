@@ -5,12 +5,19 @@ import Image from "next/image";
  * Sitewide cinematic atmosphere: one shared `next/image` layer + gradients (no per-page duplicates).
  *
  * - **Fixed, not `background-attachment: fixed`** — avoids iOS Safari jitter with scrolling content.
- * - **Image:** `public/atmosphere/site-cinematic-bg.webp` (prebuild) or `NEXT_PUBLIC_SITE_ATMOSPHERE_IMAGE`.
+ * - **Image:** `public/atmosphere/site-atmosphere.webp` (from `build:atmosphere`, optional source PNG) or `NEXT_PUBLIC_SITE_ATMOSPHERE_IMAGE`.
  *
  * Stacking: `z-0` under `app/layout`’s `relative z-10` shell. Parallax: `--dwa-atmosphere-parallax-y` on `.dwa-site-atmosphere`.
  */
 const ATMOSPHERE_SRC =
-  process.env.NEXT_PUBLIC_SITE_ATMOSPHERE_IMAGE?.trim() || "/atmosphere/site-cinematic-bg.webp";
+  process.env.NEXT_PUBLIC_SITE_ATMOSPHERE_IMAGE?.trim() || "/atmosphere/site-atmosphere.webp";
+
+/** Combined warmth + center lift — light touch so the photo (hands + pages) stays legible. */
+const WARMTH_LAYERS = [
+  "radial-gradient(circle at 50% 44%, rgba(255, 220, 160, 0.06), transparent 58%)",
+  "radial-gradient(ellipse 52% 44% at 50% 38%, rgba(212, 175, 55, 0.045), transparent 70%)",
+  "radial-gradient(ellipse 125% 58% at 50% -18%, rgba(175, 130, 75, 0.035), transparent 50%)",
+].join(",");
 
 export function SiteAtmosphere() {
   return (
@@ -26,42 +33,39 @@ export function SiteAtmosphere() {
       {/* Fallback base (covers load / 404) */}
       <div className="absolute inset-0 bg-[#0a0d10]" />
 
-      {/* Photo layer: slight overscan + light blur (lighter on mobile for perf) */}
+      {/* Photo layer: overscan; zero blur so binding, pages, and hands stay sharp */}
       <div
         className="absolute inset-0 will-change-auto motion-reduce:will-change-auto md:will-change-transform"
         style={{ transform: "translate3d(0, var(--dwa-atmosphere-parallax-y, 0px), 0)" }}
       >
-        <div className="absolute left-1/2 top-1/2 h-[108%] w-[108%] -translate-x-1/2 -translate-y-1/2">
-          <div className="relative h-full w-full blur-[1.5px] motion-reduce:blur-none sm:blur-[2.5px] md:blur-[4px]">
+        <div className="absolute left-1/2 top-1/2 h-[105%] w-[105%] -translate-x-1/2 -translate-y-1/2">
+          <div className="relative h-full w-full blur-none">
             <Image
               src={ATMOSPHERE_SRC}
               alt=""
               fill
               sizes="100vw"
-              quality={62}
+              quality={82}
               priority
               fetchPriority="high"
-              className="object-cover object-[center_32%]"
+              className="object-cover object-[center_40%] sm:object-[center_42%]"
             />
           </div>
         </div>
       </div>
 
-      {/* Readability wash — lighter than before so the photo stays felt, not buried */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0d10]/72 via-[#0a0d10]/38 to-[#0a0d10]/82" />
+      {/* Readability wash — lighter so the scene reads as a Bible in hands, not a matte void */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/38 via-black/14 to-black/44" />
 
-      {/* Soft radial glow — focal warmth without flattening the scene */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_42%_at_50%_36%,rgba(212,175,55,0.09),transparent_72%)]" />
+      {/* Focal warmth + subtle center lift (one composited layer) */}
+      <div className="absolute inset-0" style={{ background: WARMTH_LAYERS }} />
 
-      {/* Residual warmth from top */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_125%_58%_at_50%-20%,rgba(175,130,75,0.06),transparent_52%)]" />
+      {/* Depth at sides — minimal so hands at edges still read */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_42%_78%_at_0%_48%,rgba(8,10,14,0.1),transparent_62%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_42%_78%_at_100%_46%,rgba(8,10,14,0.11),transparent_62%)]" />
 
-      {/* Depth at sides — subtle; heavy sides read as a “solid wall” */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_75%_at_0%_45%,rgba(12,14,20,0.22),transparent_58%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_75%_at_100%_40%,rgba(10,12,18,0.24),transparent_58%)]" />
-
-      {/* Vignette — frames content without eating the Bible */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_28%,rgba(4,6,9,0.52)_100%)]" />
+      {/* Vignette — gentle; keeps focus on center Bible without crushing the subject */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_45%,rgba(0,0,0,0.26)_100%)]" />
 
       {/* Very subtle dust — hidden for reduced motion */}
       <div className="pointer-events-none absolute inset-0 motion-reduce:hidden">
@@ -85,7 +89,7 @@ export function SiteAtmosphere() {
 
       {/* Granular calm (CSS noise) — toned down vs. busy UI */}
       <div
-        className="absolute inset-0 opacity-[0.028] mix-blend-overlay motion-reduce:opacity-[0.02]"
+        className="absolute inset-0 opacity-[0.014] mix-blend-overlay motion-reduce:opacity-[0.01]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         }}
