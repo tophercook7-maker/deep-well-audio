@@ -21,21 +21,13 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
           <div className="max-w-xl">
             <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/80">Library</p>
             <h2 id="home-join-cta-heading" className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">
-              {plan === "guest" ? "Join the Deep Well Library" : "Go deeper when you’re ready"}
+              Saved teaching, in one place
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-[0.9375rem]">
               {plan === "guest" ? (
-                <>
-                  Join to unlock deeper access to the library, expanded World Watch content, and a more personalized experience.{" "}
-                  <span className="text-slate-300">Premium</span> adds written World Watch digests, bookmarks, notes, and richer study tools
-                  when you want that layer.
-                </>
+                <>Create a free account to save favorites and programs.</>
               ) : (
-                <>
-                  You&apos;re signed in. Upgrade when you want the full{" "}
-                  <span className="text-slate-300">World Watch</span> digest, bookmarks, and notes—we&apos;ll keep the tone steady and
-                  content-first.
-                </>
+                <>Premium adds tools to stay with what you hear.</>
               )}
             </p>
           </div>
@@ -46,7 +38,7 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
                   href={"/signup?next=/library" as Route}
                   className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)] transition hover:opacity-90"
                 >
-                  Join free
+                  Create account
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
                 <Link
@@ -62,7 +54,7 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
                 funnelEvent="view_plans_click"
                 className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
               >
-                View Premium
+                View plans
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </FunnelLink>
             )}

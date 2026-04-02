@@ -22,6 +22,8 @@ import { BackButton } from "@/components/buttons/back-button";
 import { getDiscoverTopicCards, getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
 import { getUserPlan } from "@/lib/auth";
 import { ExploreMeatyField } from "@/components/premium/explore-meaty-field";
+import { ExploreFirstVisitBanner } from "@/components/explore/explore-first-visit-banner";
+import { Search } from "lucide-react";
 
 function toInt(v: string | undefined, fallback?: number) {
   if (v == null || v === "") return fallback;
@@ -169,6 +171,7 @@ export default async function ExplorePage({
         <p className="mt-4 max-w-2xl leading-relaxed text-slate-100/95">
           Curated sermons, podcasts, and biblical teaching in one directory. Search, filter by topic and source, or browse featured picks.
         </p>
+        <ExploreFirstVisitBanner />
         {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
           <div className="mt-6 rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/[0.12] via-transparent to-transparent px-6 py-5 shadow-glow">
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-200/80">Live catalog</p>
@@ -318,14 +321,21 @@ export default async function ExplorePage({
         </div>
         <label className="lg:col-span-2">
           <span className="text-xs uppercase tracking-wide text-amber-100/70">Search</span>
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder="Show, episode, host, or topic"
-            autoComplete="off"
-            className="mt-2 w-full rounded-2xl border border-line bg-soft/40 px-4 py-3 text-sm text-text outline-none ring-accent/30 focus:ring-2 [&::-webkit-search-cancel-button]:opacity-70"
-          />
+          <div className="relative mt-2">
+            <Search
+              className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-amber-200/90"
+              strokeWidth={2.5}
+              aria-hidden
+            />
+            <input
+              type="search"
+              name="q"
+              defaultValue={q}
+              placeholder="Show, episode, host, or topic"
+              autoComplete="off"
+              className="w-full rounded-2xl border border-line bg-soft/40 py-3 pl-11 pr-4 text-sm text-text outline-none ring-accent/30 focus:ring-2 [&::-webkit-search-cancel-button]:opacity-70"
+            />
+          </div>
         </label>
 
         <label>

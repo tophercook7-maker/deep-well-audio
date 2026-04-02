@@ -2,7 +2,6 @@
 
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
-import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { useAccountPlanOptional } from "@/components/plan/plan-context";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
@@ -46,19 +45,6 @@ export function PremiumUpgradeActions({
   return (
     <div className={className.trim()}>
       <div className={`flex flex-wrap gap-3 sm:gap-3.5 ${justify}`}>
-        <button
-          type="button"
-          onClick={() => {
-            trackFunnelEvent("premium_feature_click", {
-              intent: "upgrade_modal",
-              ...(analyticsPlacement ? { placement: analyticsPlacement } : {}),
-            });
-            ctx?.openUpgradeModal();
-          }}
-          className={btnGhost}
-        >
-          See what&apos;s included
-        </button>
         <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
           Subscribe — $9/month
         </StartCheckoutButton>
@@ -72,17 +58,19 @@ export function PremiumUpgradeActions({
         </FunnelLink>
       </div>
       {showJoinLink ? (
-        <p className={`mt-3 max-w-md text-xs leading-relaxed text-muted ${hintAlign}`}>
-          <FunnelLink
-            href={"/join" as Route}
-            funnelEvent="join_list_click"
-            funnelData={funnelPlacement}
-            className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
-          >
-            Join the Deep Well list
-          </FunnelLink>
-          <span className="text-slate-500"> — stay in the loop; your email stays private.</span>
-        </p>
+        <div className={`mt-3 max-w-md space-y-1 text-xs leading-relaxed text-muted ${hintAlign}`}>
+          <p>
+            <FunnelLink
+              href={"/join" as Route}
+              funnelEvent="join_list_click"
+              funnelData={funnelPlacement}
+              className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
+            >
+              Short updates. No noise.
+            </FunnelLink>
+          </p>
+          <p className="text-slate-500">Your email stays private.</p>
+        </div>
       ) : null}
     </div>
   );

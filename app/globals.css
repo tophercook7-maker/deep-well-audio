@@ -22,8 +22,8 @@
 }
 
 html {
-  /* Canvas fallback (overscroll / before paint); main scene is SiteAtmosphere + transparent body */
-  background-color: var(--dwa-bg);
+  /* Transparent canvas: fixed SiteAtmosphere (z-0) + solid fallback div behind the image provide the scene */
+  background-color: transparent;
   color: var(--dwa-text);
   min-height: 100%;
 }

@@ -1,13 +1,14 @@
 "use client";
 
-import type { Route } from "next";
-import { FunnelLink } from "@/components/analytics/funnel-link";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 import type { UserPlan } from "@/lib/permissions";
 
 const btnPrimary =
-  "inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:w-auto";
+  "inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:w-auto sm:min-w-[12rem]";
+
+const btnYearly =
+  "inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-line/90 px-6 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 sm:w-auto sm:min-w-[12rem]";
 
 type Props = {
   stripeReady: boolean;
@@ -17,63 +18,22 @@ type Props = {
 export function PricingPremiumCheckout({ stripeReady, plan }: Props) {
   if (plan === "premium") {
     return (
-      <div id="subscribe" className="mt-6 scroll-mt-28 space-y-4">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Your membership</p>
+      <div id="subscribe" className="mt-8 scroll-mt-28 space-y-4">
         <PremiumActiveState align="start" />
       </div>
     );
   }
 
   return (
-    <div id="subscribe" className="mt-6 scroll-mt-28 space-y-4">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-200/60">Subscribe</p>
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <StartCheckoutButton interval="monthly" disabled={!stripeReady} className={btnPrimary}>
-          Monthly — $9/month
-        </StartCheckoutButton>
-        <StartCheckoutButton interval="yearly" disabled={!stripeReady} className={btnPrimary}>
-          Yearly — $90/year
-        </StartCheckoutButton>
-      </div>
+    <div id="subscribe" className="mt-8 scroll-mt-28 space-y-3">
+      <StartCheckoutButton interval="monthly" disabled={!stripeReady} className={btnPrimary}>
+        Start Premium
+      </StartCheckoutButton>
+      <StartCheckoutButton interval="yearly" disabled={!stripeReady} className={btnYearly}>
+        $90/year
+      </StartCheckoutButton>
       {!stripeReady ? (
-        <>
-          <p className="text-sm leading-relaxed text-muted">
-            Checkout will be available once billing is fully configured—buttons stay off until Stripe keys, price IDs, and site URL are set on the
-            server. Listening and exploring stay free meanwhile.
-          </p>
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <FunnelLink
-              href={"/join" as Route}
-              funnelEvent="join_list_click"
-              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
-            >
-              Get notified
-            </FunnelLink>
-            <a
-              href="#notify"
-              className="text-sm font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
-            >
-              About the email list
-            </a>
-          </div>
-        </>
-      ) : (
-        <p className="text-xs leading-relaxed text-slate-400">
-          Secure checkout with Stripe. Manage or cancel through Stripe (links in your subscription receipts) or contact us—no surprise hoops.
-        </p>
-      )}
-      {stripeReady ? (
-        <p className="text-xs leading-relaxed text-slate-400">
-          Not ready to subscribe?{" "}
-          <FunnelLink
-            href={"/join" as Route}
-            funnelEvent="join_list_click"
-            className="font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline"
-          >
-            Join the Deep Well list
-          </FunnelLink>{" "}
-          to stay in the loop—your email stays private.
-        </p>
+        <p className="max-w-md text-sm text-muted">Checkout is not available in this environment yet.</p>
       ) : null}
     </div>
   );

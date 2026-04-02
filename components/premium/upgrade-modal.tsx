@@ -81,45 +81,9 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
 
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/70">Premium</p>
         <h2 id="upgrade-modal-title" className="mt-2 text-xl font-semibold text-white sm:text-2xl">
-          Premium helps you study, not just listen
+          Premium adds tools to stay with what you hear.
         </h2>
-        <p className="mt-3 text-sm leading-[1.65] text-muted">
-          Listening stays free for everyone. Premium adds calm structure—bookmarks, notes, topic packs, World Watch, and tools to find deeper
-          teaching without more noise. Billing runs securely through Stripe.
-        </p>
-
-        <ul className="mt-5 space-y-2.5 text-sm text-slate-200">
-          <li className="flex gap-2">
-            <span className="text-accent" aria-hidden>
-              ·
-            </span>
-            Save key moments with timestamped bookmarks
-          </li>
-          <li className="flex gap-2">
-            <span className="text-accent" aria-hidden>
-              ·
-            </span>
-            Take private notes on teaching, tied to episodes
-          </li>
-          <li className="flex gap-2">
-            <span className="text-accent" aria-hidden>
-              ·
-            </span>
-            Follow structured topic packs across teachers
-          </li>
-          <li className="flex gap-2">
-            <span className="text-accent" aria-hidden>
-              ·
-            </span>
-            Find deeper content faster with advanced filtering
-          </li>
-          <li className="flex gap-2">
-            <span className="text-accent" aria-hidden>
-              ·
-            </span>
-            World Watch — member-only context on faith and public life
-          </li>
-        </ul>
+        <p className="mt-3 text-sm leading-[1.65] text-muted">Billing runs through Stripe.</p>
 
         <p className="mt-6 rounded-2xl border border-accent/20 bg-accent/5 px-4 py-3 text-center text-sm text-amber-100/90">
           <span className="font-semibold text-white">$9/month</span> or <span className="font-semibold text-white">$90/year</span>
@@ -152,7 +116,7 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
               onClick={close}
               className={`${btnGhost} order-3 whitespace-normal text-center sm:order-2 sm:whitespace-nowrap`}
             >
-              Join the Deep Well list
+              Short updates. No noise.
             </FunnelLink>
             <FunnelLink
               href={"/pricing#subscribe" as Route}

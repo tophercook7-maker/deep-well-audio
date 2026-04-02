@@ -9,7 +9,7 @@ import { getSupabaseAuthCookieOptions } from "@/lib/supabase/cookie-options";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const nextPath = safeInternalNext(url.searchParams.get("next"), "/library");
+  const nextPath = safeInternalNext(url.searchParams.get("next"));
   const origin = getSiteOriginFromRequest(request);
 
   if (!code) {

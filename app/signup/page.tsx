@@ -14,7 +14,7 @@ export default async function SignupPage({
 }) {
   const sp = await searchParams;
   const rawNext = typeof sp.next === "string" ? sp.next : undefined;
-  const next = safeInternalNext(rawNext, "/library");
+  const next = safeInternalNext(rawNext);
   const loginHref = `/login?next=${encodeURIComponent(next)}`;
   const authAvailable = hasPublicSupabaseEnv();
 
@@ -27,7 +27,7 @@ export default async function SignupPage({
       <div className="card card-dense mx-auto mt-8 max-w-xl p-8 sm:p-10">
         <DeepWellLogo variant="inline" brandClassName="mb-6 sm:mb-7" />
         <span className="tag">Members</span>
-        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Create your account</h1>
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Create account</h1>
         <p className="mt-4 leading-relaxed text-slate-200/95">
           Deep Well Audio uses Supabase for secure sign-in. Pick a strong password; if your project requires email confirmation, you&apos;ll
           get a link from Supabase before your first login.

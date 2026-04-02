@@ -25,7 +25,7 @@ export function AuthMenu({ user, plan }: { user: User | null; plan: UserPlan }) 
           href="/signup"
           className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-slate-950 transition hover:opacity-90"
         >
-          Join
+          Create account
         </Link>
       </div>
     );
@@ -46,7 +46,7 @@ export function AuthMenu({ user, plan }: { user: User | null; plan: UserPlan }) 
           funnelEvent="view_plans_click"
           className="rounded-full border border-accent/35 bg-accent/10 px-3 py-1 text-xs font-semibold text-amber-100/90 transition hover:border-accent/50 hover:bg-accent/15"
         >
-          Upgrade
+          View plans
         </FunnelLink>
       ) : null}
       <span className="hidden max-w-[10rem] truncate text-sm text-muted md:inline">{user.email}</span>

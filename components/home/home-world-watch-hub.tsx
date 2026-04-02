@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Globe, Radar } from "lucide-react";
+import { Globe } from "lucide-react";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 import type { UserPlan } from "@/lib/permissions";
@@ -16,10 +16,9 @@ type Props = {
 };
 
 /**
- * Homepage anchor for World Watch: optional YouTube “lens” row plus the existing digest preview.
+ * Homepage anchor for World Watch: optional YouTube row plus digest preview.
  */
 export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
-  /** Compact homepage preview: 2–3 items so WW feels intentional, not a thumbnail wall. */
   const ytCap = plan === "premium" ? 3 : plan === "free" ? 3 : 2;
   const ytShow = youtubeItems.slice(0, ytCap);
 
@@ -31,74 +30,50 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
           aria-hidden
         />
         <div className="relative">
-          <div className="flex flex-wrap items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/25 bg-accent/[0.08] text-amber-200/90">
-              <Radar className="h-6 w-6" aria-hidden />
-            </div>
-            <div className="min-w-0 max-w-3xl">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-amber-200/65">World Watch</p>
-              <h2 id="home-ww-hub-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-                When culture screams, reach for ground you can stand on
-              </h2>
-              <p className="mt-3.5 text-sm leading-[1.7] text-slate-400 sm:text-[0.9375rem]">
-                Headlines train reaction; World Watch trains discernment—through Scripture first. Video lens for everyone; a taste of the written
-                digest below. <span className="text-slate-300">Premium</span> is the full written edition and every lens pick—the line between
-                &quot;I scrolled&quot; and &quot;I actually understand.&quot;{" "}
-                <FunnelLink
-                  href={"/pricing" as Route}
-                  funnelEvent="view_plans_click"
-                  funnelData={{ placement: "home_world_watch_hub" }}
-                  className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
-                >
-                  Premium →
-                </FunnelLink>
+          <div className="max-w-3xl">
+            <h2 id="home-ww-hub-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              Pay attention without getting pulled in
+            </h2>
+            <div className="mt-5 space-y-4 text-base leading-[1.65] text-slate-300/95 sm:text-[1.0625rem]">
+              <p>The world moves fast. Most of it is hard to process in real time.</p>
+              <p>World Watch slows it down.</p>
+              <p>
+                It gathers a small number of stories and holds them still long enough to understand what&apos;s happening—and how to think about it.
               </p>
             </div>
           </div>
 
           {ytShow.length > 0 ? (
             <div className="mt-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-rose-200/70">Video lens</p>
-              <CuratedVideoGridWithStudy
-                items={ytShow}
-                plan={plan}
-                loginNext="/world-watch"
-                premiumTeaser={plan !== "premium"}
-                thumbnailPriorityFirstN={1}
-                revealDelayMs={50}
-                gridClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-              />
-              {youtubeItems.length > ytCap ? (
-                <p className="mt-4 text-xs text-slate-500">
-                  {plan === "premium" ? (
-                    <Link href={"/world-watch" as Route} className="text-amber-200/80 underline-offset-2 hover:underline">
-                      Open World Watch for more video picks →
-                    </Link>
-                  ) : (
-                    <>
-                      <FunnelLink
-                        href={"/pricing" as Route}
-                        funnelEvent="view_plans_click"
-                        funnelData={{ placement: "home_world_watch_video_footer" }}
-                        className="font-medium text-amber-200/85 underline-offset-2 hover:underline"
-                      >
-                        Premium
-                      </FunnelLink>{" "}
-                      unlocks every clip and the full digest—when the noise won't shut up.
-                    </>
-                  )}
-                </p>
+              <p className="text-sm leading-snug text-slate-400">A few clips to help you see clearly.</p>
+              <div className="mt-4">
+                <CuratedVideoGridWithStudy
+                  items={ytShow}
+                  plan={plan}
+                  loginNext="/world-watch"
+                  premiumTeaser={plan !== "premium"}
+                  thumbnailPriorityFirstN={1}
+                  revealDelayMs={50}
+                  gridClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                />
+              </div>
+              {plan !== "premium" ? (
+                <p className="mt-5 text-sm leading-relaxed text-slate-400">Members see the full set and written digest.</p>
               ) : null}
             </div>
           ) : (
-            <div className="mt-8 rounded-2xl border border-line/60 bg-soft/10 p-5">
-              <div className="flex gap-3">
-                <Globe className="h-5 w-5 shrink-0 text-rose-200/60" aria-hidden />
-                <p className="text-sm leading-relaxed text-slate-400">
-                  Video picks load from editorially flagged sources; if a feed is temporarily unavailable, this row stays quiet on purpose.
-                  The written digest preview below is unchanged.
-                </p>
+            <div className="mt-8 space-y-4">
+              <div className="rounded-2xl border border-line/60 bg-soft/10 p-5">
+                <div className="flex gap-3">
+                  <Globe className="h-5 w-5 shrink-0 text-slate-500" aria-hidden />
+                  <p className="text-sm leading-relaxed text-slate-400">
+                    Clips load when available. The written digest preview below is unchanged.
+                  </p>
+                </div>
               </div>
+              {plan !== "premium" ? (
+                <p className="text-sm leading-relaxed text-slate-400">Members see the full set and written digest.</p>
+              ) : null}
             </div>
           )}
 
@@ -107,6 +82,28 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
               <WorldWatchHomePreview items={digestItems} embedded />
             </RevealOnScroll>
           </div>
+
+          <div className="mt-10 flex flex-col gap-3 border-t border-line/40 pt-8 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link
+              href={"/world-watch" as Route}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.35)] transition hover:opacity-95"
+            >
+              Open World Watch
+            </Link>
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              funnelData={{ placement: "home_world_watch_hub" }}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
+            >
+              View plans
+            </FunnelLink>
+          </div>
+          <p className="mt-6 max-w-xl text-sm leading-[1.65] text-slate-400">
+            You don&apos;t have to keep up with everything.
+            <br />
+            Just stay grounded in what matters.
+          </p>
         </div>
       </div>
     </section>

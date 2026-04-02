@@ -85,11 +85,7 @@ function StructuredPack({
         fallback={
           <div className="mt-2 rounded-2xl border border-dashed border-line/80 bg-soft/15 px-5 py-6 text-center sm:px-8">
             <LockKeyhole className="mx-auto h-8 w-8 text-amber-200/50" aria-hidden />
-            <p className="mt-3 text-base font-semibold text-white">Follow the full path with Premium</p>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted">
-              The rest of this track is ordered for steady listening—built to be understood step by step, curated for clarity rather than
-              hype.
-            </p>
+            <p className="mt-3 text-base font-semibold text-white">Premium adds tools to stay with what you hear.</p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <FunnelLink
                 href={"/pricing" as Route}
@@ -97,13 +93,6 @@ function StructuredPack({
                 className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
               >
                 View plans
-              </FunnelLink>
-              <FunnelLink
-                href={"/join" as Route}
-                funnelEvent="join_list_click"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line px-5 py-2.5 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
-              >
-                Join the Deep Well list
               </FunnelLink>
             </div>
           </div>
@@ -142,10 +131,7 @@ function LegacyTopicPackSection({
         feature="topic_packs"
         fallback={
           <div className="mt-5 rounded-2xl border border-dashed border-line/75 bg-bg/50 p-5 text-center">
-            <p className="text-sm font-medium text-slate-200">Follow the full path with Premium</p>
-            <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-muted">
-              Premium unlocks the full ordered list for this topic. Episode links resolve from your catalog as titles match the path.
-            </p>
+            <p className="text-sm font-medium text-slate-200">Premium adds tools to stay with what you hear.</p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <FunnelLink
                 href={"/pricing" as Route}
@@ -153,13 +139,6 @@ function LegacyTopicPackSection({
                 className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
               >
                 View plans
-              </FunnelLink>
-              <FunnelLink
-                href={"/join" as Route}
-                funnelEvent="join_list_click"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line px-5 py-2.5 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
-              >
-                Join the Deep Well list
               </FunnelLink>
             </div>
           </div>

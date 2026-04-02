@@ -14,7 +14,7 @@ export default async function LoginPage({
 }) {
   const sp = await searchParams;
   const rawNext = typeof sp.next === "string" ? sp.next : undefined;
-  const next = safeInternalNext(rawNext, "/library");
+  const next = safeInternalNext(rawNext);
   const signupHref = `/signup?next=${encodeURIComponent(next)}`;
   const authAvailable = hasPublicSupabaseEnv();
 
@@ -29,14 +29,13 @@ export default async function LoginPage({
         <span className="tag">Members</span>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Sign in</h1>
         <p className="mt-4 leading-relaxed text-slate-200/95">
-          Sign in to continue where you left off and access member-only features. Use the email and password you registered with—we&apos;ll
-          return you to your library or the page you were on.
+          Use the email and password you registered with. We&apos;ll return you to the page you came from, or to Explore.
         </p>
         <LoginForm authAvailable={authAvailable} />
         <p className="mt-6 text-sm text-slate-200/95">
           Need an account?{" "}
           <Link href={signupHref as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">
-            Create one
+            Create account
           </Link>
         </p>
       </div>

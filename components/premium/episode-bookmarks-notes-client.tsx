@@ -13,7 +13,11 @@ type Props = {
 
 export function EpisodeBookmarksNotesClient({ episodeId, initialBookmarks, initialNotes }: Props) {
   return (
-    <section className="mt-10 border-t border-line/50 pt-8" aria-labelledby="episode-study-heading">
+    <section
+      id="episode-study-section"
+      className="mt-10 border-t border-line/50 pt-8 scroll-mt-6"
+      aria-labelledby="episode-study-heading"
+    >
       <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/70">Premium study</p>
       <h2 id="episode-study-heading" className="mt-2 text-xl font-semibold text-white">
         Bookmarks &amp; notes

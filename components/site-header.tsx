@@ -4,16 +4,16 @@ import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
-import { Globe, Headphones, Home, Library, Search, Tags } from "lucide-react";
+import { Compass, Globe, Headphones, Home, Library, Tags } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
 
 type NavItem =
-  | { href: "/explore" | "/library" | "/world-watch"; label: string; icon: typeof Search | typeof Library | typeof Globe }
+  | { href: "/explore" | "/library" | "/world-watch"; label: string; icon: typeof Compass | typeof Library | typeof Globe }
   | { href: string; label: string; icon: typeof Headphones | typeof Tags; hash: true };
 
 const nav: NavItem[] = [
-  { href: "/explore", label: "Explore", icon: Search },
+  { href: "/explore", label: "Explore", icon: Compass },
   { href: "/#topics", label: "Topics", icon: Tags, hash: true },
   { href: "/library", label: "Library", icon: Library },
   { href: "/world-watch", label: "World Watch", icon: Globe },
@@ -112,7 +112,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
 
           <nav className="flex min-w-0 flex-wrap items-center gap-1.5 max-md:pt-0.5 sm:flex-1 sm:justify-end sm:gap-2.5 sm:pt-0 md:gap-3" aria-label="Primary">
             <Link href="/" className={linkClass}>
-              <Home className="h-4 w-4 shrink-0" aria-hidden />
+              <Home className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
               Home
             </Link>
             {nav.map((item) => {
@@ -120,14 +120,14 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
               if ("hash" in item) {
                 return (
                   <a key={item.href} href={item.href} className={linkClass}>
-                    <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                    <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
                     {item.label}
                   </a>
                 );
               }
               return (
                 <Link key={item.href} href={item.href} className={linkClass}>
-                  <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                  <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
                   {item.label}
                 </Link>
               );

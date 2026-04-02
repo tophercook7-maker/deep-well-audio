@@ -36,7 +36,7 @@ export function HomeRecentlyAddedCurated({ items, plan }: Props) {
             href={"/curated-teachings" as Route}
             className="shrink-0 self-start rounded-full border border-line/70 bg-soft/20 px-4 py-2.5 text-sm font-medium text-amber-100/90 transition hover:border-accent/40 hover:bg-accent/[0.08] sm:self-auto"
           >
-            Browse library →
+            Explore →
           </Link>
         </div>
 

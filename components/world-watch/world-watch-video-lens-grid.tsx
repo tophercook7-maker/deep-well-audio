@@ -24,7 +24,7 @@ type Props = {
 };
 
 /**
- * World Watch only: fewer cards on narrow viewports + “View more clips” (desktop/tablet keeps full band).
+ * World Watch only: fewer cards on narrow viewports + “See more clips” (desktop/tablet keeps full band).
  */
 export function WorldWatchVideoLensGrid({
   items,
@@ -79,7 +79,7 @@ export function WorldWatchVideoLensGrid({
             className="inline-flex items-center gap-1.5 rounded-full border border-line/70 bg-soft/20 px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-300 transition hover:border-rose-400/35 hover:text-rose-100/90 sm:px-4 sm:py-2.5 sm:text-xs"
             onClick={() => setExpanded(true)}
           >
-            View more clips
+            See more clips
             <ChevronDown className="h-3.5 w-3.5 opacity-80" aria-hidden />
           </button>
         </div>

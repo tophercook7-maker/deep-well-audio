@@ -35,7 +35,7 @@ export default function LibraryPlaylistsPage() {
           <div className="card border-dashed border-line/70 p-8 text-center">
             <p className="text-sm font-medium text-slate-200">Playlists are a Premium feature</p>
             <p className="mx-auto mt-2 max-w-md text-xs text-muted">
-              Listening everywhere stays free. Upgrade when you want ordered study lists.
+              Listening stays free. Premium adds tools to stay with what you hear.
             </p>
             <PremiumUpgradeActions className="mt-5" />
           </div>

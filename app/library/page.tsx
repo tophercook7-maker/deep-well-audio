@@ -7,6 +7,7 @@ import { canUseFeature } from "@/lib/permissions";
 import { UpgradeCard } from "@/components/premium/upgrade-card";
 import { getLibraryFavorites, getLibrarySavedShows } from "@/lib/queries";
 import { getRecentBookmarkEpisodes } from "@/lib/bookmarks";
+import { getLatestNoteBodiesForEpisodes } from "@/lib/notes";
 import { hasPublicSupabaseEnv } from "@/lib/env";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { FavoritesList } from "@/components/library/favorites-list";
@@ -18,6 +19,7 @@ import { RecentlyPlayedSection } from "@/components/listening/recently-played";
 import { LibraryCheckoutSuccess } from "@/components/library/library-checkout-success";
 import { LibraryCuratedStudySection } from "@/components/library/library-curated-study-section";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { LibraryEmptySaved } from "@/components/library/library-empty-saved";
 
 export default async function LibraryPage() {
   const authConfigured = hasPublicSupabaseEnv();
@@ -64,10 +66,9 @@ export default async function LibraryPage() {
           <div className="grid gap-8 p-8 lg:grid-cols-[1fr_0.85fr] lg:items-center">
             <div>
               <span className="tag">Library</span>
-              <h1 className="mt-4 text-4xl font-semibold text-white">Save what you want to hear again</h1>
+              <h1 className="mt-4 text-4xl font-semibold text-white">Saved teaching, in one place</h1>
               <p className="mt-4 max-w-2xl leading-7 text-muted">
-                Create a free account to favorite episodes and save whole programs. Your library stays in sync with this same dark, quiet
-                layout—made for long listening sessions, not distraction.
+                Create a free account to favorite episodes and save whole programs. Your lists stay with this account.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -128,6 +129,23 @@ export default async function LibraryPage() {
     console.error("page library lists:", e instanceof Error ? e.message : e);
   }
 
+  let notePreviewByEpisodeId: Record<string, string> = {};
+  try {
+    const epIds = favoriteRows
+      .map((r) => r.episode?.id)
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
+    if (epIds.length) {
+      notePreviewByEpisodeId = Object.fromEntries(await getLatestNoteBodiesForEpisodes(user.id, epIds));
+    }
+  } catch (e) {
+    if (isNextDynamicUsageError(e)) throw e;
+    console.error("page library note previews:", e instanceof Error ? e.message : e);
+  }
+
+  const hasFavorites = favoriteRows.some((r) => r.episode);
+  const hasSavedShows = savedRows.some((r) => r.show);
+  const savedListsBothEmpty = !hasFavorites && !hasSavedShows;
+
   return (
     <main className="container-shell space-y-12 py-12 sm:py-14">
       <div className="flex flex-col gap-4 border-b border-line/50 pb-5 sm:flex-row sm:items-center sm:justify-between">
@@ -151,10 +169,8 @@ export default async function LibraryPage() {
 
       <div>
         <span className="tag">Signed in</span>
-        <h1 className="mt-4 text-4xl font-semibold text-white">Your library</h1>
-        <p className="mt-3 max-w-2xl text-muted">
-          Favorites and saved shows stay here. Remove items from these cards or from individual show pages.
-        </p>
+        <h1 className="mt-4 text-4xl font-semibold text-white">Your saved teaching</h1>
+        <p className="mt-3 max-w-2xl text-muted">Come back to what stayed with you</p>
         <div className="mt-5 flex flex-wrap gap-3 text-sm">
           {plan === "premium" ? (
             <FunnelLink
@@ -209,12 +225,9 @@ export default async function LibraryPage() {
         <section className="space-y-4" aria-labelledby="library-upgrade-prompt">
           <div>
             <h2 id="library-upgrade-prompt" className="text-lg font-semibold text-white sm:text-xl">
-              Want more control over your study?
+              Premium
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-              Premium adds bookmarks for key moments, notes on episodes, structured topic packs, and advanced filters—only if you want that
-              layer on top of listening.
-            </p>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">Premium adds tools to stay with what you hear.</p>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               <FunnelLink
                 href={"/pricing" as Route}
@@ -228,7 +241,7 @@ export default async function LibraryPage() {
                 funnelEvent="join_list_click"
                 className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
               >
-                Join the Deep Well list
+                Short updates. No noise.
               </FunnelLink>
             </div>
           </div>
@@ -245,12 +258,9 @@ export default async function LibraryPage() {
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
               <h2 id="library-premium-state" className="mt-1 text-xl font-semibold tracking-tight text-white">
-                Your study tools are unlocked
+                Premium is active
               </h2>
-              <p className="mt-3 text-sm leading-[1.65] text-muted">
-                Bookmarks, notes, topic packs, playlists, and advanced filters are included on your plan—same calm player, more structure when
-                you need it.
-              </p>
+              <p className="mt-3 text-sm leading-[1.65] text-muted">Premium adds tools to stay with what you hear.</p>
               <ul className="mt-4 space-y-2 text-sm text-slate-200">
                 <li className="flex gap-2">
                   <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden />
@@ -325,21 +335,34 @@ export default async function LibraryPage() {
         </section>
       ) : null}
 
-      <section className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Heart className="h-5 w-5 text-accent" />
-          <h2 className="text-2xl font-semibold">Favorite episodes</h2>
-        </div>
-        <FavoritesList rows={favoriteRows as never} />
-      </section>
+      <div className="space-y-6">
+        <p className="text-xs leading-relaxed text-slate-500/75">Pick up where you left off</p>
+        {savedListsBothEmpty ? (
+          <LibraryEmptySaved />
+        ) : (
+          <div className="space-y-10 sm:space-y-12">
+            <section className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-accent" />
+                <h2 className="text-2xl font-semibold">Favorite episodes</h2>
+              </div>
+              <FavoritesList
+                rows={favoriteRows as never}
+                showPremiumSaveFollowUp={plan !== "premium"}
+                notePreviewByEpisodeId={notePreviewByEpisodeId}
+              />
+            </section>
 
-      <section className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Headphones className="h-5 w-5 text-accent" />
-          <h2 className="text-2xl font-semibold">Saved shows</h2>
-        </div>
-        <SavedShowsList rows={savedRows as never} />
-      </section>
+            <section className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Headphones className="h-5 w-5 text-accent" />
+                <h2 className="text-2xl font-semibold">Saved shows</h2>
+              </div>
+              <SavedShowsList rows={savedRows as never} showPremiumSaveFollowUp={plan !== "premium"} />
+            </section>
+          </div>
+        )}
+      </div>
     </main>
   );
 }

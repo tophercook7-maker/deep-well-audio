@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -113,6 +114,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             </div>
           </AccountPlanProvider>
         </PlayerProvider>
+        <Script id="clarity" strategy="afterInteractive">
+          {`
+(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "w5fs4tn2ns");
+`}
+        </Script>
       </body>
     </html>
   );

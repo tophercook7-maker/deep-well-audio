@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 
@@ -23,11 +22,7 @@ export function WorldWatchTeaserWhatThisIs({ condense = false }: { condense?: bo
       </h2>
       <BulletList
         className={condense ? "mt-4 text-xs sm:text-sm" : "mt-4"}
-        items={[
-          "A weekly way to step back from the noise",
-          "A place to think before reacting",
-          "A steady voice when everything else is loud",
-        ]}
+        items={["Curated stories on faith and public life", "Written digest with context", "Room to read before reacting"]}
       />
     </section>
   );
@@ -61,23 +56,14 @@ export function WorldWatchTeaserUpgrade({ tight = false, condense = false }: { t
         id="ww-upgrade-heading"
         className={condense ? "text-base font-semibold text-white sm:text-xl" : "text-lg font-semibold text-white sm:text-xl"}
       >
-        Member access
+        Members
       </h2>
       <p className={condense ? "mt-2 max-w-prose text-xs leading-relaxed text-slate-300/95 sm:mt-3 sm:text-sm" : "mt-3 max-w-prose text-sm leading-relaxed text-slate-300/95"}>
-        The public view shows a portion.
+        Members see the full set and written digest.
       </p>
-      <p className={condense ? "mt-3 text-xs text-slate-300/95 sm:text-sm" : "mt-3 text-sm text-slate-300/95"}>
-        Members get the full digest for each story:
+      <p className={condense ? "mt-3 text-xs text-slate-400/95 sm:text-sm" : "mt-3 text-sm text-slate-400/95"}>
+        A few clips to help you see clearly.
       </p>
-      <BulletList
-        className={condense ? "mt-3 text-xs sm:text-sm" : "mt-4"}
-        items={[
-          "Clear written summaries",
-          "Scripture tied directly to the moment",
-          "Notes to help you think, not react",
-          "Takeaways you can carry into real life",
-        ]}
-      />
       <FunnelLink
         href={"/pricing" as Route}
         funnelEvent="view_plans_click"

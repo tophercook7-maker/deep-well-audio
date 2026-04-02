@@ -4,22 +4,32 @@ import { Heart } from "lucide-react";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { hasPublicSupabaseEnv } from "@/lib/env";
+import { PremiumSaveFollowUp } from "@/components/premium/premium-save-follow-up";
 
 type Props = {
   episodeId: string;
   initial: boolean;
   /** Optional full path for ?next= (e.g. include querystring if you pass it from server). */
   returnPath?: string;
+  /** After a successful save, show a quiet Premium upsell (non-premium users only; set from server). */
+  showPremiumSaveFollowUp?: boolean;
 };
 
-export function FavoriteButton({ episodeId, initial, returnPath }: Props) {
+export function FavoriteButton({ episodeId, initial, returnPath, showPremiumSaveFollowUp = false }: Props) {
   const router = useRouter();
   const pathname = usePathname() ?? "/";
   const [favorited, setFavorited] = useState(initial);
   const [pending, startTransition] = useTransition();
   const [hint, setHint] = useState<string | null>(null);
+  const [saveAck, setSaveAck] = useState(false);
+
+  useEffect(() => {
+    if (!saveAck) return;
+    const t = window.setTimeout(() => setSaveAck(false), 3200);
+    return () => window.clearTimeout(t);
+  }, [saveAck]);
 
   const authConfigured = hasPublicSupabaseEnv();
 
@@ -34,6 +44,8 @@ export function FavoriteButton({ episodeId, initial, returnPath }: Props) {
 
     startTransition(async () => {
       setHint(null);
+      setSaveAck(false);
+      const wasFavorited = favorited;
       try {
         const res = await fetch("/api/favorites/toggle", {
           method: "POST",
@@ -58,6 +70,9 @@ export function FavoriteButton({ episodeId, initial, returnPath }: Props) {
 
         const data = (await res.json()) as { favorited: boolean };
         setFavorited(data.favorited);
+        if (data.favorited && !wasFavorited) {
+          setSaveAck(true);
+        }
         router.refresh();
       } catch {
         setHint("Network error. Check your connection.");
@@ -89,12 +104,32 @@ export function FavoriteButton({ episodeId, initial, returnPath }: Props) {
         onClick={toggle}
         disabled={pending || !episodeId}
         className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition hover:border-accent/40 hover:text-text disabled:opacity-50"
-        aria-pressed={favorited ? "true" : "false"}
+        aria-pressed={favorited}
         aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
       >
         <Heart className={`h-4 w-4 ${favorited ? "fill-accent text-accent" : ""}`} />
         {favorited ? "Saved" : "Favorite"}
       </button>
+      {saveAck ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="max-w-[15rem] animate-dwa-save-ack text-right"
+          onAnimationEnd={(e) => {
+            if (e.target === e.currentTarget && e.animationName.includes("dwa-save-ack")) setSaveAck(false);
+          }}
+        >
+          <p className="pointer-events-none text-xs font-medium text-slate-200">Saved</p>
+          <p className="pointer-events-none mt-0.5 text-[11px] leading-snug text-slate-500">
+            Come back to this anytime in your library
+          </p>
+          {showPremiumSaveFollowUp ? (
+            <div className="pointer-events-auto mt-2">
+              <PremiumSaveFollowUp />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
       {hint ? <span className="text-right text-[11px] text-amber-200/90">{hint}</span> : null}
     </div>
   );

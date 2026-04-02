@@ -12,6 +12,41 @@ export type EpisodeNoteRow = {
   updated_at: string;
 };
 
+/** Most recently updated note body per episode (for library one-line summaries). */
+export async function getLatestNoteBodiesForEpisodes(userId: string, episodeIds: string[]): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  if (!hasPublicSupabaseEnv() || !userId || episodeIds.length === 0) return map;
+  const supabase = await createClient();
+  if (!supabase) return map;
+  const unique = [...new Set(episodeIds.filter(Boolean))];
+  if (!unique.length) return map;
+  try {
+    const { data, error } = await supabase
+      .from("episode_notes")
+      .select("episode_id, body, updated_at")
+      .eq("user_id", userId)
+      .in("episode_id", unique)
+      .order("updated_at", { ascending: false });
+
+    if (error) {
+      console.error("getLatestNoteBodiesForEpisodes:", error.message);
+      return map;
+    }
+    for (const row of data ?? []) {
+      const eid = typeof row.episode_id === "string" ? row.episode_id : "";
+      const body = typeof row.body === "string" ? row.body.trim() : "";
+      if (eid && body && !map.has(eid)) {
+        map.set(eid, row.body as string);
+      }
+    }
+    return map;
+  } catch (e) {
+    if (isNextDynamicUsageError(e)) throw e;
+    console.error("getLatestNoteBodiesForEpisodes:", e instanceof Error ? e.message : e);
+    return map;
+  }
+}
+
 export async function getEpisodeNotes(userId: string, episodeId: string): Promise<EpisodeNoteRow[]> {
   if (!hasPublicSupabaseEnv() || !userId || !episodeId) return [];
   const supabase = await createClient();

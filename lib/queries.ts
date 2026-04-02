@@ -598,7 +598,12 @@ export async function getSavedShowIds(userId: string): Promise<string[]> {
   }
 }
 
-export async function getLibraryFavorites(userId: string) {
+export type LibraryFavoriteRow = {
+  created_at: string;
+  episode: EpisodeWithShow | null;
+};
+
+export async function getLibraryFavorites(userId: string): Promise<LibraryFavoriteRow[]> {
   if (!hasPublicSupabaseEnv() || !userId) return [];
   const supabase = await createClient();
   if (!supabase) return [];
@@ -613,7 +618,7 @@ export async function getLibraryFavorites(userId: string) {
       logQueryError("getLibraryFavorites", error);
       return [];
     }
-    return data ?? [];
+    return (data ?? []) as unknown as LibraryFavoriteRow[];
   } catch (e) {
     rethrowIfDynamic(e);
     logQueryError("getLibraryFavorites", e);

@@ -85,6 +85,8 @@ export default async function WorldWatchPage() {
         <BackButton fallbackHref="/" label="Home" />
       </div>
 
+      <p className="text-[11px] leading-relaxed text-slate-500/75">This week</p>
+
       <header className="flex flex-col gap-2.5 sm:gap-4 sm:flex-row sm:items-start">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent sm:h-12 sm:w-12">
           <Globe className="h-[1.15rem] w-[1.15rem] sm:h-6 sm:w-6" aria-hidden />
@@ -94,6 +96,9 @@ export default async function WorldWatchPage() {
           <h1 className="mt-0.5 text-2xl font-semibold leading-snug tracking-tight text-white sm:mt-1 sm:text-3xl md:text-[2rem] md:leading-tight">
             See what&apos;s happening—without getting pulled into it
           </h1>
+          <p className="mt-2 max-w-xl text-sm font-normal leading-relaxed text-slate-400/92 sm:mt-2.5 sm:text-[0.9375rem]">
+            News you can think about without being pulled into it
+          </p>
           {premium ? (
             <>
               <HeroBody />

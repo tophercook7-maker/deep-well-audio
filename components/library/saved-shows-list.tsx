@@ -4,22 +4,24 @@ import { SaveShowButton } from "@/components/buttons/save-show-button";
 import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
 import { categoryLabel, formatDate } from "@/lib/format";
+import { LibraryEmptySaved } from "@/components/library/library-empty-saved";
 
 type Row = {
   created_at: string;
   show: ShowRow | null;
 };
 
-export function SavedShowsList({ rows }: { rows: Row[] }) {
+export function SavedShowsList({
+  rows,
+  showPremiumSaveFollowUp = false,
+}: {
+  rows: Row[];
+  showPremiumSaveFollowUp?: boolean;
+}) {
   const valid = rows.filter((r) => r.show);
 
   if (!valid.length) {
-    return (
-      <div className="card p-8 text-sm text-muted">
-        No saved programs yet. Open any show and use <strong className="font-medium text-slate-200">Save show</strong> to pin it to this
-        list.
-      </div>
-    );
+    return <LibraryEmptySaved />;
   }
 
   return (
@@ -42,7 +44,12 @@ export function SavedShowsList({ rows }: { rows: Row[] }) {
               <p className="mt-1 text-sm text-muted">{show.host}</p>
               <p className="mt-1 text-xs text-slate-500">Saved {formatDate(created_at)}</p>
             </div>
-            <SaveShowButton showId={show.id} initial returnPath="/library" />
+            <SaveShowButton
+              showId={show.id}
+              initial
+              returnPath="/library"
+              showPremiumSaveFollowUp={showPremiumSaveFollowUp}
+            />
           </div>
         );
       })}

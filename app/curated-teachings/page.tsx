@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { Route } from "next";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import {
   CURATED_YOUTUBE_SOURCES,
   getActiveCuratedYoutubeSourcesSorted,
@@ -100,11 +100,11 @@ export default async function CuratedTeachingsPage({
               <Link href={"/login?next=/curated-teachings" as Route} className="font-medium text-amber-200/85 hover:underline">
                 Sign in
               </Link>{" "}
-              to continue where you left off and access member-only features.{" "}
+              to continue where you left off.{" "}
               <Link href={"/pricing" as Route} className="font-medium text-amber-200/85 hover:underline">
-                Premium
+                View plans
               </Link>{" "}
-              adds deeper World Watch, notes, and bookmarks.
+              for Premium tools.
             </p>
           ) : null}
         </CuratedSectionShell>
@@ -117,13 +117,20 @@ export default async function CuratedTeachingsPage({
           <label className="sr-only" htmlFor="curated-search-q">
             Search titles
           </label>
-          <input
-            id="curated-search-q"
-            name="q"
-            defaultValue={search ?? ""}
-            placeholder="Search title or channel…"
-            className="min-h-[44px] w-full rounded-full border border-line/70 bg-[rgba(15,20,28,0.38)] px-4 py-2 text-sm text-slate-100 outline-none ring-accent/25 backdrop-blur-sm focus:ring-2"
-          />
+          <div className="relative min-h-[44px] w-full">
+            <Search
+              className="pointer-events-none absolute left-3.5 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-amber-200/90"
+              strokeWidth={2.5}
+              aria-hidden
+            />
+            <input
+              id="curated-search-q"
+              name="q"
+              defaultValue={search ?? ""}
+              placeholder="Search title or channel…"
+              className="min-h-[44px] w-full rounded-full border border-line/70 bg-[rgba(15,20,28,0.38)] py-2 pl-11 pr-4 text-sm text-slate-100 outline-none ring-accent/25 backdrop-blur-sm focus:ring-2"
+            />
+          </div>
           <button
             type="submit"
             className="min-h-[44px] shrink-0 rounded-full border border-accent/40 bg-accent/[0.1] px-5 py-2 text-sm font-medium text-amber-100 transition hover:border-accent/55"

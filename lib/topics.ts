@@ -101,6 +101,34 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
       "Messages on prayer, holiness, humility, and following Jesus in ordinary life—edification that aims at love, not guilt-driven performance.",
     relatedSlugs: ["theology", "suffering", "marriage"],
   },
+  "anxiety-and-trust": {
+    slug: "anxiety-and-trust",
+    label: "Anxiety and trust",
+    description:
+      "Pastoral teaching that keeps fear and faith in view together—honest about worry while grounding hope in God’s care and promises.",
+    relatedSlugs: ["suffering", "spiritual-growth", "theology"],
+  },
+  forgiveness: {
+    slug: "forgiveness",
+    label: "Forgiveness",
+    description:
+      "Messages on God’s pardon in Christ and the slow work of extending grace to others—with clarity on repentance, boundaries, and peace.",
+    relatedSlugs: ["marriage", "spiritual-growth", "theology"],
+  },
+  "identity-in-christ": {
+    slug: "identity-in-christ",
+    label: "Identity in Christ",
+    description:
+      "Who you are in the gospel: chosen, loved, and being renewed—teaching that sets identity on Christ, not credentials or comparison.",
+    relatedSlugs: ["theology", "spiritual-growth", "worldview"],
+  },
+  "knowing-god": {
+    slug: "knowing-god",
+    label: "Knowing God",
+    description:
+      "Teaching on the character and nearness of God—Scripture, prayer, and doctrine that aim at affectionate knowledge, not mere information.",
+    relatedSlugs: ["theology", "spiritual-growth", "church-history"],
+  },
 };
 
 /**

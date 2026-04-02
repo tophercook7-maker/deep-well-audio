@@ -87,6 +87,8 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
           favorited={favoriteIds.has(episode.id)}
           favoriteReturnPath={`/episodes/${episode.id}`}
           layout="page"
+          showPremiumSaveFollowUp={plan !== "premium"}
+          episodePageNotes={user && plan === "premium" ? "premium" : "upsell"}
         />
       </div>
 

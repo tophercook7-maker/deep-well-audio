@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
 import { getFavoriteEpisodeIds, countEpisodesByTopicTag, getEpisodesByTopicTag } from "@/lib/queries";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { EpisodeRow } from "@/components/episode-row";
 import { BackButton } from "@/components/buttons/back-button";
 import {
@@ -87,8 +87,10 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   }
 
   let favoriteIds = new Set<string>();
+  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   try {
     const user = await getSessionUser();
+    plan = await getUserPlan();
     if (user) favoriteIds = new Set(await getFavoriteEpisodeIds(user.id));
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
@@ -184,6 +186,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
                 favorited={favoriteIds.has(episode.id)}
                 favoriteReturnPath={`/topics/${meta.slug}`}
                 showFavorite
+                showPremiumSaveFollowUp={plan !== "premium"}
               />
             ))}
           </div>

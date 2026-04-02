@@ -6,6 +6,7 @@ export type FunnelEventName =
   | "waitlist_submit"
   | "premium_feature_click"
   | "topic_card_click"
+  | "guided_path_click"
   | "conversion_page_view"
   | "auth_login_complete"
   | "auth_signup_complete";

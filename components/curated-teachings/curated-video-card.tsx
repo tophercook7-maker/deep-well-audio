@@ -25,6 +25,8 @@ export function CuratedVideoCard({
   premiumTeaser = false,
   /** Tighter thumbnail + copy on narrow screens (World Watch lens). */
   density = "default",
+  /** Hide description excerpt (e.g. homepage “one thing” spotlight). */
+  hideExcerpt = false,
 }: {
   item: CuratedVideoItem;
   plan: UserPlan;
@@ -33,6 +35,7 @@ export function CuratedVideoCard({
   showCategory?: boolean;
   premiumTeaser?: boolean;
   density?: "default" | "compact";
+  hideExcerpt?: boolean;
 }) {
   const dateLabel = item.publishedAt ? formatPublished(item.publishedAt) : "";
   const primaryCat = CURATED_CATEGORY_META[item.category];
@@ -130,7 +133,7 @@ export function CuratedVideoCard({
             {categoryLine}
           </p>
         ) : null}
-        {item.excerpt ? (
+        {!hideExcerpt && item.excerpt ? (
           <p
             className={[
               "mt-1.5 flex-1 leading-relaxed text-muted sm:mt-2",
@@ -167,7 +170,7 @@ export function CuratedVideoCard({
                 href={"/signup?next=/world-watch" as Route}
                 className="inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-line/80 px-4 py-2 text-xs font-medium text-slate-300 transition hover:border-accent/35 hover:text-white sm:min-h-0"
               >
-                Join free
+                Create account
               </Link>
             </>
           ) : premiumUpsell ? (
@@ -186,7 +189,7 @@ export function CuratedVideoCard({
                 href={"/pricing" as Route}
                 className="inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-line/80 px-4 py-2 text-xs font-medium text-slate-300 transition hover:border-accent/35 hover:text-white sm:min-h-0"
               >
-                Premium · full World Watch library
+                View plans
               </Link>
             </>
           ) : (

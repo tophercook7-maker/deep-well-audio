@@ -1,21 +1,14 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { CATEGORY_OPTIONS } from "@/lib/types";
-import {
-  getActiveShowCount,
-  getFeaturedShows,
-  getHomeRecentEpisodes,
-  getPublicEpisodeCount,
-  probeCatalogBackend,
-} from "@/lib/queries";
-import { hasPublicSupabaseEnv } from "@/lib/env";
+import { getActiveShowCount, getFeaturedShows, getHomeRecentEpisodes } from "@/lib/queries";
 import { ShowCard } from "@/components/show-card";
 import { EpisodeRow } from "@/components/episode-row";
 import { HomeSetupStatusPanel } from "@/components/home-setup-status";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { getUserPlan } from "@/lib/auth";
 import { canUseFeature } from "@/lib/permissions";
-import { ArrowRight, BookOpen, Headphones, Mic2, ShieldCheck, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { EpisodeWithShow, ShowWithMeta } from "@/lib/types";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
 import { RecentlyPlayedSection } from "@/components/listening/recently-played";
@@ -31,6 +24,8 @@ import { HomeFeaturedCurated } from "@/components/home/home-featured-curated";
 import { HomeCategoryCuratedPreview } from "@/components/home/home-category-curated-preview";
 import { HomeRecentlyAddedCurated } from "@/components/home/home-recently-added-curated";
 import { HomeWorldWatchHub } from "@/components/home/home-world-watch-hub";
+import { HomeGuidedPaths } from "@/components/home/home-guided-paths";
+import { HomeStartHereToday } from "@/components/home/home-start-here-today";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { getHomepageCuratedVideoSlices } from "@/lib/curated-teachings/aggregate";
@@ -73,8 +68,6 @@ export default async function HomePage() {
   let featured: Awaited<ReturnType<typeof getFeaturedShows>> = [];
   let recentPool: Awaited<ReturnType<typeof getHomeRecentEpisodes>> = [];
   let showCount = 0;
-  let episodeCount = 0;
-  let catalogProbe: Awaited<ReturnType<typeof probeCatalogBackend>> = "missing_env";
   let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   let worldWatchPreview: WorldWatchItemPublic[] = [];
   let homepageFeaturedVideos: CuratedVideoItem[] = [];
@@ -82,21 +75,10 @@ export default async function HomePage() {
   let recentlyAddedCuratedPool: CuratedVideoItem[] = [];
   try {
     const adminClient = createServiceClient();
-    const [
-      featuredRes,
-      recentPoolRes,
-      showCountRes,
-      episodeCountRes,
-      catalogProbeRes,
-      planRes,
-      worldWatchPreviewRes,
-      curatedSlices,
-    ] = await Promise.all([
+    const [featuredRes, recentPoolRes, showCountRes, planRes, worldWatchPreviewRes, curatedSlices] = await Promise.all([
       getFeaturedShows(HOMEPAGE_FEATURED_LIMIT),
       getHomeRecentEpisodes(HOMEPAGE_RECENT_POOL),
       getActiveShowCount(),
-      getPublicEpisodeCount(),
-      hasPublicSupabaseEnv() ? probeCatalogBackend() : Promise.resolve("missing_env" as const),
       getUserPlan(),
       adminClient
         ? fetchPublishedWorldWatchItems(adminClient, 3, { audience: "teaser" }).catch((err) => {
@@ -120,8 +102,6 @@ export default async function HomePage() {
     featured = featuredRes;
     recentPool = recentPoolRes;
     showCount = showCountRes;
-    episodeCount = episodeCountRes;
-    catalogProbe = catalogProbeRes;
     plan = planRes;
     worldWatchPreview = worldWatchPreviewRes;
     homepageFeaturedVideos = curatedSlices.homepageFeaturedVideos;
@@ -137,6 +117,8 @@ export default async function HomePage() {
   const hasContent = featured.length > 0 || recentPool.length > 0;
   const recentlyAddedCap = plan === "guest" ? 4 : 8;
   const featuredIds = new Set(homepageFeaturedVideos.map((v) => v.videoId));
+  const startHereFeaturedVideo = homepageFeaturedVideos[0] ?? null;
+  const homepageFeaturedVideosForGrid = startHereFeaturedVideo ? homepageFeaturedVideos.slice(1) : homepageFeaturedVideos;
   const recentlyAddedCurated = recentlyAddedCuratedPool
     .filter((v) => !featuredIds.has(v.videoId))
     .slice(0, recentlyAddedCap);
@@ -146,8 +128,7 @@ export default async function HomePage() {
   return (
     <main>
       <section className="container-shell py-12 sm:py-16 lg:py-20">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start lg:gap-12">
-          <div className="min-w-0">
+        <div className="min-w-0 max-w-4xl">
             <div className="relative mx-auto mb-6 max-w-md lg:mx-0 lg:max-w-lg">
               <div
                 className="pointer-events-none absolute left-1/2 top-1/2 h-[min(12rem,42vw)] w-[min(24rem,88vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.14),transparent_68%)] opacity-90 blur-[2px]"
@@ -162,39 +143,42 @@ export default async function HomePage() {
                 />
               </div>
             </div>
-            <span className="tag">Clarity over chaos</span>
+            <span className="tag">Deep Well Audio</span>
             <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-white sm:mt-6 sm:text-5xl lg:text-6xl">
-              You were not made to live on noise and spin.{" "}
-              <span className="text-amber-200">Scripture-grounded teaching—and news you can think about.</span>
+              Clarity for what you hear.
+              <br />
+              Clarity for what you face.
             </h1>
+            <p className="mt-4 max-w-3xl text-2xl font-semibold leading-snug text-white sm:mt-5 sm:text-3xl lg:mt-6 lg:text-[2.125rem] lg:leading-tight">
+              A place to listen and stay with it
+            </p>
+            <p className="mt-4 max-w-2xl text-base leading-[1.65] text-slate-200/95 sm:mt-5 sm:text-lg">
+              Sermons and teaching from trusted ministries, with tools to help you keep what mattered.
+            </p>
             <p className="mt-5 max-w-2xl text-lg leading-[1.65] text-slate-100/95 sm:mt-6">
-              Deep Well is sermons, Bible teaching, and apologetics from ministries we stand behind—<span className="text-slate-200">not</span>{" "}
-              platforms tuning your anger for clicks. <span className="font-medium text-slate-200">Listening is free.</span> Sign in and your
-              favorites and saved shows stay with you.
+              Scripture-grounded teaching, sermons, and careful help for thinking through the world around you.
+            </p>
+            <p className="mt-5 max-w-2xl text-base leading-[1.65] text-slate-100/95 sm:mt-6">
+              Deep Well brings together Bible teaching, sermons, and apologetics from ministries we trust.
+            </p>
+            <p className="mt-4 max-w-2xl text-base leading-[1.65] text-slate-100/95">
+              Listening is free.
+              <br />
+              If you sign in, what you save stays with you.
             </p>
             <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-200/95 sm:text-base">
-              <span className="font-medium text-slate-200">Free</span> gives you the teaching.{" "}
-              <span className="font-medium text-slate-200">Premium</span> gives you a way to live with it: mark what God used, walk hard topics with
-              guided paths, search with discernment that cannot be gamed—and read <span className="text-slate-200">World Watch</span> when the public
-              square comes for your attention.
+              Free gives you access to the teaching.
+              <br />
+              Premium helps you stay with it — save what matters, follow topics more carefully, and read World Watch when public life starts asking
+              for your attention.
             </p>
             <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-300/90">
-              Trusted ministries · No engagement traps · Room to think, weep, and obey
+              Trusted ministries · Careful curation · Room to think, pray, and act
             </p>
 
-            {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
-              <p className="mt-5 inline-flex flex-wrap items-baseline gap-x-1 rounded-2xl border border-accent/25 bg-accent/[0.07] px-4 py-2 text-sm text-slate-200">
-                <span className="text-lg font-semibold tabular-nums text-amber-100">{showCount}</span>
-                <span>curated sources</span>
-                {episodeCount > 0 ? (
-                  <>
-                    <span className="mx-1 text-slate-500">·</span>
-                    <span className="text-lg font-semibold tabular-nums text-amber-100">{episodeCount}</span>
-                    <span>episodes indexed</span>
-                  </>
-                ) : null}
-              </p>
-            ) : null}
+            <p className="mt-5 inline-flex flex-wrap items-baseline gap-x-1 rounded-2xl border border-accent/25 bg-accent/[0.07] px-4 py-2 text-sm text-slate-200">
+              24 trusted ministries · 1,000+ teachings ready to explore
+            </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-9">
               <FunnelLink
@@ -210,26 +194,13 @@ export default async function HomePage() {
                 funnelEvent="explore_teaching_click"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
               >
-                Explore teaching
+                Browse teaching
               </FunnelLink>
-              {plan !== "premium" ? (
-              <FunnelLink
-                href={"/pricing" as Route}
-                funnelEvent="view_plans_click"
-                funnelData={{ placement: "home_hero" }}
-                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-accent/35 bg-accent/[0.06] px-5 py-3 text-sm font-medium text-amber-100/95 transition hover:border-accent/50 hover:bg-accent/[0.09]"
-              >
-                Unlock Premium
-                  <ArrowRight className="h-4 w-4 opacity-80" />
-                </FunnelLink>
-              ) : null}
             </div>
             <p className="mt-4 max-w-xl text-xs leading-relaxed text-slate-300/90">
-              Play without an account. Sign in and{" "}
-              <Link href={"/library" as Route} className="text-slate-300 underline-offset-2 transition hover:text-amber-200/85 hover:underline">
-                your library
-              </Link>{" "}
-              travels with you.
+              Listen without an account.
+              <br />
+              Sign in if you want your library to stay with you.
             </p>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-200/90">
               <FunnelLink
@@ -238,92 +209,49 @@ export default async function HomePage() {
                 funnelData={{ placement: "home_hero" }}
                 className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
               >
-                Join the list
+                Short updates. No noise.
               </FunnelLink>
-              —short updates on Premium and tools. One field. No junk. Your email stays private.
+              <br />
+              Your email stays private.
             </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              {[
-                showCount > 0
-                  ? {
-                      label: "Everyone",
-                      value:
-                        episodeCount > 0
-                          ? `${showCount} ministries we trust · ${episodeCount} episodes—no rage loop, no bait`
-                          : `${showCount} ministries we trust—depth over volume`,
-                    }
-                  : {
-                      label: "Everyone",
-                      value: "The full teaching catalog—vetted voices, zero outrage engineering",
-                    },
-                {
-                  label: "Premium",
-                  value:
-                    "Anchors in the audio: bookmarks, notes, topic paths, truer search—and World Watch when culture tries to steal your peace",
-                },
-                { label: "Signed in", value: "Favorites and saved shows in one calm place" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="card border-line/90 p-5 transition-colors duration-200 hover:border-accent/25"
-                >
-                  <p className="text-xs uppercase tracking-[0.25em] text-amber-100/75">{item.label}</p>
-                  <p className="mt-2.5 text-sm font-medium leading-snug text-slate-100">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-line/35 bg-gradient-to-br from-soft/[0.07] via-[rgba(11,18,32,0.26)] to-accent/[0.05] p-6 shadow-[0_24px_56px_-32px_rgba(0,0,0,0.45)] backdrop-blur-md backdrop-saturate-125 sm:p-7">
-            <div
-              className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-accent/[0.06] blur-3xl"
-              aria-hidden
-            />
-            <div className="relative">
-              <p className="text-xs uppercase tracking-[0.3em] text-amber-100/70">Topics</p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300/95">
-                Themes that orient you—not another bottomless scroll.
-              </p>
-              <div className="mt-5 grid gap-4">
-              {CATEGORY_OPTIONS.map((category) => (
-                <Link
-                  key={category.key}
-                  href={`/explore?category=${category.key}` as Route}
-                  className="group flex cursor-pointer items-center justify-between rounded-2xl border border-line/80 bg-[rgba(15,20,28,0.42)] p-4 text-inherit no-underline outline-none transition duration-200 hover:border-accent/45 hover:bg-accent/[0.08] hover:shadow-[0_0_24px_-4px_rgba(251,191,36,0.18)] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg backdrop-blur-sm"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-2xl border border-accent/25 bg-accent/10 p-2 text-accent transition group-hover:border-accent/40 group-hover:bg-accent/15">
-                      {category.key === "sermons" ? (
-                        <Mic2 className="h-5 w-5" />
-                      ) : category.key === "bible-teaching" ? (
-                        <BookOpen className="h-5 w-5" />
-                      ) : category.key === "apologetics" ? (
-                        <ShieldCheck className="h-5 w-5" />
-                      ) : (
-                        <Headphones className="h-5 w-5" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium text-white">{category.label}</p>
-                      <p className="mt-0.5 text-sm text-amber-200/90 transition group-hover:text-amber-100">
-                        Explore
-                        <span className="ml-1 inline-block transition group-hover:translate-x-0.5" aria-hidden>
-                          →
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <Star className="h-4 w-4 shrink-0 text-amber-200/80 transition group-hover:text-amber-200" aria-hidden />
-                </Link>
-              ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      <HomeFeaturedCurated items={homepageFeaturedVideos} plan={plan} />
+      <section className="container-shell section-divider py-10 sm:py-12" aria-labelledby="home-start-heading">
+        <div className="max-w-2xl">
+          <h2 id="home-start-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            Start with what you need
+          </h2>
+          <p className="mt-4 text-base leading-[1.65] text-slate-200/95">
+            You don&apos;t have to take everything in at once.
+            <br />
+            Choose where to begin and stay there.
+          </p>
+          <p className="mt-4 text-sm leading-[1.65] text-slate-400">
+            Themes that help you stay oriented, not overwhelmed.
+          </p>
+        </div>
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {CATEGORY_OPTIONS.map((category) => (
+            <Link
+              key={category.key}
+              href={`/explore?category=${category.key}` as Route}
+              className="group flex items-center justify-between gap-4 rounded-2xl border border-line/80 bg-[rgba(15,20,28,0.42)] px-4 py-3.5 text-inherit no-underline outline-none transition duration-200 hover:border-accent/40 hover:bg-accent/[0.06] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            >
+              <span className="font-medium text-white">{category.label}</span>
+              <span className="shrink-0 text-sm text-amber-200/90 transition group-hover:text-amber-100">
+                Explore <span aria-hidden>→</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <HomeStartHereToday plan={plan} featuredVideo={startHereFeaturedVideo} />
+
+      <HomeGuidedPaths />
+
+      <HomeFeaturedCurated items={homepageFeaturedVideosForGrid} plan={plan} />
 
       <HomeCategoryCuratedPreview />
 
@@ -341,38 +269,22 @@ export default async function HomePage() {
       <RevealOnScroll>
         <section id="topics" className="container-shell section-divider scroll-mt-28 py-10 sm:py-12">
           <div className="mb-7 max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Explore by topic</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">Topic collections</h2>
-            <p className="mt-3 text-sm leading-[1.65] text-muted">
-              Episode-level tags across your directory—different from program categories. Follow a theme (like end times or discernment)
-              across many teachers.
-            </p>
+            <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Topic collections</h2>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {getDiscoverTopicCards().map((t) => (
-              <div
+              <FunnelLink
                 key={t.slug}
-                className="group card border-line/90 p-5 transition hover:border-accent/35 hover:bg-accent/[0.04]"
+                href={`/topics/${t.slug}` as Route}
+                funnelEvent="topic_card_click"
+                funnelData={{ slug: t.slug }}
+                className="group flex items-center justify-between gap-4 rounded-2xl border border-line/80 bg-[rgba(15,20,28,0.35)] px-4 py-3.5 no-underline outline-none transition hover:border-accent/35 hover:bg-accent/[0.04] focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
-                <FunnelLink
-                  href={`/topics/${t.slug}` as Route}
-                  funnelEvent="topic_card_click"
-                  funnelData={{ slug: t.slug }}
-                  className="block no-underline"
-                >
-                  <p className="text-lg font-semibold text-white group-hover:text-amber-100">{t.label}</p>
-                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{t.description}</p>
-                  <p className="mt-4 text-xs font-medium text-amber-200/80">Open topic hub →</p>
-                </FunnelLink>
-                <p className="mt-2 text-xs">
-                  <Link
-                    href={`/explore?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}
-                    className="font-medium text-amber-200/70 underline-offset-2 transition hover:text-amber-100 hover:underline"
-                  >
-                    Filter all Explore by this tag
-                  </Link>
-                </p>
-              </div>
+                <span className="font-medium text-white group-hover:text-amber-100/95">{t.label}</span>
+                <span className="shrink-0 text-sm text-amber-200/90 transition group-hover:text-amber-100">
+                  Explore <span aria-hidden>→</span>
+                </span>
+              </FunnelLink>
             ))}
           </div>
         </section>
@@ -404,7 +316,7 @@ export default async function HomePage() {
                 href={"/explore" as Route}
                 className="inline-flex text-sm font-medium text-amber-200/90 underline-offset-4 transition hover:text-white hover:underline"
               >
-                Explore more →
+                Explore →
               </Link>
             </div>
           </div>
@@ -544,7 +456,7 @@ export default async function HomePage() {
               "Email sign-in via Supabase",
               "Favorites and saved shows",
               "Curated RSS ingestion",
-              "Premium tools when you choose them",
+              "Premium when you choose it",
             ].map((item) => (
               <div key={item} className="rounded-2xl border border-line/80 bg-[rgba(15,20,28,0.45)] p-4 text-sm leading-snug text-slate-100 backdrop-blur-sm">
                 {item}

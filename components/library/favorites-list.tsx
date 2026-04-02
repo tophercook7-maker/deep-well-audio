@@ -6,22 +6,27 @@ import { formatDate, formatDuration } from "@/lib/format";
 import { getEpisodeDisplayTitle, getShowDisplayLabel } from "@/lib/display";
 import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
+import { LibraryEmptySaved } from "@/components/library/library-empty-saved";
 
 type Row = {
   created_at: string;
   episode: EpisodeWithShow | null;
 };
 
-export function FavoritesList({ rows }: { rows: Row[] }) {
+export function FavoritesList({
+  rows,
+  showPremiumSaveFollowUp = false,
+  notePreviewByEpisodeId = {},
+}: {
+  rows: Row[];
+  showPremiumSaveFollowUp?: boolean;
+  /** Latest note body per episode id (server-fetched); missing key means no note. */
+  notePreviewByEpisodeId?: Record<string, string>;
+}) {
   const valid = rows.filter((r) => r.episode);
 
   if (!valid.length) {
-    return (
-      <div className="card p-8 text-sm text-muted">
-        Nothing saved yet. Explore the directory and tap <strong className="font-medium text-slate-200">Favorite</strong> on any episode
-        you want to find again— it will land here.
-      </div>
-    );
+    return <LibraryEmptySaved />;
   }
 
   return (
@@ -50,6 +55,13 @@ export function FavoritesList({ rows }: { rows: Row[] }) {
                 {showLabel} · {formatDuration(episode.duration_seconds)} · {formatDate(episode.published_at)}
               </p>
               <p className="mt-1 text-xs text-slate-500">Saved {formatDate(created_at)}</p>
+              {notePreviewByEpisodeId[episode.id]?.trim() ? (
+                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-400/90">
+                  {notePreviewByEpisodeId[episode.id].trim()}
+                </p>
+              ) : (
+                <p className="mt-2 text-xs text-slate-600/85">No note yet</p>
+              )}
             </div>
             <div className="flex flex-col gap-2 md:items-end">
               <EpisodePlayActions
@@ -59,7 +71,12 @@ export function FavoritesList({ rows }: { rows: Row[] }) {
                 showOfficialUrl={show?.official_url ?? null}
                 showArtworkUrl={show?.artwork_url ?? null}
               />
-              <FavoriteButton episodeId={episode.id} initial returnPath="/library" />
+              <FavoriteButton
+                episodeId={episode.id}
+                initial
+                returnPath="/library"
+                showPremiumSaveFollowUp={showPremiumSaveFollowUp}
+              />
             </div>
           </div>
         );

@@ -7,6 +7,7 @@ import { canUseFeature } from "@/lib/permissions";
 import { createClient } from "@/lib/supabase/server";
 import { listCuratedProgressContinue, listCuratedSaves } from "@/lib/curated/user-data";
 import { BackButton } from "@/components/buttons/back-button";
+import { LibraryEmptySaved } from "@/components/library/library-empty-saved";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 
 export const dynamic = "force-dynamic";
@@ -113,7 +114,7 @@ export default async function LibraryCuratedPage() {
           Saved ({saves.length})
         </h2>
         {saves.length === 0 ? (
-          <p className="text-sm text-muted">Nothing saved yet. Browse curated teachings and tap Save on a card.</p>
+          <LibraryEmptySaved />
         ) : (
           <ul className="space-y-2">
             {saves.map((row) => (

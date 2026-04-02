@@ -8,7 +8,7 @@ import { Suspense, useState } from "react";
 
 function LoginFormFields({ authAvailable }: { authAvailable: boolean }) {
   const searchParams = useSearchParams();
-  const next = safeInternalNext(searchParams.get("next"), "/library");
+  const next = safeInternalNext(searchParams.get("next"));
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

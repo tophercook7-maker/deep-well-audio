@@ -30,9 +30,7 @@ export function PremiumFeatureGate({ feature, children, fallback }: Props) {
     <div className="rounded-2xl border border-dashed border-line/70 bg-soft/15 p-6 text-center">
       <Lock className="mx-auto h-8 w-8 text-amber-200/50" aria-hidden />
       <p className="mt-3 text-sm font-medium text-slate-200">Premium tool</p>
-      <p className="mt-2 text-xs text-muted">
-        Listening stays open everywhere—bookmarks, notes, topic packs, World Watch, and advanced filters are part of Premium when you want them.
-      </p>
+      <p className="mt-2 text-xs text-muted">Premium adds tools to stay with what you hear.</p>
       <PremiumUpgradeActions className="mt-5" />
     </div>
   );

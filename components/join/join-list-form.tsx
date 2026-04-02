@@ -142,12 +142,10 @@ export function JoinListForm() {
             Adding you…
           </>
         ) : (
-          "Join the list"
+          <>Get updates</>
         )}
       </button>
-      <p className="text-center text-xs leading-relaxed text-slate-400/95">
-        One field. No spam. You can leave at any time.
-      </p>
+      <p className="text-center text-xs leading-relaxed text-slate-400/95">Your email stays private.</p>
     </form>
   );
 }

@@ -5,16 +5,9 @@ import { BackButton } from "@/components/buttons/back-button";
 import { JoinListForm } from "@/components/join/join-list-form";
 
 export const metadata = {
-  title: "Stay in the loop · Deep Well Audio",
-  description:
-    "Optional email updates when something meaningful ships. Short notes—no noise, easy to leave.",
+  title: "Updates · Deep Well Audio",
+  description: "Short updates. No noise. Your email stays private.",
 };
-
-const whatYoullGet = [
-  "Occasional updates when new tools are ready",
-  "Early access to features",
-  "A clearer sense of where this is going",
-];
 
 export default function JoinPage() {
   return (
@@ -27,38 +20,13 @@ export default function JoinPage() {
 
         <div className="rounded-2xl border border-line/50 bg-soft/[0.14] p-7 shadow-[0_18px_44px_-26px_rgba(0,0,0,0.38)] backdrop-blur-md backdrop-saturate-125 sm:p-8">
           <h1 className="text-center text-2xl font-semibold tracking-tight text-white sm:text-[1.65rem]">
-            Stay in the loop
+            Short updates. No noise.
           </h1>
-          <div className="mt-5 space-y-3 text-center text-sm leading-relaxed text-slate-400">
-            <p>If you want to keep up with what&apos;s being built here, this is the simplest way.</p>
-            <p>
-              You&apos;ll get short updates when something meaningful is ready.
-              <br />
-              No noise. No constant emails.
-            </p>
-          </div>
+          <p className="mt-4 text-center text-sm text-slate-400">Your email stays private.</p>
 
           <div className="mt-8">
             <JoinListForm />
           </div>
-
-          <p className="mt-5 text-center text-xs leading-relaxed text-slate-400/95">
-            Most people just listen for free. Some want to stay closer to what&apos;s being built.
-          </p>
-
-          <section className="mt-8 border-t border-line/40 pt-6" aria-labelledby="join-what-heading">
-            <h2 id="join-what-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/65">
-              What you&apos;ll get
-            </h2>
-            <ul className="mt-3 space-y-2 text-left text-sm leading-relaxed text-slate-200/95">
-              {whatYoullGet.map((line) => (
-                <li key={line} className="flex gap-2.5">
-                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/70" aria-hidden />
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
 
           <p className="mt-8 text-center">
             <Link

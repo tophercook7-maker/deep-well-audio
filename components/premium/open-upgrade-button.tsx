@@ -8,7 +8,7 @@ type Props = {
   className?: string;
 };
 
-export function OpenUpgradeButton({ children = "Upgrade to Premium", className }: Props) {
+export function OpenUpgradeButton({ children = "View plans", className }: Props) {
   const ctx = useAccountPlanOptional();
 
   if (ctx?.plan === "premium") return null;

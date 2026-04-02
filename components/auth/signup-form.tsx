@@ -126,7 +126,7 @@ function SignupFormFields({
 
 export function SignupForm({
   authAvailable = true,
-  nextHref = "/library",
+  nextHref = "/explore",
 }: {
   authAvailable?: boolean;
   /** Post-signup redirect when the project returns a session immediately (no email confirm gate). */

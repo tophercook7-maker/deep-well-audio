@@ -14,14 +14,7 @@ export function UpgradeCard({ className = "", showJoinLink = true }: { className
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
-          <h3 className="mt-1.5 text-lg font-semibold text-white">Premium helps you go deeper</h3>
-          <ul className="mt-3 space-y-1.5 text-sm text-muted">
-            <li>· Save key moments with bookmarks</li>
-            <li>· Take notes on teaching</li>
-            <li>· Follow structured topic packs</li>
-            <li>· Filter and surface deeper episodes faster</li>
-            <li>· World Watch — calm context on faith and public life</li>
-          </ul>
+          <p className="mt-1.5 text-lg font-semibold leading-snug text-white">Premium adds tools to stay with what you hear.</p>
           <p className="mt-3 text-xs leading-relaxed text-muted">
             <span className="text-slate-300">$9/month</span> or <span className="text-slate-300">$90/year</span> through Stripe. Cancel anytime
             through Stripe—use links in your subscription emails from Stripe, or reach out for billing help.

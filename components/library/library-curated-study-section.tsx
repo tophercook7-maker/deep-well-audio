@@ -37,7 +37,7 @@ export async function LibraryCuratedStudySection({ userId }: { userId: string })
               href={"/curated-teachings" as Route}
               className="mt-4 inline-flex text-sm font-medium text-amber-200/85 underline-offset-2 hover:text-amber-100 hover:underline"
             >
-              Open curated library →
+              Explore →
             </Link>
           </div>
         </div>

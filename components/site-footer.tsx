@@ -44,7 +44,7 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
-          <FooterJoinLink className="transition hover:text-amber-100/85">Join the Deep Well list</FooterJoinLink>
+          <FooterJoinLink className="transition hover:text-amber-100/85">Short updates. No noise.</FooterJoinLink>
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>

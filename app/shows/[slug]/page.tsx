@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
 import { getFavoriteEpisodeIds, getSavedShowIds, getShowBySlug } from "@/lib/queries";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { EpisodeRow } from "@/components/episode-row";
 import { SaveShowButton } from "@/components/buttons/save-show-button";
 import { BackButton } from "@/components/buttons/back-button";
@@ -54,10 +54,12 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
   }
 
   let user = null;
+  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
   let favoriteIds = new Set<string>();
   let savedIds = new Set<string>();
   try {
     user = await getSessionUser();
+    plan = await getUserPlan();
     if (user) {
       const [fav, sav] = await Promise.all([getFavoriteEpisodeIds(user.id), getSavedShowIds(user.id)]);
       favoriteIds = new Set(fav);
@@ -66,6 +68,8 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
   }
+
+  const showPremiumSaveFollowUp = plan !== "premium";
 
   const yt = show.youtube_channel_id ? `https://www.youtube.com/channel/${show.youtube_channel_id}` : null;
   const tagList = Array.isArray(show.tags) ? show.tags : [];
@@ -119,6 +123,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
                   showId={show.id}
                   initial={savedIds.has(show.id)}
                   returnPath={`/shows/${show.slug}`}
+                  showPremiumSaveFollowUp={showPremiumSaveFollowUp}
                 />
               </div>
             </div>
@@ -150,6 +155,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
                 showOfficialUrl={show.official_url}
                 favorited={favoriteIds.has(episode.id)}
                 favoriteReturnPath={`/shows/${show.slug}`}
+                showPremiumSaveFollowUp={showPremiumSaveFollowUp}
               />
             ))}
           </div>

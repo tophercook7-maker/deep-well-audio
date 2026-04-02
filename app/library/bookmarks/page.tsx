@@ -87,7 +87,7 @@ export default async function LibraryBookmarksPage() {
               </div>
             )}
             <Link href={"/explore" as Route} className="inline-block text-sm font-medium text-amber-200/90 hover:underline">
-              Explore more episodes →
+              Explore →
             </Link>
           </div>
         ) : (

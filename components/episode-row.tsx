@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Play } from "lucide-react";
 import type { EpisodeRow as Episode, EpisodeWithShow } from "@/lib/types";
 import { FavoriteButton } from "@/components/buttons/favorite-button";
+import { EpisodeAddNoteAction } from "@/components/episodes/episode-add-note-action";
+import { EpisodeListenSaveHint } from "@/components/episodes/episode-listen-save-hint";
 import { MeatyPill } from "@/components/buttons/meaty-pill";
 import { SourceBadge } from "@/components/buttons/source-badge";
 import { EpisodePlayActions } from "@/components/player/episode-play-actions";
@@ -21,6 +23,10 @@ type Props = {
   favoriteReturnPath?: string;
   /** Richer layout for full episode page. */
   layout?: "list" | "page";
+  /** Non-premium: quiet Premium note after saving (from server). */
+  showPremiumSaveFollowUp?: boolean;
+  /** Episode page only: Add note next to Save (premium = jump to notes; else calm upsell). */
+  episodePageNotes?: "premium" | "upsell";
 };
 
 function showFromEpisode(ep: Episode | EpisodeWithShow): EpisodeWithShow["show"] | undefined {
@@ -35,6 +41,8 @@ export function EpisodeRow({
   showFavorite = true,
   favoriteReturnPath,
   layout = "list",
+  showPremiumSaveFollowUp = false,
+  episodePageNotes,
 }: Props) {
   const embeddedShow = showFromEpisode(episode);
   const resolvedSlug = showSlug ?? embeddedShow?.slug;
@@ -44,11 +52,11 @@ export function EpisodeRow({
 
   const isPage = layout === "page";
   const shell = isPage
-    ? "card flex flex-col gap-6 p-6 transition-colors duration-200 hover:border-accent/25 sm:gap-7 sm:p-8 md:flex-row md:items-start md:justify-between"
+    ? "card flex flex-col gap-6 p-6 transition-colors duration-200 hover:border-accent/25 sm:gap-7 sm:p-8"
     : "card flex flex-col gap-5 p-5 transition-colors duration-200 hover:border-accent/20 md:flex-row md:items-start md:justify-between";
 
-  return (
-    <div className={shell}>
+  const mainRow = (
+    <>
       <div className="flex flex-1 items-start gap-4 sm:gap-5">
         <div
           className={`mt-0.5 flex shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent ring-1 ring-accent/40 ${
@@ -88,7 +96,30 @@ export function EpisodeRow({
             </Link>
           </h3>
           {descriptionPlain ? (
-            <p className="mt-2 text-sm leading-6 text-muted line-clamp-3">{descriptionPlain}</p>
+            <>
+              <p
+                className={`mt-2 text-sm leading-6 text-muted ${isPage ? "" : "line-clamp-3"}`}
+              >
+                {descriptionPlain}
+              </p>
+              {isPage ? (
+                <EpisodeListenSaveHint
+                  episodeId={episode.id}
+                  initialFavorited={favorited}
+                  returnPath={favoriteReturnPath}
+                  hasDescription
+                  showPremiumSaveFollowUp={showPremiumSaveFollowUp}
+                />
+              ) : null}
+            </>
+          ) : isPage ? (
+            <EpisodeListenSaveHint
+              episodeId={episode.id}
+              initialFavorited={favorited}
+              returnPath={favoriteReturnPath}
+              hasDescription={false}
+              showPremiumSaveFollowUp={showPremiumSaveFollowUp}
+            />
           ) : null}
 
           <div className="mt-3 flex flex-wrap gap-1.5">
@@ -127,10 +158,34 @@ export function EpisodeRow({
           showOfficialUrl={showOfficialUrl ?? embeddedShow?.official_url ?? null}
           showArtworkUrl={embeddedShow?.artwork_url ?? null}
         />
-        {showFavorite ? (
-          <FavoriteButton episodeId={episode.id} initial={favorited} returnPath={favoriteReturnPath} />
+        {showFavorite || (isPage && episodePageNotes) ? (
+          <div className="flex w-full flex-col items-stretch gap-2 md:items-end">
+            <div className="flex flex-wrap items-start justify-end gap-2">
+              {showFavorite ? (
+                <FavoriteButton
+                  episodeId={episode.id}
+                  initial={favorited}
+                  returnPath={favoriteReturnPath}
+                  showPremiumSaveFollowUp={showPremiumSaveFollowUp}
+                />
+              ) : null}
+              {isPage && episodePageNotes ? (
+                <EpisodeAddNoteAction episodeId={episode.id} mode={episodePageNotes} />
+              ) : null}
+            </div>
+          </div>
         ) : null}
       </div>
+    </>
+  );
+
+  return (
+    <div className={shell}>
+      {isPage ? (
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">{mainRow}</div>
+      ) : (
+        mainRow
+      )}
     </div>
   );
 }

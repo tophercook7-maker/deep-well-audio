@@ -32,10 +32,22 @@ const config: Config = {
           "0%, 100%": { opacity: "0.04", transform: "translate3d(0, 0, 0)" },
           "50%": { opacity: "0.1", transform: "translate3d(0, -6px, 0)" },
         },
+        "dwa-save-ack": {
+          "0%": { opacity: "0" },
+          "10%": { opacity: "1" },
+          "80%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
+        "dwa-hint-reveal": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "dwa-drift": "dwa-drift 16s ease-in-out infinite",
         "dwa-drift-slow": "dwa-drift-slow 24s ease-in-out infinite",
+        "dwa-save-ack": "dwa-save-ack 3s ease-in-out forwards",
+        "dwa-hint-reveal": "dwa-hint-reveal 0.45s ease-out forwards",
       },
     },
   },
