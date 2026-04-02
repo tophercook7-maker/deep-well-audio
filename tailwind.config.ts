@@ -18,7 +18,7 @@ const config: Config = {
         line: "#253247",
         accent: "#d4af37",
         text: "#f8fafc",
-        muted: "#cbd5e1",
+        muted: "#d2dbe8",
       },
       boxShadow: {
         glow: "0 0 0 1px rgba(212,175,55,0.18), 0 12px 30px rgba(0,0,0,0.28)",

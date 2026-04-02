@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 
 function HeroBody() {
   return (
-    <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-300 sm:mt-4 sm:text-base">
+    <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-200/95 sm:mt-4 sm:text-base">
       <p>
         The news moves fast and speaks loud.
         <br />
@@ -97,7 +97,7 @@ export default async function WorldWatchPage() {
           {premium ? (
             <>
               <HeroBody />
-              <p className="mt-4 text-sm text-slate-400">
+              <p className="mt-4 text-sm text-slate-300/95">
                 Below is your full digest for members. Need billing help?{" "}
                 <Link href={"/feedback" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
                   Contact us
@@ -112,7 +112,7 @@ export default async function WorldWatchPage() {
       </header>
 
       <section
-        className="space-y-2.5 rounded-xl border border-rose-500/20 bg-gradient-to-br from-rose-950/18 via-[rgba(11,18,32,0.32)] to-[rgba(10,14,22,0.24)] p-3 shadow-[0_20px_48px_-30px_rgba(0,0,0,0.45)] backdrop-blur-md max-md:rounded-lg sm:space-y-5 sm:rounded-[1.5rem] sm:p-8"
+        className="space-y-2.5 rounded-xl border border-rose-500/18 bg-gradient-to-br from-rose-950/11 via-[rgba(11,18,32,0.22)] to-[rgba(10,14,22,0.16)] p-3 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.35)] backdrop-blur-md max-md:rounded-lg sm:space-y-5 sm:rounded-[1.5rem] sm:p-8"
         aria-labelledby="ww-video-lens"
       >
         <div className="flex items-start gap-2 sm:gap-3">
@@ -123,18 +123,18 @@ export default async function WorldWatchPage() {
             <p id="ww-video-lens" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-rose-200/75 sm:text-xs">
               Video lens
             </p>
-            <p className="mt-1 text-[11px] leading-snug text-slate-300 md:hidden">
+            <p className="mt-1 text-[11px] leading-snug text-slate-200/95 md:hidden">
               A few clips from voices worth listening to. Not everything—just enough to see clearly.
               {!premium ? (
                 <>
                   {" "}
-                  <span className="text-slate-400">Members get the full set.</span>
+                  <span className="text-slate-300/90">Members get the full set.</span>
                 </>
               ) : null}
             </p>
-            <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-300 md:block sm:mt-2">
+            <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-200/95 md:block sm:mt-2">
               A few clips from voices worth listening to. Not everything—just enough to see clearly.
-              {!premium ? <span className="text-slate-400"> Members get the full set.</span> : null}
+              {!premium ? <span className="text-slate-300/90"> Members get the full set.</span> : null}
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default async function WorldWatchPage() {
           <div className="rounded-2xl border border-line/60 bg-soft/10 p-5">
             <div className="flex gap-3">
               <Globe className="h-5 w-5 shrink-0 text-rose-200/60" aria-hidden />
-              <div className="text-sm leading-relaxed text-slate-300">
+              <div className="text-sm leading-relaxed text-slate-200/95">
                 <p>
                   No video picks loaded yet—feeds may still be warming, or{" "}
                   <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">YOUTUBE_API_KEY</code>{" "}
@@ -163,7 +163,7 @@ export default async function WorldWatchPage() {
                   using{" "}
                   <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">CRON_SECRET</code>.
                 </p>
-                <p className="mt-2 text-xs text-slate-500">Written World Watch below is unchanged when video rows are quiet.</p>
+                <p className="mt-2 text-xs text-slate-400/95">Written World Watch below is unchanged when video rows are quiet.</p>
               </div>
             </div>
           </div>

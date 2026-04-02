@@ -102,7 +102,7 @@ export default async function PricingPage() {
         <h2 id="free-stays-heading" className="text-2xl font-semibold tracking-tight text-white">
           What stays free
         </h2>
-        <p className="mt-3 text-sm font-medium text-slate-300">You can always:</p>
+        <p className="mt-3 text-sm font-medium text-slate-200">You can always:</p>
         <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-slate-200">
           <li className="flex gap-2.5">
             <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/75" aria-hidden />
@@ -117,7 +117,7 @@ export default async function PricingPage() {
             <span>Browse topics</span>
           </li>
         </ul>
-        <p className="mt-5 text-sm leading-relaxed text-slate-400">Nothing is taken away.</p>
+        <p className="mt-5 text-sm leading-relaxed text-slate-300/95">Nothing is taken away.</p>
         <Link
           href={"/signup" as Route}
           className="mt-6 inline-flex rounded-full border border-line/90 px-5 py-2.5 text-sm font-medium text-muted transition hover:border-accent/35 hover:text-white"
@@ -133,7 +133,7 @@ export default async function PricingPage() {
         <h2 id="why-premium-heading" className="text-2xl font-semibold tracking-tight text-white">
           Why people choose Premium
         </h2>
-        <div className="mt-4 max-w-xl space-y-4 text-sm leading-relaxed text-slate-300 sm:text-base">
+        <div className="mt-4 max-w-xl space-y-4 text-sm leading-relaxed text-slate-200/95 sm:text-base">
           <p>Not for more content. For a different way of using it.</p>
           <p>To slow down. To remember. To apply what they&apos;re hearing.</p>
         </div>
@@ -160,10 +160,10 @@ export default async function PricingPage() {
         <h2 id="subscribe-heading" className="mt-2 text-2xl font-semibold tracking-tight text-white">
           Simple pricing
         </h2>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-200/95">
           Subscriptions run through Stripe—you are not charged until you complete checkout.
         </p>
-        <div className="mt-6 rounded-2xl border border-line/70 bg-[rgba(15,20,28,0.5)] px-4 py-4 text-sm text-slate-100 backdrop-blur-sm sm:px-5">
+        <div className="mt-6 rounded-2xl border border-line/55 bg-[rgba(15,20,28,0.34)] px-4 py-4 text-sm text-slate-100 backdrop-blur-md sm:px-5">
           <p className="mt-2 text-base font-semibold text-white">
             <span className="tabular-nums">$9</span>/month &nbsp;·&nbsp; <span className="tabular-nums">$90</span>/year
           </p>

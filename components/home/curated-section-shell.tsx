@@ -13,8 +13,8 @@ export function CuratedSectionShell({
   return (
     <div
       className={[
-        "relative overflow-hidden rounded-[1.75rem] border border-line/35 bg-gradient-to-b from-soft/[0.08] via-[rgba(11,18,32,0.26)] to-[rgba(10,14,22,0.2)]",
-        "shadow-[0_32px_80px_-52px_rgba(0,0,0,0.65)] backdrop-blur-md backdrop-saturate-125",
+        "relative overflow-hidden rounded-[1.75rem] border border-line/30 bg-gradient-to-b from-soft/[0.06] via-[rgba(11,18,32,0.19)] to-[rgba(10,14,22,0.14)]",
+        "shadow-[0_28px_72px_-48px_rgba(0,0,0,0.5)] backdrop-blur-md backdrop-saturate-125",
         className,
       ].join(" ")}
     >

@@ -165,8 +165,8 @@ export default async function ExplorePage({
       </div>
       <div className="mb-10">
         <span className="tag">Explore</span>
-        <h1 className="mt-4 text-4xl font-semibold">Find your next listen</h1>
-        <p className="mt-4 max-w-2xl text-muted">
+        <h1 className="mt-4 text-4xl font-semibold text-white">Find your next listen</h1>
+        <p className="mt-4 max-w-2xl leading-relaxed text-slate-100/95">
           Curated sermons, podcasts, and biblical teaching in one directory. Search, filter by topic and source, or browse featured picks.
         </p>
         {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (

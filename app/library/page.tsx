@@ -64,7 +64,7 @@ export default async function LibraryPage() {
           <div className="grid gap-8 p-8 lg:grid-cols-[1fr_0.85fr] lg:items-center">
             <div>
               <span className="tag">Library</span>
-              <h1 className="mt-4 text-4xl font-semibold">Save what you want to hear again</h1>
+              <h1 className="mt-4 text-4xl font-semibold text-white">Save what you want to hear again</h1>
               <p className="mt-4 max-w-2xl leading-7 text-muted">
                 Create a free account to favorite episodes and save whole programs. Your library stays in sync with this same dark, quiet
                 layout—made for long listening sessions, not distraction.
@@ -151,7 +151,7 @@ export default async function LibraryPage() {
 
       <div>
         <span className="tag">Signed in</span>
-        <h1 className="mt-4 text-4xl font-semibold">Your library</h1>
+        <h1 className="mt-4 text-4xl font-semibold text-white">Your library</h1>
         <p className="mt-3 max-w-2xl text-muted">
           Favorites and saved shows stay here. Remove items from these cards or from individual show pages.
         </p>

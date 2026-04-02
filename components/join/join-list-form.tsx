@@ -94,7 +94,7 @@ export function JoinListForm() {
         </div>
         <div className="space-y-1.5 text-center">
           <p className="text-base font-medium leading-relaxed text-white">You&apos;re on the list.</p>
-          <p className="text-sm text-slate-400">Short updates only, when it matters.</p>
+          <p className="text-sm text-slate-300/95">Short updates only, when it matters.</p>
           <p className="text-xs text-amber-200/75">
             Back home{countdown != null && countdown > 0 ? ` in ${countdown}s` : "…"}
           </p>
@@ -114,7 +114,7 @@ export function JoinListForm() {
   return (
     <form onSubmit={(e) => void submit(e)} className="space-y-4">
       <label className="grid gap-2 text-left">
-        <span className="text-xs font-medium text-slate-400">Your email</span>
+        <span className="text-xs font-medium text-slate-300/95">Your email</span>
         <input
           type="email"
           name="email"
@@ -123,7 +123,7 @@ export function JoinListForm() {
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-2xl border border-line/85 bg-soft/25 px-4 py-3.5 text-sm text-white outline-none ring-accent/20 placeholder:text-slate-500 focus:border-accent/35 focus:ring-2"
+            className="w-full rounded-2xl border border-line/75 bg-soft/20 px-4 py-3.5 text-sm text-white outline-none ring-accent/20 placeholder:text-slate-400/90 focus:border-accent/35 focus:ring-2"
         />
       </label>
       {message ? (
@@ -145,7 +145,7 @@ export function JoinListForm() {
           "Join the list"
         )}
       </button>
-      <p className="text-center text-xs leading-relaxed text-slate-500">
+      <p className="text-center text-xs leading-relaxed text-slate-400/95">
         One field. No spam. You can leave at any time.
       </p>
     </form>

@@ -17,7 +17,7 @@ function BulletList({ items, className = "" }: { items: string[]; className?: st
 
 export function WorldWatchTeaserWhatThisIs({ condense = false }: { condense?: boolean }) {
   return (
-    <section className="card border-line/80 p-5 sm:p-8" aria-labelledby="ww-what-heading">
+    <section className="card border-line/65 p-5 sm:p-8" aria-labelledby="ww-what-heading">
       <h2 id="ww-what-heading" className="text-lg font-semibold text-white sm:text-xl">
         What this is
       </h2>
@@ -35,7 +35,7 @@ export function WorldWatchTeaserWhatThisIs({ condense = false }: { condense?: bo
 
 export function WorldWatchTeaserWhatItsNot({ condense = false }: { condense?: boolean }) {
   return (
-    <section className="card border-line/80 p-5 sm:p-8" aria-labelledby="ww-not-heading">
+    <section className="card border-line/65 p-5 sm:p-8" aria-labelledby="ww-not-heading">
       <h2 id="ww-not-heading" className="text-lg font-semibold text-white sm:text-xl">
         What it&apos;s not
       </h2>
@@ -63,10 +63,10 @@ export function WorldWatchTeaserUpgrade({ tight = false, condense = false }: { t
       >
         Member access
       </h2>
-      <p className={condense ? "mt-2 max-w-prose text-xs leading-relaxed text-slate-400 sm:mt-3 sm:text-sm" : "mt-3 max-w-prose text-sm leading-relaxed text-slate-400"}>
+      <p className={condense ? "mt-2 max-w-prose text-xs leading-relaxed text-slate-300/95 sm:mt-3 sm:text-sm" : "mt-3 max-w-prose text-sm leading-relaxed text-slate-300/95"}>
         The public view shows a portion.
       </p>
-      <p className={condense ? "mt-3 text-xs text-slate-400 sm:text-sm" : "mt-3 text-sm text-slate-400"}>
+      <p className={condense ? "mt-3 text-xs text-slate-300/95 sm:text-sm" : "mt-3 text-sm text-slate-300/95"}>
         Members get the full digest for each story:
       </p>
       <BulletList
@@ -90,7 +90,7 @@ export function WorldWatchTeaserUpgrade({ tight = false, condense = false }: { t
       >
         View plans
       </FunnelLink>
-      <p className={condense ? "mt-4 max-w-prose text-[11px] leading-relaxed text-slate-400 sm:mt-5 sm:text-xs" : "mt-5 max-w-prose text-xs leading-relaxed text-slate-400"}>
+      <p className={condense ? "mt-4 max-w-prose text-[11px] leading-relaxed text-slate-400/95 sm:mt-5 sm:text-xs" : "mt-5 max-w-prose text-xs leading-relaxed text-slate-400/95"}>
         Cancel anytime through Stripe—billing links are in your Stripe receipts, or contact us if you need a hand.
       </p>
     </section>

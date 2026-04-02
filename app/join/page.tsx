@@ -25,7 +25,7 @@ export default function JoinPage() {
           <BackButton fallbackHref="/" label="Back" />
         </div>
 
-        <div className="rounded-2xl border border-line/70 bg-soft/[0.12] p-7 shadow-[0_20px_48px_-28px_rgba(0,0,0,0.55)] sm:p-8">
+        <div className="rounded-2xl border border-line/50 bg-soft/[0.14] p-7 shadow-[0_18px_44px_-26px_rgba(0,0,0,0.38)] backdrop-blur-md backdrop-saturate-125 sm:p-8">
           <h1 className="text-center text-2xl font-semibold tracking-tight text-white sm:text-[1.65rem]">
             Stay in the loop
           </h1>
@@ -42,15 +42,15 @@ export default function JoinPage() {
             <JoinListForm />
           </div>
 
-          <p className="mt-5 text-center text-xs leading-relaxed text-slate-500">
+          <p className="mt-5 text-center text-xs leading-relaxed text-slate-400/95">
             Most people just listen for free. Some want to stay closer to what&apos;s being built.
           </p>
 
           <section className="mt-8 border-t border-line/40 pt-6" aria-labelledby="join-what-heading">
-            <h2 id="join-what-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/55">
+            <h2 id="join-what-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/65">
               What you&apos;ll get
             </h2>
-            <ul className="mt-3 space-y-2 text-left text-sm leading-relaxed text-slate-300">
+            <ul className="mt-3 space-y-2 text-left text-sm leading-relaxed text-slate-200/95">
               {whatYoullGet.map((line) => (
                 <li key={line} className="flex gap-2.5">
                   <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/70" aria-hidden />

@@ -96,7 +96,7 @@ export default async function CuratedTeachingsPage({
             voices. Everything is aggregated on the server, deduped, and gently cached—so browsing stays fast and composed.
           </p>
           {plan === "guest" ? (
-            <p className="mt-4 max-w-2xl text-sm text-slate-400">
+            <p className="mt-4 max-w-2xl text-sm text-slate-200/90">
               <Link href={"/login?next=/curated-teachings" as Route} className="font-medium text-amber-200/85 hover:underline">
                 Sign in
               </Link>{" "}
@@ -109,7 +109,7 @@ export default async function CuratedTeachingsPage({
           ) : null}
         </CuratedSectionShell>
 
-        <div className="mt-8 rounded-[1.25rem] border border-line/45 bg-[rgba(12,16,24,0.4)] p-4 shadow-[0_16px_40px_-24px_rgba(0,0,0,0.4)] backdrop-blur-md sm:p-5">
+        <div className="mt-8 rounded-[1.25rem] border border-line/40 bg-[rgba(12,16,24,0.26)] p-4 shadow-[0_14px_36px_-22px_rgba(0,0,0,0.32)] backdrop-blur-md sm:p-5">
         <form action="/curated-teachings" method="get" className="flex max-w-xl flex-col gap-3 sm:flex-row sm:items-center">
           {requestedSource ? <input type="hidden" name="source" value={requestedSource} /> : null}
           {category ? <input type="hidden" name="category" value={category} /> : null}
@@ -122,7 +122,7 @@ export default async function CuratedTeachingsPage({
             name="q"
             defaultValue={search ?? ""}
             placeholder="Search title or channel…"
-            className="min-h-[44px] w-full rounded-full border border-line/80 bg-[rgba(15,20,28,0.55)] px-4 py-2 text-sm text-slate-100 outline-none ring-accent/25 backdrop-blur-sm focus:ring-2"
+            className="min-h-[44px] w-full rounded-full border border-line/70 bg-[rgba(15,20,28,0.38)] px-4 py-2 text-sm text-slate-100 outline-none ring-accent/25 backdrop-blur-sm focus:ring-2"
           />
           <button
             type="submit"
@@ -139,7 +139,7 @@ export default async function CuratedTeachingsPage({
               "rounded-full border px-3 py-1.5 text-xs font-medium transition",
               !category && !featuredOnly
                 ? "border-accent/45 bg-accent/[0.1] text-amber-100"
-                : "border-line/80 text-slate-400 hover:border-accent/35 hover:text-slate-200",
+                : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
             ].join(" ")}
           >
             All
@@ -150,7 +150,7 @@ export default async function CuratedTeachingsPage({
               "rounded-full border px-3 py-1.5 text-xs font-medium transition",
               featuredOnly
                 ? "border-accent/45 bg-accent/[0.1] text-amber-100"
-                : "border-line/80 text-slate-400 hover:border-accent/35 hover:text-slate-200",
+                : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
             ].join(" ")}
           >
             Featured channels
@@ -166,7 +166,7 @@ export default async function CuratedTeachingsPage({
                 "rounded-full border px-3 py-1.5 text-xs font-medium transition",
                 category === c.slug
                   ? "border-accent/45 bg-accent/[0.1] text-amber-100"
-                  : "border-line/80 text-slate-400 hover:border-accent/35 hover:text-slate-200",
+                  : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
               ].join(" ")}
             >
               {c.shortLabel}
@@ -182,7 +182,7 @@ export default async function CuratedTeachingsPage({
                 "rounded-full border px-3 py-1.5 text-xs font-medium transition",
                 !requestedSource
                   ? "border-accent/45 bg-accent/[0.1] text-amber-100"
-                  : "border-line/80 text-slate-400 hover:border-accent/35 hover:text-slate-200",
+                  : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
               ].join(" ")}
             >
               All channels
@@ -195,7 +195,7 @@ export default async function CuratedTeachingsPage({
                   "rounded-full border px-3 py-1.5 text-xs font-medium transition",
                   requestedSource === s.id
                     ? "border-accent/45 bg-accent/[0.1] text-amber-100"
-                    : "border-line/80 text-slate-400 hover:border-accent/35 hover:text-slate-200",
+                    : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
                 ].join(" ")}
               >
                 {s.title}

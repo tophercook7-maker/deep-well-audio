@@ -163,22 +163,22 @@ export default async function HomePage() {
               </div>
             </div>
             <span className="tag">Clarity over chaos</span>
-            <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight sm:mt-6 sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-white sm:mt-6 sm:text-5xl lg:text-6xl">
               You were not made to live on noise and spin.{" "}
               <span className="text-amber-200">Scripture-grounded teaching—and news you can think about.</span>
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-[1.65] text-muted sm:mt-6">
+            <p className="mt-5 max-w-2xl text-lg leading-[1.65] text-slate-100/95 sm:mt-6">
               Deep Well is sermons, Bible teaching, and apologetics from ministries we stand behind—<span className="text-slate-200">not</span>{" "}
               platforms tuning your anger for clicks. <span className="font-medium text-slate-200">Listening is free.</span> Sign in and your
               favorites and saved shows stay with you.
             </p>
-            <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-300 sm:text-base">
+            <p className="mt-4 max-w-2xl text-sm leading-[1.65] text-slate-200/95 sm:text-base">
               <span className="font-medium text-slate-200">Free</span> gives you the teaching.{" "}
               <span className="font-medium text-slate-200">Premium</span> gives you a way to live with it: mark what God used, walk hard topics with
               guided paths, search with discernment that cannot be gamed—and read <span className="text-slate-200">World Watch</span> when the public
               square comes for your attention.
             </p>
-            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-400/95">
+            <p className="mt-4 max-w-2xl text-xs font-medium uppercase tracking-[0.16em] text-slate-300/90">
               Trusted ministries · No engagement traps · Room to think, weep, and obey
             </p>
 
@@ -231,7 +231,7 @@ export default async function HomePage() {
               </Link>{" "}
               travels with you.
             </p>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-200/90">
               <FunnelLink
                 href={"/join" as Route}
                 funnelEvent="join_list_click"
@@ -275,7 +275,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-line/40 bg-gradient-to-br from-soft/[0.1] via-[rgba(11,18,32,0.38)] to-accent/[0.06] p-6 shadow-[0_28px_64px_-36px_rgba(0,0,0,0.6)] backdrop-blur-md backdrop-saturate-125 sm:p-7">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-line/35 bg-gradient-to-br from-soft/[0.07] via-[rgba(11,18,32,0.26)] to-accent/[0.05] p-6 shadow-[0_24px_56px_-32px_rgba(0,0,0,0.45)] backdrop-blur-md backdrop-saturate-125 sm:p-7">
             <div
               className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-accent/[0.06] blur-3xl"
               aria-hidden

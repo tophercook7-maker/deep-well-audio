@@ -28,12 +28,12 @@ export default async function LoginPage({
         <DeepWellLogo variant="inline" brandClassName="mb-6 sm:mb-7" />
         <span className="tag">Members</span>
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-white">Sign in</h1>
-        <p className="mt-4 leading-relaxed text-slate-300">
+        <p className="mt-4 leading-relaxed text-slate-200/95">
           Sign in to continue where you left off and access member-only features. Use the email and password you registered with—we&apos;ll
           return you to your library or the page you were on.
         </p>
         <LoginForm authAvailable={authAvailable} />
-        <p className="mt-6 text-sm text-slate-300">
+        <p className="mt-6 text-sm text-slate-200/95">
           Need an account?{" "}
           <Link href={signupHref as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">
             Create one
