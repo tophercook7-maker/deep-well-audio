@@ -115,7 +115,7 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
 
       <Section icon={Church} kicker="Together" title="The local church first">
         <p>
-          World Watch ends where Deep Well always ends: <span className="text-slate-200">ordinary means of grace</span>—Lord&apos;s Day gathering,
+          World Watch ends where listening like this should: <span className="text-slate-200">ordinary means of grace</span>—Lord&apos;s Day gathering,
           singing, the table, elders who know your name.
         </p>
       </Section>
@@ -123,7 +123,7 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
       <Section icon={HeartHandshake} kicker="Carry it" title="Prompt for the week">
         <p>
           Name one concern this edition surfaces—a school board, a sister church far away, a debate that drains you—and bring it to the Lord with one
-          concrete passage. If you left notes on a Deep Well episode this week, let the headline and the sermon speak to each other: same King, same
+          concrete passage. If you left notes on an episode this week, let the headline and the sermon speak to each other: same King, same
           patience.
         </p>
         <Link href={"/explore" as Route} className="inline-block pt-1 text-sm font-medium text-amber-200/90 hover:underline">

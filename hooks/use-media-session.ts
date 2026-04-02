@@ -63,7 +63,6 @@ export function useMediaSession({
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title,
         artist: track.subtitle,
-        album: "Deep Well Audio",
         artwork: [
           { src: art, sizes: "512x512", type: "image/png" },
           { src: art, sizes: "256x256", type: "image/png" },

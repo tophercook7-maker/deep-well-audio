@@ -27,7 +27,6 @@ import { HomeWorldWatchHub } from "@/components/home/home-world-watch-hub";
 import { HomeGuidedPaths } from "@/components/home/home-guided-paths";
 import { HomeStartHereToday } from "@/components/home/home-start-here-today";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
-import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { getHomepageCuratedVideoSlices } from "@/lib/curated-teachings/aggregate";
 import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 
@@ -129,25 +128,8 @@ export default async function HomePage() {
     <main>
       <section className="container-shell py-12 sm:py-16 lg:py-20">
         <div className="min-w-0 max-w-4xl">
-            <div className="relative mx-auto mb-6 max-w-md lg:mx-0 lg:max-w-lg">
-              <div
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[min(12rem,42vw)] w-[min(24rem,88vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.14),transparent_68%)] opacity-90 blur-[2px]"
-                aria-hidden
-              />
-              <div className="relative flex justify-center lg:justify-start">
-                <DeepWellLogo
-                  variant="inline"
-                  showWordmark
-                  brandClassName="mx-auto items-center lg:mx-0 lg:items-start"
-                  className="!max-h-12 w-auto sm:!max-h-14 md:!max-h-[4.25rem]"
-                />
-              </div>
-            </div>
-            <span className="tag">Deep Well Audio</span>
-            <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight text-white sm:mt-6 sm:text-5xl lg:text-6xl">
-              Clarity for what you hear.
-              <br />
-              Clarity for what you face.
+            <h1 className="max-w-4xl text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+              Clarity over chaos
             </h1>
             <p className="mt-4 max-w-3xl text-2xl font-semibold leading-snug text-white sm:mt-5 sm:text-3xl lg:mt-6 lg:text-[2.125rem] lg:leading-tight">
               A place to listen and stay with it
@@ -159,7 +141,7 @@ export default async function HomePage() {
               Scripture-grounded teaching, sermons, and careful help for thinking through the world around you.
             </p>
             <p className="mt-5 max-w-2xl text-base leading-[1.65] text-slate-100/95 sm:mt-6">
-              Deep Well brings together Bible teaching, sermons, and apologetics from ministries we trust.
+              Bible teaching, sermons, and apologetics from ministries we trust—gathered in one calm directory.
             </p>
             <p className="mt-4 max-w-2xl text-base leading-[1.65] text-slate-100/95">
               Listening is free.

@@ -28,8 +28,7 @@ export default async function FeedbackPage() {
         <BackButton fallbackHref="/" label="Home" />
       </div>
       <header>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Deep Well</p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Send feedback</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Send feedback</h1>
         <p className="mt-3 text-sm leading-relaxed text-muted sm:text-base">
           If something feels broken, confusing, or missing, let me know. I&apos;m improving this every day, and your feedback helps shape what this becomes.
         </p>

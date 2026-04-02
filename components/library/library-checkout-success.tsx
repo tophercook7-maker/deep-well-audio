@@ -30,7 +30,7 @@ export function LibraryCheckoutSuccess() {
       <p className="mt-2 text-lg font-semibold text-white">You&apos;re Premium now</p>
       <p className="mt-2 max-w-prose text-slate-400">
         Bookmarks, notes, topic packs, World Watch, and advanced filters are on this account. Refresh if something looks out of date—thank you for
-        supporting Deep Well.
+        supporting this work.
       </p>
       <p className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium">
         <Link

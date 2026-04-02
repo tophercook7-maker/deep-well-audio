@@ -348,9 +348,7 @@ export function GlobalPlayer() {
               <p className="mt-1 text-xs text-slate-400">
                 Queue · {state.queue.length} tracks — next starts automatically.
               </p>
-            ) : (
-              <p className="mt-1 text-xs text-slate-500">Deep Well Audio</p>
-            )}
+            ) : null}
           </div>
         ) : null}
 

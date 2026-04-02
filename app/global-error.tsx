@@ -23,7 +23,7 @@ export default function GlobalError({
         style={{ backgroundColor: "#0b1220", color: "#f8fafc", minHeight: "100vh" }}
       >
         <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4 py-16 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/80">Deep Well Audio</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/80">Something went wrong</p>
           <h1 className="mt-4 text-2xl font-semibold">This view needs a refresh</h1>
           <p className="mt-4 text-sm leading-7 text-slate-400">
             A critical error interrupted the app shell. Try reloading or return home from your browser.

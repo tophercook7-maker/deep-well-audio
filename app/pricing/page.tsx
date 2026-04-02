@@ -2,7 +2,6 @@ import type { Route } from "next";
 import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { BackButton } from "@/components/buttons/back-button";
-import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
 import { getUserPlan } from "@/lib/auth";
 import { hasStripeBillingConfigured } from "@/lib/env";
@@ -34,11 +33,6 @@ export default async function PricingPage() {
       </div>
 
       <header className="max-w-xl">
-        <DeepWellLogo
-          variant="header"
-          brandClassName="items-center sm:items-start mx-auto sm:mx-0 mb-6"
-          className="object-center sm:object-left"
-        />
         <h1 className="text-3xl font-semibold leading-snug tracking-tight text-white sm:text-4xl">
           Built for people who want to stay with what they hear
         </h1>
