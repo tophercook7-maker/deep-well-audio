@@ -70,7 +70,7 @@ export function FeedbackForm({ signedIn, defaultEmail }: Props) {
     return (
       <div className="card border-accent/25 bg-accent/[0.06] p-6 text-center sm:p-8">
         <p className="text-sm font-medium text-amber-100/95">Thanks — I got your note.</p>
-        <p className="mt-2 text-xs text-muted">I read every submission. If I need more detail, I&apos;ll reach out by email.</p>
+        <p className="mt-2 text-xs text-muted">I read every submission—thank you for taking the time.</p>
       </div>
     );
   }

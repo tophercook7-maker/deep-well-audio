@@ -203,7 +203,7 @@ function FeedbackAdminRow({
       <p className="mt-2 text-xs text-slate-500">
         {replySent ? (
           <>
-            <span className="text-emerald-400/90">Reply marked sent</span>
+            <span className="text-emerald-400/90">Marked handled</span>
             {row.replied_at ? (
               <>
                 {" "}
@@ -212,7 +212,7 @@ function FeedbackAdminRow({
             ) : null}
           </>
         ) : (
-          <span className="text-amber-200/75">Reply not marked sent yet — safe to draft here.</span>
+          <span className="text-amber-200/75">Not marked handled yet — safe to add notes here.</span>
         )}
       </p>
       {row.page_url ? (
@@ -251,11 +251,11 @@ function FeedbackAdminRow({
         </div>
         <div className="min-w-0 flex-[2]">
           <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-slate-400" htmlFor={`note-${row.id}`}>
-            Reply / reassurance
+            Internal note
           </label>
           <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
-            Draft the message you may send them later (email from the app is optional). Saving stores it; you can paste into Gmail anytime or mark sent
-            when you&apos;re done.
+            For your eyes only—nothing is emailed from here. Save to keep the draft; copy if you want the text elsewhere. Mark handled when
+            you&apos;re done on your side.
           </p>
           <textarea
             id={`note-${row.id}`}
@@ -264,7 +264,7 @@ function FeedbackAdminRow({
             rows={3}
             maxLength={2000}
             className="mt-1.5 w-full resize-y rounded-lg border border-line/80 bg-soft/25 px-3 py-2 text-sm text-slate-100 outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
-            placeholder="e.g. Thanks for writing — here’s what I’m doing and when you can expect a fix…"
+            placeholder="e.g. Triaged — fix scheduled for next deploy…"
           />
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <button
@@ -273,7 +273,7 @@ function FeedbackAdminRow({
               onClick={() => void copyReply()}
               className="inline-flex min-h-[36px] items-center justify-center rounded-full border border-line px-4 py-1.5 text-xs font-medium text-amber-200/90 transition hover:border-accent/40 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Copy reply
+              Copy note
             </button>
             {copyHint ? <span className="text-xs text-slate-400">{copyHint}</span> : null}
             {!replySent ? (
@@ -283,7 +283,7 @@ function FeedbackAdminRow({
                 onClick={() => onMarkReplySent(row.id, status, note)}
                 className="inline-flex min-h-[36px] items-center justify-center rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-medium text-amber-100 transition hover:bg-accent/15 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Save &amp; mark reply sent
+                Save &amp; mark handled
               </button>
             ) : (
               <button
@@ -292,7 +292,7 @@ function FeedbackAdminRow({
                 onClick={() => onClearReplySent(row.id)}
                 className="text-xs text-slate-500 underline-offset-2 transition hover:text-slate-300 hover:underline"
               >
-                Undo “sent” (for mistakes)
+                Undo handled (mistake)
               </button>
             )}
           </div>

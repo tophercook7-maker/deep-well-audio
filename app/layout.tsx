@@ -47,13 +47,10 @@ export const metadata: Metadata = {
     "spiritual growth",
     "Deep Well Audio",
   ],
-  /** Favicon + Apple touch: `app/icon.tsx` and `app/apple-icon.tsx`. PWA manifest still uses `public/icons/*` from `npm run build:icons`. */
-  icons: {
-    icon: [
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-  },
+  /**
+   * Do not set `metadata.icons` here — it overrides `app/icon.tsx` / `app/apple-icon.tsx`.
+   * Install / Add-to-home icons: `app/manifest.ts` → `public/icons/*` (from `npm run build:icons`).
+   */
   appleWebApp: {
     capable: true,
     title: "Deep Well Audio",

@@ -69,7 +69,7 @@ export async function attemptAutomatedFeedbackReply(
 
   const send = await sendFeedbackReplyEmailIfEnabled({
     to: email,
-    subject: "Re: your note to Deep Well",
+    subject: "Re: your feedback",
     bodyText: note,
     feedbackId,
   });

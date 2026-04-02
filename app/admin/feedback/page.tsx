@@ -83,8 +83,7 @@ export default async function AdminFeedbackPage() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Admin</p>
         <h1 className="mt-1 text-2xl font-semibold text-white sm:text-3xl">Site feedback</h1>
         <p className="mt-2 max-w-prose text-sm leading-[1.65] text-muted">
-          Newest first. Update status, draft a reply, copy to your mail client, then mark sent when you&apos;re done—nothing leaves this panel until
-          you act.
+          Newest first. Update status and keep internal notes—nothing is emailed from here; submissions stay in this inbox until you change them.
         </p>
       </header>
       {!admin ? (
