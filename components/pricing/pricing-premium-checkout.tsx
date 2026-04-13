@@ -27,7 +27,7 @@ export function PricingPremiumCheckout({ stripeReady, plan }: Props) {
   return (
     <div id="subscribe" className="mt-8 scroll-mt-28 space-y-3">
       <StartCheckoutButton interval="monthly" disabled={!stripeReady} className={btnPrimary}>
-        Start Premium
+        Go Premium
       </StartCheckoutButton>
       <StartCheckoutButton interval="yearly" disabled={!stripeReady} className={btnYearly}>
         $90/year

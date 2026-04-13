@@ -27,6 +27,8 @@ export function CuratedVideoCard({
   density = "default",
   /** Hide description excerpt (e.g. homepage “one thing” spotlight). */
   hideExcerpt = false,
+  /** Guest sign-in hint: set false on all but one card in a grid to avoid repeating the same line. */
+  studyGuestHint = true,
 }: {
   item: CuratedVideoItem;
   plan: UserPlan;
@@ -36,6 +38,7 @@ export function CuratedVideoCard({
   premiumTeaser?: boolean;
   density?: "default" | "compact";
   hideExcerpt?: boolean;
+  studyGuestHint?: boolean;
 }) {
   const dateLabel = item.publishedAt ? formatPublished(item.publishedAt) : "";
   const primaryCat = CURATED_CATEGORY_META[item.category];
@@ -211,6 +214,7 @@ export function CuratedVideoCard({
             title={item.title}
             plan={plan}
             loginNext={loginNext}
+            showGuestLoginHint={studyGuestHint}
           />
         </div>
       </div>

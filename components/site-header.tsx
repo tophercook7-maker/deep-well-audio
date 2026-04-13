@@ -1,23 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import type { Route } from "next";
 import type { User } from "@supabase/supabase-js";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
-import { Compass, Globe, Headphones, Home, Library, Tags } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Compass, Globe, Headphones, Home, Info, Library } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
 
-type NavItem =
-  | { href: "/explore" | "/library" | "/world-watch"; label: string; icon: typeof Compass | typeof Library | typeof Globe }
-  | { href: string; label: string; icon: typeof Headphones | typeof Tags; hash: true };
+type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const nav: NavItem[] = [
   { href: "/explore", label: "Explore", icon: Compass },
-  { href: "/#topics", label: "Topics", icon: Tags, hash: true },
+  { href: "/about", label: "About", icon: Info },
   { href: "/library", label: "Library", icon: Library },
   { href: "/world-watch", label: "World Watch", icon: Globe },
-  { href: "/#featured", label: "Featured", icon: Headphones, hash: true },
+  { href: "/curated-teachings?featured=1", label: "Featured", icon: Headphones },
 ];
 
 const linkClass =
@@ -117,16 +117,8 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
             </Link>
             {nav.map((item) => {
               const Icon = item.icon;
-              if ("hash" in item) {
-                return (
-                  <a key={item.href} href={item.href} className={linkClass}>
-                    <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
-                    {item.label}
-                  </a>
-                );
-              }
               return (
-                <Link key={item.href} href={item.href} className={linkClass}>
+                <Link key={item.href} href={item.href as Route} className={linkClass}>
                   <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
                   {item.label}
                 </Link>

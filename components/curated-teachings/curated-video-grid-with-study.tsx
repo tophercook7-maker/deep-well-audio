@@ -45,6 +45,7 @@ export function CuratedVideoGridWithStudy({
             thumbnailPriority={index < thumbnailPriorityFirstN}
             loginNext={loginNext}
             premiumTeaser={premiumTeaser}
+            studyGuestHint={index === 0}
           />
         ))}
       </div>

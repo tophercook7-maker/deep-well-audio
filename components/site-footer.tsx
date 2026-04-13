@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { InstallHint } from "@/components/pwa/install-hint";
 import { FooterJoinLink } from "@/components/analytics/footer-join-link";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
@@ -22,6 +23,18 @@ export function SiteFooter() {
         >
           <Link href="/explore" className="transition hover:text-amber-100/85">
             Explore
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href={"/about" as Route} className="transition hover:text-amber-100/85">
+            About
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href={"/pricing" as Route} className="transition hover:text-amber-100/85">
+            Pricing
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·

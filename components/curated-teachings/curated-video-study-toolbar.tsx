@@ -14,12 +14,15 @@ export function CuratedVideoStudyToolbar({
   title,
   plan,
   loginNext,
+  /** When false, hide the guest sign-in strip (e.g. show once per grid, not on every card). */
+  showGuestLoginHint = true,
 }: {
   videoId: string;
   sourceId: string;
   title: string;
   plan: UserPlan;
   loginNext: string;
+  showGuestLoginHint?: boolean;
 }) {
   const meta = useCuratedStudyBatchMeta();
   const row = useCuratedStudyRow(videoId);
@@ -141,6 +144,7 @@ export function CuratedVideoStudyToolbar({
   }, [busy, enabled, refresh, sourceId, videoId]);
 
   if (plan === "guest") {
+    if (!showGuestLoginHint) return null;
     return (
       <div className="flex flex-wrap items-center gap-2 border-t border-line/40 pt-3 text-[11px] text-slate-500">
         <Link
@@ -149,7 +153,7 @@ export function CuratedVideoStudyToolbar({
         >
           Sign in
         </Link>
-        <span>to save teachings and keep private notes.</span>
+        <span>to save and add notes.</span>
       </div>
     );
   }
