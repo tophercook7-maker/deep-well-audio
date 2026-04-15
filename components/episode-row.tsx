@@ -12,6 +12,9 @@ import { getEpisodeDisplayTitle, getShowDisplayLabel } from "@/lib/display";
 import { episodeListDescription } from "@/lib/present";
 import { formatTopicTagLabel } from "@/lib/topic-infer";
 import { getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
+import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
+import { ScriptureTagPills } from "@/components/study/scripture-tag-pills";
+import { teachingContentKey } from "@/lib/study/refs";
 
 type Props = {
   episode: Episode | EpisodeWithShow;
@@ -97,7 +100,11 @@ export function EpisodeRow({
               <p
                 className={`mt-2 text-sm leading-6 text-muted ${isPage ? "" : "line-clamp-3"}`}
               >
-                {descriptionPlain}
+                {isPage ? (
+                  <ScriptureLinkedText text={descriptionPlain} teachingKey={teachingContentKey("episode", episode.id)} />
+                ) : (
+                  descriptionPlain
+                )}
               </p>
               {isPage ? (
                 <EpisodeListenSaveHint
@@ -133,14 +140,7 @@ export function EpisodeRow({
                 </span>
               );
             })}
-            {(episode.scripture_tags ?? []).slice(0, 6).map((verse) => (
-              <span
-                key={verse}
-                className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs text-amber-200"
-              >
-                {verse}
-              </span>
-            ))}
+            <ScriptureTagPills tags={episode.scripture_tags ?? []} teachingKey={teachingContentKey("episode", episode.id)} />
           </div>
         </div>
       </div>

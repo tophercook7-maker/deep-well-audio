@@ -10,6 +10,8 @@ import { EpisodeBookmarksNotesClient } from "@/components/premium/episode-bookma
 import { BookmarksNotesLockedPreview } from "@/components/premium/bookmarks-notes-locked-preview";
 import { BackButton } from "@/components/buttons/back-button";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { episodeListDescription } from "@/lib/present";
+import { EpisodeStudyBlock } from "@/components/study/episode-study-block";
 
 export default async function EpisodePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -100,6 +102,12 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
       ) : (
         <BookmarksNotesLockedPreview />
       )}
+
+      <EpisodeStudyBlock
+        description={episodeListDescription(episode.description) ?? ""}
+        episodeId={episode.id}
+        plan={plan}
+      />
     </main>
   );
 }

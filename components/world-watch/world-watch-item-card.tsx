@@ -1,6 +1,7 @@
 import { BookOpen, ListChecks, Scale, ScrollText, Sparkles } from "lucide-react";
 import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
 import { worldWatchCategoryLabel, worldWatchHeroImage } from "@/lib/world-watch/items";
+import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
 
 function formatPublishedDate(iso: string) {
   try {
@@ -60,7 +61,9 @@ function DepthParagraphs({ lines }: { lines: string[] }) {
   return (
     <div className="mt-3 space-y-3 text-[0.9375rem] leading-[1.72] text-slate-200/95 sm:text-base sm:leading-[1.75]">
       {lines.map((para, i) => (
-        <p key={i}>{para}</p>
+        <p key={i}>
+          <ScriptureLinkedText text={para} />
+        </p>
       ))}
     </div>
   );
@@ -100,7 +103,7 @@ function DepthSection({
             <ul className="mt-3 space-y-2.5 font-serif text-[0.9375rem] leading-snug tracking-[0.01em] text-slate-100/95">
               {rawLines.map((line, i) => (
                 <li key={i} className="border-b border-line/35 pb-2.5 last:border-0 last:pb-0">
-                  {line}
+                  <ScriptureLinkedText text={line} />
                 </li>
               ))}
             </ul>
@@ -131,7 +134,9 @@ function DepthSection({
                     className="mt-2 h-1 w-1 shrink-0 rounded-full bg-emerald-400/70"
                     aria-hidden
                   />
-                  <span>{line}</span>
+                  <span>
+                    <ScriptureLinkedText text={line} />
+                  </span>
                 </li>
               ))}
             </ul>
@@ -161,7 +166,9 @@ function DepthSection({
                     <span className="mt-2 font-mono text-xs text-violet-300/50" aria-hidden>
                       —
                     </span>
-                    <span>{line.replace(/^[-•*]\s*/, "").trim()}</span>
+                    <span>
+                      <ScriptureLinkedText text={line.replace(/^[-•*]\s*/, "").trim()} />
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -298,7 +305,7 @@ export function WorldWatchItemCard({
           ) : (
             summaryParas.map((para, i) => (
               <p key={i} className={i > 0 ? "mt-3" : ""}>
-                {para}
+                <ScriptureLinkedText text={para} />
               </p>
             ))
           )}
@@ -313,7 +320,7 @@ export function WorldWatchItemCard({
                 .filter(Boolean)
                 .map((para, i) => (
                   <p key={i} className={i > 0 ? "mt-3" : ""}>
-                    {para}
+                    <ScriptureLinkedText text={para} />
                   </p>
                 ))}
             </div>

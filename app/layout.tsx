@@ -7,6 +7,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { SiteAtmosphere } from "@/components/site/site-atmosphere";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { AccountPlanProvider } from "@/components/plan/plan-context";
+import { StudyProvider } from "@/components/study/study-provider";
+import { StudyOverlays } from "@/components/study/study-overlays";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { getSafeAbsoluteSiteUrl } from "@/lib/env";
 
@@ -101,13 +103,16 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <SiteAtmosphere />
         <PlayerProvider>
           <AccountPlanProvider initialPlan={plan}>
-            {/* Single stacking layer above the fixed atmosphere so all pages scroll over the Bible backdrop */}
-            <div className="relative z-10 flex min-h-full flex-1 flex-col">
-              <SiteHeader user={user} plan={plan} />
-              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-              <SiteFooter />
-              <Analytics />
-            </div>
+            <StudyProvider>
+              {/* Single stacking layer above the fixed atmosphere so all pages scroll over the Bible backdrop */}
+              <div className="relative z-10 flex min-h-full flex-1 flex-col">
+                <SiteHeader user={user} plan={plan} />
+                <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+                <SiteFooter />
+                <Analytics />
+              </div>
+              <StudyOverlays />
+            </StudyProvider>
           </AccountPlanProvider>
         </PlayerProvider>
         <Script id="clarity" strategy="afterInteractive">

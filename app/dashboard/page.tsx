@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
-import { Globe, Headphones, Library, NotebookPen, Radar } from "lucide-react";
+import { BookOpen, Globe, Headphones, Library, NotebookPen, Radar } from "lucide-react";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { BackButton } from "@/components/buttons/back-button";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
@@ -11,6 +11,7 @@ import { createServiceClient } from "@/lib/db";
 import { fetchPublishedWorldWatchItems } from "@/lib/world-watch/items";
 import { WorldWatchItemCard } from "@/components/world-watch/world-watch-item-card";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { StudyDashboardSection } from "@/components/study/study-dashboard-section";
 
 export const metadata = {
   title: "Your Deep Well",
@@ -71,7 +72,31 @@ export default async function DashboardPage() {
         <a href="#world-watch" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
           Full World Watch
         </a>
+        <a href="#study" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
+          Study
+        </a>
       </nav>
+
+      <section className="scroll-mt-28 rounded-[22px] border border-sky-500/20 bg-[rgba(8,14,22,0.35)] p-6 backdrop-blur-md sm:p-8">
+        <div className="flex flex-wrap items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-sky-400/30 bg-sky-500/[0.1] text-sky-100">
+            <BookOpen className="h-6 w-6" aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg font-semibold text-white">Deep Well Study</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+              Open the reader from any teaching, tap a verse, and keep notes with Premium. Your Study hub below shows what you&apos;ve saved
+              recently.
+            </p>
+            <a
+              href="#study"
+              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-6 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
+            >
+              Jump to Study hub
+            </a>
+          </div>
+        </div>
+      </section>
 
       <section id="library" className="scroll-mt-28 rounded-[22px] border border-line/55 bg-[rgba(9,12,18,0.45)] p-8 backdrop-blur-md">
         <div className="flex flex-wrap items-start gap-4">
@@ -97,6 +122,8 @@ export default async function DashboardPage() {
         <ContinueListeningSection enabled={showSessionListening} />
       </div>
       <RecentlyPlayedSection enabled={showSessionListening} />
+      <StudyDashboardSection />
+
       <section id="notes" className="scroll-mt-28 rounded-[22px] border border-line/55 bg-[rgba(9,12,18,0.45)] p-8 backdrop-blur-md">
         <div className="flex flex-wrap items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">

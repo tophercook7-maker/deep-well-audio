@@ -7,6 +7,9 @@ import { CURATED_CATEGORY_META } from "@/lib/curated-teachings/categories";
 import type { UserPlan } from "@/lib/permissions";
 import { CuratedWatchLink } from "@/components/curated-teachings/curated-watch-link";
 import { CuratedVideoStudyToolbar } from "@/components/curated-teachings/curated-video-study-toolbar";
+import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
+import { CuratedStudyLaunch } from "@/components/study/curated-study-launch";
+import { teachingContentKey } from "@/lib/study/refs";
 
 function formatPublished(iso: string): string {
   try {
@@ -145,11 +148,12 @@ export function CuratedVideoCard({
                 : "text-sm line-clamp-2",
             ].join(" ")}
           >
-            {item.excerpt}
+            <ScriptureLinkedText text={item.excerpt} teachingKey={teachingContentKey("youtube", item.videoId)} />
           </p>
         ) : (
           <div className="flex-1" />
         )}
+        <CuratedStudyLaunch excerpt={item.excerpt ?? null} />
 
         <div className={compact ? "mt-2.5 space-y-1.5 border-t border-line/45 pt-2.5 sm:mt-5 sm:space-y-2 sm:pt-4" : "mt-5 space-y-2 border-t border-line/45 pt-4"}>
           {guestGated ? (
