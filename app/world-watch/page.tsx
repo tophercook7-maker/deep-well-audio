@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Globe, Radar } from "lucide-react";
+import { Globe, Lock, Radar } from "lucide-react";
 import { BackButton } from "@/components/buttons/back-button";
 import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
+import { FunnelLink } from "@/components/analytics/funnel-link";
 import { WorldWatchPremium } from "@/components/world-watch/world-watch-premium";
-import { WorldWatchTeaser } from "@/components/world-watch/world-watch-teaser";
+import { WorldWatchItemCard } from "@/components/world-watch/world-watch-item-card";
 import { WorldWatchVideoLensShell } from "@/components/world-watch/world-watch-video-lens-shell";
 import { WorldWatchVideoLensGrid } from "@/components/world-watch/world-watch-video-lens-grid";
 import { getUserPlan } from "@/lib/auth";
@@ -17,30 +18,12 @@ import { getWorldWatchYoutubeVideos } from "@/lib/curated-teachings/aggregate";
 export const metadata = {
   title: "World Watch",
   description:
-    "World Watch: a slower read on a few stories—video lens plus, for members, a full written digest with Scripture and notes. Think before reacting; stay grounded.",
+    "Biblically framed updates and listening for the times we live in. Preview free; unlock the full digest with Premium.",
 };
 
 export const dynamic = "force-dynamic";
 
-function HeroBody() {
-  return (
-    <div className="mt-3 space-y-4 text-sm leading-relaxed text-slate-200/95 sm:mt-4 sm:text-base">
-      <p>
-        The news moves fast and speaks loud.
-        <br />
-        Most of it is built to keep you reacting.
-      </p>
-      <p>This is a slower read.</p>
-      <p>
-        World Watch gathers a small number of stories and holds them in place long enough to think about them.
-        <br />
-        Not to win arguments. Not to predict outcomes.
-        <br />
-        To understand what is happening and stay grounded in it.
-      </p>
-    </div>
-  );
-}
+const TEASER_PREVIEW_COUNT = 3;
 
 export default async function WorldWatchPage() {
   let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
@@ -51,97 +34,74 @@ export default async function WorldWatchPage() {
   }
 
   const premium = canUseFeature("world_watch", plan);
+  const admin = createServiceClient();
 
   let worldWatchItems: Awaited<ReturnType<typeof fetchPublishedWorldWatchItems>> = [];
-  if (premium) {
-    const admin = createServiceClient();
-    if (admin) {
-      worldWatchItems = await fetchPublishedWorldWatchItems(admin, 50, { audience: "premium" });
-    } else {
-      console.warn("[world-watch] service role unavailable — premium feed empty");
-    }
+  let teaserItems: Awaited<ReturnType<typeof fetchPublishedWorldWatchItems>> = [];
+
+  if (premium && admin) {
+    worldWatchItems = await fetchPublishedWorldWatchItems(admin, 50, { audience: "premium" });
+  } else if (admin) {
+    teaserItems = await fetchPublishedWorldWatchItems(admin, TEASER_PREVIEW_COUNT, { audience: "teaser" });
   }
 
   const youtubePool = await getWorldWatchYoutubeVideos(48).catch((err) => {
     console.error("world-watch youtube:", err instanceof Error ? err.message : err);
     return [];
   });
-  const ytCap = plan === "premium" ? youtubePool.length : plan === "free" ? 12 : 4;
+  const ytCap = premium ? youtubePool.length : TEASER_PREVIEW_COUNT;
   const youtubeItems = youtubePool.slice(0, ytCap);
 
-  if (process.env.NODE_ENV === "development" || process.env.WORLD_WATCH_SERVER_LENS_LOG === "1") {
-    console.info("[world-watch] video lens (server)", {
-      plan,
-      pool: youtubePool.length,
-      ytCap,
-      shown: youtubeItems.length,
-    });
-  }
-
   return (
-    <main className="container-shell max-w-3xl space-y-6 py-8 max-md:space-y-3.5 max-md:py-6 sm:space-y-12 sm:py-12 lg:max-w-5xl lg:space-y-14 lg:py-16">
+    <main className="container-shell max-w-3xl space-y-10 py-10 sm:space-y-14 sm:py-14 lg:max-w-5xl">
       <ConversionPageBeacon page="world_watch" />
-      <div className="border-b border-line/50 pb-4 max-md:pb-2.5 sm:pb-5">
+      <div className="border-b border-line/50 pb-4 sm:pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>
 
-      <div className="space-y-1.5 sm:space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">World Watch</h1>
-        <p className="text-sm font-medium text-slate-400/95">This week</p>
-      </div>
-
-      <header className="flex flex-col gap-2.5 sm:gap-4 sm:flex-row sm:items-start">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent sm:h-12 sm:w-12">
-          <Globe className="h-[1.15rem] w-[1.15rem] sm:h-6 sm:w-6" aria-hidden />
+      <header className="space-y-4">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">
+          <Globe className="h-6 w-6" aria-hidden />
         </div>
-        <div className="min-w-0 max-w-2xl">
-          <h2 className="text-2xl font-semibold leading-snug tracking-tight text-white sm:text-3xl md:text-[2rem] md:leading-tight">
-            See what&apos;s happening—without getting pulled into it
-          </h2>
-          <p className="mt-2 max-w-xl text-sm font-normal leading-relaxed text-slate-400/92 sm:mt-2.5 sm:text-[0.9375rem]">
-            News you can think about without being pulled into it
-          </p>
-          {premium ? (
-            <>
-              <HeroBody />
-              <p className="mt-4 text-sm text-slate-300/95">
-                Below is your full digest for members. Need billing help?{" "}
-                <Link href={"/feedback" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
-                  Contact us
-                </Link>
-                .
-              </p>
-            </>
-          ) : (
-            <HeroBody />
-          )}
-        </div>
+        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Stay grounded in a noisy world</h1>
+        <p className="max-w-2xl text-base leading-relaxed text-slate-300/95 sm:text-lg">
+          Biblically framed updates and listening for the times we live in.
+        </p>
       </header>
 
+      {!premium ? (
+        <section className="space-y-6" aria-labelledby="ww-preview-heading">
+          <h2 id="ww-preview-heading" className="text-lg font-semibold text-white">
+            Preview
+          </h2>
+          {teaserItems.length > 0 ? (
+            <div className="grid gap-6 lg:grid-cols-3">
+              {teaserItems.map((item) => (
+                <WorldWatchItemCard key={item.id} item={item} maxSummaryParagraphs={2} showReflection={false} />
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-2xl border border-line/60 bg-soft/10 p-5 text-sm text-muted">
+              Written digest entries will appear here when published. Video picks below stay available as a light preview.
+            </p>
+          )}
+        </section>
+      ) : null}
+
       <section
-        className="space-y-2.5 rounded-xl border border-rose-500/18 bg-gradient-to-br from-rose-950/11 via-[rgba(11,18,32,0.22)] to-[rgba(10,14,22,0.16)] p-3 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.35)] backdrop-blur-md max-md:rounded-lg sm:space-y-5 sm:rounded-[1.5rem] sm:p-8"
+        className="space-y-4 rounded-2xl border border-rose-500/18 bg-gradient-to-br from-rose-950/11 via-[rgba(11,18,32,0.22)] to-[rgba(10,14,22,0.16)] p-5 shadow-[0_16px_40px_-28px_rgba(0,0,0,0.35)] backdrop-blur-md sm:space-y-5 sm:rounded-[1.5rem] sm:p-8"
         aria-labelledby="ww-video-lens"
       >
-        <div className="flex items-start gap-2 sm:gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-rose-400/35 bg-rose-500/10 text-rose-100 sm:h-10 sm:w-10 sm:rounded-xl">
-            <Radar className="h-3.5 w-3.5 sm:h-5 sm:w-5" aria-hidden />
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose-400/35 bg-rose-500/10 text-rose-100">
+            <Radar className="h-5 w-5" aria-hidden />
           </div>
           <div className="min-w-0">
-            <p id="ww-video-lens" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-rose-200/75 sm:text-xs">
+            <p id="ww-video-lens" className="text-xs font-semibold uppercase tracking-[0.22em] text-rose-200/75">
               Video lens
             </p>
-            <p className="mt-1 text-[11px] leading-snug text-slate-200/95 md:hidden">
-              A few clips from voices worth listening to. Not everything—just enough to see clearly.
-              {!premium ? (
-                <>
-                  {" "}
-                  <span className="text-slate-300/90">Members get the full set.</span>
-                </>
-              ) : null}
-            </p>
-            <p className="mt-1.5 hidden text-sm leading-relaxed text-slate-200/95 md:block sm:mt-2">
-              A few clips from voices worth listening to. Not everything—just enough to see clearly.
-              {!premium ? <span className="text-slate-300/90"> Members get the full set.</span> : null}
+            <p className="mt-2 text-sm leading-relaxed text-slate-200/95">
+              A few clips to help you see clearly{!premium ? "—Premium unlocks the full set and written digest." : "."}
             </p>
           </div>
         </div>
@@ -156,23 +116,8 @@ export default async function WorldWatchPage() {
             />
           </WorldWatchVideoLensShell>
         ) : (
-          <div className="rounded-2xl border border-line/60 bg-soft/10 p-5">
-            <div className="flex gap-3">
-              <Globe className="h-5 w-5 shrink-0 text-rose-200/60" aria-hidden />
-              <div className="text-sm leading-relaxed text-slate-200/95">
-                <p>
-                  No video picks loaded yet—feeds may still be warming, or{" "}
-                  <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">YOUTUBE_API_KEY</code>{" "}
-                  may be unset in production (RSS fallback should still run). Operators can warm caches with{" "}
-                  <code className="rounded bg-soft px-1 py-0.5 font-mono text-[0.65rem] text-slate-300">
-                    GET /api/cron/curated-youtube
-                  </code>{" "}
-                  using{" "}
-                  <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs text-slate-300">CRON_SECRET</code>.
-                </p>
-                <p className="mt-2 text-xs text-slate-400/95">Written World Watch below is unchanged when video rows are quiet.</p>
-              </div>
-            </div>
+          <div className="rounded-2xl border border-line/60 bg-soft/10 p-5 text-sm text-muted">
+            Video picks load when feeds are available. The written digest below is unchanged when this section is quiet.
           </div>
         )}
       </section>
@@ -180,14 +125,53 @@ export default async function WorldWatchPage() {
       {premium ? (
         <WorldWatchPremium items={worldWatchItems} />
       ) : (
-        <>
-          <div className="hidden md:block">
-            <WorldWatchTeaser />
+        <section
+          className="relative overflow-hidden rounded-[22px] border border-line/50 bg-[rgba(6,9,14,0.65)]"
+          aria-labelledby="ww-locked-heading"
+        >
+          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+            <div className="space-y-3 p-8 opacity-[0.35] blur-[5px]">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className={[
+                    "rounded-2xl border border-line/30 bg-soft/40",
+                    i % 2 === 0 ? "h-24" : "h-14",
+                  ].join(" ")}
+                />
+              ))}
+            </div>
           </div>
-          <div className="md:hidden">
-            <WorldWatchTeaser omitLead />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(8,11,17,0.25)] via-[rgba(8,11,17,0.65)] to-[rgba(5,7,12,0.94)] backdrop-blur-[1px]" />
+          <div className="relative space-y-5 p-8 sm:p-10">
+            <div className="flex items-center gap-3 text-accent">
+              <Lock className="h-6 w-6" aria-hidden />
+              <h2 id="ww-locked-heading" className="text-xl font-semibold text-white">
+                Full World Watch
+              </h2>
+            </div>
+            <p className="max-w-xl text-base font-medium leading-relaxed text-slate-100/95">
+              Unlock full World Watch with Premium
+            </p>
+            <p className="max-w-xl text-sm leading-relaxed text-slate-400">
+              Subscribers get the complete written digest, deeper context, and a steadier read—continuity for the news you need to think about.
+            </p>
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              funnelData={{ placement: "world_watch_lock" }}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_28px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
+            >
+              Upgrade
+            </FunnelLink>
+            <p className="text-xs text-slate-500">
+              Already a member?{" "}
+              <Link href="/login?next=/world-watch" className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+                Sign in
+              </Link>
+            </p>
           </div>
-        </>
+        </section>
       )}
     </main>
   );

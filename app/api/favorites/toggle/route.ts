@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getUserPlan } from "@/lib/auth";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -19,6 +20,11 @@ export async function POST(request: Request) {
   const user = userRes.data.user;
   if (!user) {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+  }
+
+  const plan = await getUserPlan();
+  if (plan !== "premium") {
+    return NextResponse.json({ error: "Premium required", code: "premium_required" }, { status: 403 });
   }
 
   let body: { episode_id?: string };

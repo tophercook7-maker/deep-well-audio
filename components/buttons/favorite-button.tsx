@@ -2,7 +2,6 @@
 
 import { Heart } from "lucide-react";
 import type { Route } from "next";
-import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { hasPublicSupabaseEnv } from "@/lib/env";
@@ -11,15 +10,12 @@ import { PremiumSaveFollowUp } from "@/components/premium/premium-save-follow-up
 type Props = {
   episodeId: string;
   initial: boolean;
-  /** Optional full path for ?next= (e.g. include querystring if you pass it from server). */
-  returnPath?: string;
   /** After a successful save, show a quiet Premium upsell (non-premium users only; set from server). */
   showPremiumSaveFollowUp?: boolean;
 };
 
-export function FavoriteButton({ episodeId, initial, returnPath, showPremiumSaveFollowUp = false }: Props) {
+export function FavoriteButton({ episodeId, initial, showPremiumSaveFollowUp = false }: Props) {
   const router = useRouter();
-  const pathname = usePathname() ?? "/";
   const [favorited, setFavorited] = useState(initial);
   const [pending, startTransition] = useTransition();
   const [hint, setHint] = useState<string | null>(null);
@@ -32,12 +28,6 @@ export function FavoriteButton({ episodeId, initial, returnPath, showPremiumSave
   }, [saveAck]);
 
   const authConfigured = hasPublicSupabaseEnv();
-
-  function loginUrl() {
-    const path = returnPath ?? pathname ?? "/";
-    const next = encodeURIComponent(path.startsWith("/") ? path : "/");
-    return `/login?next=${next}&reason=save`;
-  }
 
   function toggle() {
     if (!episodeId || !authConfigured) return;
@@ -53,8 +43,8 @@ export function FavoriteButton({ episodeId, initial, returnPath, showPremiumSave
           body: JSON.stringify({ episode_id: episodeId }),
         });
 
-        if (res.status === 401) {
-          router.push(loginUrl() as Route);
+        if (res.status === 401 || res.status === 403) {
+          router.push("/pricing?intent=save" as Route);
           return;
         }
 

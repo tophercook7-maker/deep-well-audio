@@ -61,7 +61,8 @@ function LoginFormFields({ authAvailable }: { authAvailable: boolean }) {
     <form onSubmit={onSubmit} className="mt-8 grid gap-4">
       {localReason === "save" ? (
         <p className="rounded-2xl border border-accent/25 bg-accent/10 px-4 py-3 text-sm text-amber-100/90">
-          Sign in to save favorites and shows. We&apos;ll bring you right back.
+          Saving is part of Premium—subscribe to keep teachings, notes, and progress in one place. We&apos;ll send you to plans if you need to
+          upgrade.
         </p>
       ) : null}
       <label className="grid gap-2 text-sm text-muted">

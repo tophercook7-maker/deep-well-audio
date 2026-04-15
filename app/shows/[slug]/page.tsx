@@ -25,7 +25,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
     return (
       <main className="container-shell py-12 sm:py-14">
         <div className="mb-6 border-b border-line/50 pb-5">
-          <BackButton fallbackHref="/explore" label="Back" />
+          <BackButton fallbackHref="/browse" label="Back" />
         </div>
         <div className="mt-8 card border-amber-400/25 bg-amber-500/5 p-8">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-100/80">Temporarily unavailable</p>
@@ -35,7 +35,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href={"/explore" as Route}
+              href={"/browse" as Route}
               className="inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 hover:opacity-90"
             >
               Explore directory
@@ -78,7 +78,7 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
   return (
     <main className="container-shell py-12 sm:py-14">
       <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/explore" label="Back" />
+        <BackButton fallbackHref="/browse" label="Back" />
       </div>
 
       <section className="card overflow-hidden p-8 sm:p-10">
@@ -122,7 +122,6 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
                 <SaveShowButton
                   showId={show.id}
                   initial={savedIds.has(show.id)}
-                  returnPath={`/shows/${show.slug}`}
                   showPremiumSaveFollowUp={showPremiumSaveFollowUp}
                 />
               </div>
@@ -154,7 +153,6 @@ export default async function ShowDetailPage({ params }: { params: Promise<{ slu
                 showSlug={show.slug}
                 showOfficialUrl={show.official_url}
                 favorited={favoriteIds.has(episode.id)}
-                favoriteReturnPath={`/shows/${show.slug}`}
                 showPremiumSaveFollowUp={showPremiumSaveFollowUp}
               />
             ))}

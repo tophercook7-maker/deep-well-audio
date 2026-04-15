@@ -1,6 +1,6 @@
 import { permanentRedirect } from "next/navigation";
 
-/** Account hub not split out yet — library is the signed-in home. */
+/** Subscriber hub lives on the dashboard; library remains the saves surface. */
 export default function AccountPage() {
-  permanentRedirect("/library");
+  permanentRedirect("/dashboard");
 }

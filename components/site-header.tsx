@@ -6,18 +6,16 @@ import type { User } from "@supabase/supabase-js";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import type { LucideIcon } from "lucide-react";
-import { Compass, Globe, Headphones, Home, Info, Library } from "lucide-react";
+import { CircleDollarSign, Globe, Headphones, Home, LogIn } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const nav: NavItem[] = [
-  { href: "/explore", label: "Explore", icon: Compass },
-  { href: "/about", label: "About", icon: Info },
-  { href: "/library", label: "Library", icon: Library },
+  { href: "/browse", label: "Browse", icon: Headphones },
   { href: "/world-watch", label: "World Watch", icon: Globe },
-  { href: "/curated-teachings?featured=1", label: "Featured", icon: Headphones },
+  { href: "/pricing", label: "Pricing", icon: CircleDollarSign },
 ];
 
 const linkClass =
@@ -124,6 +122,22 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
                 </Link>
               );
             })}
+            <Link
+              href={
+                !user
+                  ? ("/login" as Route)
+                  : plan === "premium"
+                    ? ("/dashboard" as Route)
+                    : ("/pricing" as Route)
+              }
+              className={linkClass}
+              aria-label={
+                !user ? "Sign in" : plan === "premium" ? "Premium dashboard" : "Subscribe to unlock your personal Deep Well"
+              }
+            >
+              <LogIn className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
+              {!user ? "Sign In" : plan === "premium" ? "Dashboard" : "Subscribe"}
+            </Link>
             <div className="sm:ml-1 sm:border-l sm:border-line/80 sm:pl-4">
               <AuthMenu user={user} plan={plan} />
             </div>

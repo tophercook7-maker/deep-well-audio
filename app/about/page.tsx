@@ -154,7 +154,7 @@ export default function AboutPage() {
           </h2>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href={"/explore" as Route}
+              href={"/browse" as Route}
               className="inline-flex min-h-[48px] items-center justify-center rounded-[22px] border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
             >
               Explore Deep Well

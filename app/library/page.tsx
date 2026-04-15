@@ -68,21 +68,24 @@ export default async function LibraryPage() {
               <span className="tag">Library</span>
               <h1 className="mt-4 text-4xl font-semibold text-white">Saved teaching, in one place</h1>
               <p className="mt-4 max-w-2xl leading-7 text-muted">
-                Create a free account to favorite episodes and save whole programs. Your lists stay with this account.
+                Saving, notes, and your listening home are part of Premium—subscribe to unlock your personal Deep Well.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href={authConfigured ? ("/signup?next=/library" as Route) : ("/explore" as Route)}
+                  href={"/pricing" as Route}
                   className="inline-flex items-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950"
                 >
-                  {authConfigured ? "Create account" : "Explore"}
+                  View Premium
+                </Link>
+                <Link href={"/browse" as Route} className="inline-flex items-center rounded-full border border-line px-6 py-3 text-sm font-semibold text-white">
+                  Browse teaching
                 </Link>
                 {authConfigured ? (
                   <Link
                     href={"/login?next=/library" as Route}
                     className="inline-flex items-center rounded-full border border-line px-6 py-3 text-sm font-semibold text-white"
                   >
-                    Sign in
+                    Subscriber sign in
                   </Link>
                 ) : null}
               </div>
@@ -94,7 +97,7 @@ export default async function LibraryPage() {
                 <p className="font-medium">{authConfigured ? "Sign-in required" : "Setup required"}</p>
               </div>
               <p className="mt-3 text-sm leading-6 text-slate-200">
-                Every page of the directory stays public. You only need an account when you want to keep personal lists.
+                Listen and browse without an account. Premium adds private saves, notes, and your dashboard.
               </p>
             </div>
           </div>
@@ -204,10 +207,10 @@ export default async function LibraryPage() {
           ) : null}
           {plan === "premium" ? (
             <Link
-              href={"/explore" as Route}
+              href={"/browse" as Route}
               className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
             >
-              Explore
+              Browse
             </Link>
           ) : (
             <FunnelLink
@@ -268,7 +271,7 @@ export default async function LibraryPage() {
                 </li>
                 <li className="flex gap-2">
                   <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Meaty score and deeper filters on Explore
+                  Meaty score and deeper filters on Browse
                 </li>
               </ul>
               <div className="mt-6 flex flex-wrap gap-3 text-sm">
@@ -293,10 +296,10 @@ export default async function LibraryPage() {
                   Bookmarks
                 </Link>
                 <Link
-                  href={"/explore" as Route}
+                  href={"/browse" as Route}
                   className="rounded-full border border-line/85 px-4 py-2.5 text-muted transition hover:border-accent/35 hover:text-white"
                 >
-                  Explore catalog
+                  Browse catalog
                 </Link>
               </div>
             </div>

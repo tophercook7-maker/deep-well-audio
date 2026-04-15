@@ -44,7 +44,7 @@ export function PremiumActiveState({ className = "", align = "center" }: Props) 
           Open your library
         </FunnelLink>
         <FunnelLink
-          href={"/explore" as Route}
+          href={"/browse" as Route}
           funnelEvent="premium_feature_click"
           funnelData={{ intent: "premium_nav", target: "explore" }}
           className={btnNav}

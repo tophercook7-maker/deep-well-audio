@@ -19,8 +19,6 @@ type Props = {
   showOfficialUrl?: string | null;
   favorited?: boolean;
   showFavorite?: boolean;
-  /** Passed to Favorite when login redirect is needed (e.g. current show URL). */
-  favoriteReturnPath?: string;
   /** Richer layout for full episode page. */
   layout?: "list" | "page";
   /** Non-premium: quiet Premium note after saving (from server). */
@@ -39,7 +37,6 @@ export function EpisodeRow({
   showOfficialUrl,
   favorited = false,
   showFavorite = true,
-  favoriteReturnPath,
   layout = "list",
   showPremiumSaveFollowUp = false,
   episodePageNotes,
@@ -106,7 +103,6 @@ export function EpisodeRow({
                 <EpisodeListenSaveHint
                   episodeId={episode.id}
                   initialFavorited={favorited}
-                  returnPath={favoriteReturnPath}
                   hasDescription
                   showPremiumSaveFollowUp={showPremiumSaveFollowUp}
                 />
@@ -116,7 +112,6 @@ export function EpisodeRow({
             <EpisodeListenSaveHint
               episodeId={episode.id}
               initialFavorited={favorited}
-              returnPath={favoriteReturnPath}
               hasDescription={false}
               showPremiumSaveFollowUp={showPremiumSaveFollowUp}
             />
@@ -165,7 +160,6 @@ export function EpisodeRow({
                 <FavoriteButton
                   episodeId={episode.id}
                   initial={favorited}
-                  returnPath={favoriteReturnPath}
                   showPremiumSaveFollowUp={showPremiumSaveFollowUp}
                 />
               ) : null}

@@ -5,7 +5,7 @@ type Props = {
   message: string;
   detail?: string;
   variant?: "filters" | "empty-catalog";
-  /** Optional topic chips linking into `/explore?topic=…`. */
+  /** Optional topic chips linking into `/browse?topic=…`. */
   relatedTopics?: { slug: string; label: string }[];
 };
 
@@ -36,7 +36,7 @@ export function ExploreEmptyState({
             {relatedTopics.map((t) => (
               <Link
                 key={t.slug}
-                href={`/explore?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}
+                href={`/browse?topic=${encodeURIComponent(t.slug)}&view=episodes` as Route}
                 className="rounded-full border border-line/85 bg-soft/35 px-4 py-2 text-sm text-amber-100/90 transition hover:border-accent/40 hover:bg-accent/[0.08] hover:text-white"
               >
                 {t.label}
@@ -54,7 +54,7 @@ export function ExploreEmptyState({
           Home
         </Link>
         <Link
-          href={"/explore" as Route}
+          href={"/browse" as Route}
           className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm font-medium text-slate-400 transition hover:border-accent/40 hover:text-white"
         >
           Clear all filters

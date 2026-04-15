@@ -1,7 +1,7 @@
 "use client";
 
 import type { Route } from "next";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { hasPublicSupabaseEnv } from "@/lib/env";
 import { usePlayer } from "@/lib/player/context";
@@ -10,26 +10,17 @@ import { PremiumSaveFollowUp } from "@/components/premium/premium-save-follow-up
 type Props = {
   episodeId: string;
   initialFavorited: boolean;
-  returnPath?: string;
   hasDescription: boolean;
   showPremiumSaveFollowUp?: boolean;
 };
 
-function loginUrl(returnPath: string | undefined, pathname: string) {
-  const path = returnPath ?? pathname ?? "/";
-  const next = encodeURIComponent(path.startsWith("/") ? path : "/");
-  return `/login?next=${next}&reason=save`;
-}
-
 export function EpisodeListenSaveHint({
   episodeId,
   initialFavorited,
-  returnPath,
   hasDescription,
   showPremiumSaveFollowUp = false,
 }: Props) {
   const router = useRouter();
-  const pathname = usePathname() ?? "/";
   const { state, currentTrack } = usePlayer();
 
   const thresholdSecRef = useRef<number | null>(null);
@@ -107,8 +98,8 @@ export function EpisodeListenSaveHint({
         body: JSON.stringify({ episode_id: episodeId }),
       });
 
-      if (res.status === 401) {
-        router.push(loginUrl(returnPath, pathname) as Route);
+      if (res.status === 401 || res.status === 403) {
+        router.push("/pricing?intent=save" as Route);
         return;
       }
 

@@ -28,7 +28,7 @@ const metadataBase: URL = (() => {
   }
 })();
 
-const defaultDescription = "Find rich Bible teaching without digging through fluff.";
+const defaultDescription = "Trusted Christian teaching without the noise. Listen freely—subscribe for your personal library, notes, and full World Watch.";
 
 export const metadata: Metadata = {
   metadataBase,

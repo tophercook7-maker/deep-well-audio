@@ -62,7 +62,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
     return (
       <main className="container-shell py-12 sm:py-14">
         <div className="mb-6 border-b border-line/50 pb-5">
-          <BackButton fallbackHref="/explore" label="Back" />
+          <BackButton fallbackHref="/browse" label="Back" />
         </div>
         <div className="card border-amber-400/25 bg-amber-500/5 p-8">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-100/80">Temporarily unavailable</p>
@@ -72,7 +72,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href={"/explore" as Route}
+              href={"/browse" as Route}
               className="inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 hover:opacity-90"
             >
               Explore
@@ -112,7 +112,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   return (
     <main className="container-shell py-12 sm:py-14">
       <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/explore" label="Back" />
+        <BackButton fallbackHref="/browse" label="Back" />
       </div>
 
       <header className={heroFrame}>
@@ -131,7 +131,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         </div>
         <div className="mt-4">
           <Link
-            href={`/explore?topic=${encodeURIComponent(meta.slug)}&view=episodes` as Route}
+            href={`/browse?topic=${encodeURIComponent(meta.slug)}&view=episodes` as Route}
             className="inline-flex rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-medium text-amber-50 transition hover:border-accent/55 hover:bg-accent/15"
           >
             Filter all of Explore by this topic
@@ -184,7 +184,6 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
                 showSlug={episode.show?.slug}
                 showOfficialUrl={episode.show?.official_url}
                 favorited={favoriteIds.has(episode.id)}
-                favoriteReturnPath={`/topics/${meta.slug}`}
                 showFavorite
                 showPremiumSaveFollowUp={plan !== "premium"}
               />
@@ -218,7 +217,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
               ))}
             </div>
             <Link
-              href={"/explore" as Route}
+              href={"/browse" as Route}
               className="mt-8 inline-flex rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-slate-950 hover:opacity-90"
             >
               Open Explore

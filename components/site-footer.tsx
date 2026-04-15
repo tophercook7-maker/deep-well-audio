@@ -14,21 +14,28 @@ export function SiteFooter() {
         <div className="mb-7 flex justify-center sm:mb-8">
           <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
         </div>
-        <p className="text-[13px] leading-relaxed text-slate-500">
+        <p className="mx-auto mt-2 max-w-lg text-[13px] leading-relaxed text-slate-500">
+          Listen freely. No account needed.{" "}
+          <Link href={"/pricing" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-100/90 hover:underline">
+            Subscribe
+          </Link>{" "}
+          to save teachings, keep notes, follow topics, and unlock full World Watch.
+        </p>
+        <p className="mt-5 text-[13px] leading-relaxed text-slate-600">
           © {year}
         </p>
         <nav
           className="mx-auto mt-4 flex max-w-xl flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[13px] text-slate-300/95"
           aria-label="Footer"
         >
-          <Link href="/explore" className="transition hover:text-amber-100/85">
-            Explore
+          <Link href="/browse" className="transition hover:text-amber-100/85">
+            Browse
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
-          <Link href={"/about" as Route} className="transition hover:text-amber-100/85">
-            About
+          <Link href={"/world-watch" as Route} className="transition hover:text-amber-100/85">
+            World Watch
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·
@@ -39,20 +46,8 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
-          <Link href="/curated-teachings" className="transition hover:text-amber-100/85">
-            Curated teachings
-          </Link>
-          <span className="select-none text-slate-600" aria-hidden>
-            ·
-          </span>
-          <Link href="/world-watch" className="transition hover:text-amber-100/85">
-            World Watch
-          </Link>
-          <span className="select-none text-slate-600" aria-hidden>
-            ·
-          </span>
-          <Link href="/library" className="transition hover:text-amber-100/85">
-            Library
+          <Link href="/login" className="transition hover:text-amber-100/85">
+            Sign in
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·

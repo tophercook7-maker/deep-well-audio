@@ -2,7 +2,6 @@
 
 import { Bookmark } from "lucide-react";
 import type { Route } from "next";
-import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { hasPublicSupabaseEnv } from "@/lib/env";
@@ -11,13 +10,11 @@ import { PremiumSaveFollowUp } from "@/components/premium/premium-save-follow-up
 type Props = {
   showId: string;
   initial: boolean;
-  returnPath?: string;
   showPremiumSaveFollowUp?: boolean;
 };
 
-export function SaveShowButton({ showId, initial, returnPath, showPremiumSaveFollowUp = false }: Props) {
+export function SaveShowButton({ showId, initial, showPremiumSaveFollowUp = false }: Props) {
   const router = useRouter();
-  const pathname = usePathname() ?? "/";
   const [saved, setSaved] = useState(initial);
   const [pending, startTransition] = useTransition();
   const [hint, setHint] = useState<string | null>(null);
@@ -30,12 +27,6 @@ export function SaveShowButton({ showId, initial, returnPath, showPremiumSaveFol
     const t = window.setTimeout(() => setSaveAck(false), 3200);
     return () => window.clearTimeout(t);
   }, [saveAck]);
-
-  function loginUrl() {
-    const path = returnPath ?? pathname ?? "/";
-    const next = encodeURIComponent(path.startsWith("/") ? path : "/");
-    return `/login?next=${next}&reason=save`;
-  }
 
   function toggle() {
     if (!showId || !authConfigured) return;
@@ -51,8 +42,8 @@ export function SaveShowButton({ showId, initial, returnPath, showPremiumSaveFol
           body: JSON.stringify({ show_id: showId }),
         });
 
-        if (res.status === 401) {
-          router.push(loginUrl() as Route);
+        if (res.status === 401 || res.status === 403) {
+          router.push("/pricing?intent=save" as Route);
           return;
         }
 

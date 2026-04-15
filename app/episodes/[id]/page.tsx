@@ -21,7 +21,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
     return (
       <main className="container-shell py-12 sm:py-14">
         <div className="mb-6 border-b border-line/50 pb-5">
-          <BackButton fallbackHref="/explore" label="Back" />
+          <BackButton fallbackHref="/browse" label="Back" />
         </div>
         <div className="mt-8 card border-amber-400/25 bg-amber-500/5 p-8">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-100/80">Temporarily unavailable</p>
@@ -31,7 +31,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href={"/explore" as Route}
+              href={"/browse" as Route}
               className="inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 hover:opacity-90"
             >
               Explore
@@ -70,7 +70,7 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
     if (isNextDynamicUsageError(e)) throw e;
   }
 
-  const backFallback = episode.show?.slug ? `/shows/${episode.show.slug}` : "/explore";
+  const backFallback = episode.show?.slug ? `/shows/${episode.show.slug}` : "/browse";
   const official = episode.show?.official_url ?? null;
 
   return (
@@ -85,7 +85,6 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
           showSlug={episode.show?.slug}
           showOfficialUrl={official}
           favorited={favoriteIds.has(episode.id)}
-          favoriteReturnPath={`/episodes/${episode.id}`}
           layout="page"
           showPremiumSaveFollowUp={plan !== "premium"}
           episodePageNotes={user && plan === "premium" ? "premium" : "upsell"}

@@ -1,69 +1,36 @@
-import { getActiveShowCount, getFeaturedShows, getHomeRecentEpisodes, getPublicEpisodeCount } from "@/lib/queries";
+import { getHomeRecentEpisodes, getActiveShowCount, getPublicEpisodeCount } from "@/lib/queries";
 import { HomeSetupStatusPanel } from "@/components/home-setup-status";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
-import { getUserPlan } from "@/lib/auth";
-import { canUseFeature } from "@/lib/permissions";
-import { ContinueListeningSection } from "@/components/listening/continue-listening";
-import { RecentlyPlayedSection } from "@/components/listening/recently-played";
-import { createServiceClient } from "@/lib/db";
-import { fetchPublishedWorldWatchItems } from "@/lib/world-watch/items";
-import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
-import { PremiumHome } from "@/components/home/premium-home";
-import type { EpisodeWithShow, ShowWithMeta } from "@/lib/types";
+import type { EpisodeWithShow } from "@/lib/types";
+import { SimplifiedHome } from "@/components/home/simplified-home";
 
-const HOMEPAGE_FEATURED_CHIP_LIMIT = 24;
-const HOMEPAGE_RECENT_SAMPLES = 6;
-/** Digest preview: lead + supporting card. */
-const HOMEPAGE_WW_DIGEST = 2;
+const HOMEPAGE_RECENT_SAMPLES = 8;
 
 export default async function HomePage() {
-  let featured: ShowWithMeta[] = [];
   let recentPool: EpisodeWithShow[] = [];
   let showCount = 0;
   let episodeCount = 0;
-  let plan: Awaited<ReturnType<typeof getUserPlan>> = "guest";
-  let worldWatchDigest: WorldWatchItemPublic[] = [];
   try {
-    const adminClient = createServiceClient();
-    const [featuredRes, recentPoolRes, showCountRes, episodeCountRes, planRes, worldWatchDigestRes] = await Promise.all([
-      getFeaturedShows(HOMEPAGE_FEATURED_CHIP_LIMIT),
+    const [recentPoolRes, showCountRes, episodeCountRes] = await Promise.all([
       getHomeRecentEpisodes(HOMEPAGE_RECENT_SAMPLES),
       getActiveShowCount(),
       getPublicEpisodeCount(),
-      getUserPlan(),
-      adminClient
-        ? fetchPublishedWorldWatchItems(adminClient, HOMEPAGE_WW_DIGEST, { audience: "teaser" }).catch((err) => {
-            console.error("home world watch preview:", err instanceof Error ? err.message : err);
-            return [] as WorldWatchItemPublic[];
-          })
-        : Promise.resolve([] as WorldWatchItemPublic[]),
     ]);
-    featured = featuredRes;
     recentPool = recentPoolRes;
     showCount = showCountRes;
     episodeCount = episodeCountRes;
-    plan = planRes;
-    worldWatchDigest = worldWatchDigestRes;
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
     console.error("page home:", e instanceof Error ? e.message : e);
   }
-  const showSessionListening = canUseFeature("continue_listening", plan);
-  const hasContent = featured.length > 0 || recentPool.length > 0;
+
+  void episodeCount;
+
+  const hasContent = recentPool.length > 0;
 
   return (
     <main>
-      <PremiumHome
-        plan={plan}
-        featuredShows={featured}
-        savedEpisodeSamples={recentPool}
-        worldWatchItems={worldWatchDigest}
-        episodeCount={episodeCount}
-        showCount={showCount}
-      />
-
-      <ContinueListeningSection enabled={showSessionListening} />
-      <RecentlyPlayedSection enabled={showSessionListening} />
+      <SimplifiedHome startListening={recentPool} />
 
       {!hasContent && showCount === 0 ? (
         <section className="container-shell py-10">

@@ -74,7 +74,6 @@ export function FavoritesList({
               <FavoriteButton
                 episodeId={episode.id}
                 initial
-                returnPath="/library"
                 showPremiumSaveFollowUp={showPremiumSaveFollowUp}
               />
             </div>

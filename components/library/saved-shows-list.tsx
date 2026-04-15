@@ -47,7 +47,6 @@ export function SavedShowsList({
             <SaveShowButton
               showId={show.id}
               initial
-              returnPath="/library"
               showPremiumSaveFollowUp={showPremiumSaveFollowUp}
             />
           </div>

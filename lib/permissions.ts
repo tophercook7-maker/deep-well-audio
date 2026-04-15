@@ -16,6 +16,9 @@ export type FeatureKey =
   | "curated_library";
 
 const PREMIUM_ONLY = new Set<FeatureKey>([
+  "save",
+  "continue_listening",
+  "curated_library",
   "playlists",
   "bookmarks",
   "topic_packs",
@@ -23,11 +26,8 @@ const PREMIUM_ONLY = new Set<FeatureKey>([
   "world_watch",
 ]);
 
-const FREE_AND_UP = new Set<FeatureKey>(["save", "continue_listening", "curated_library"]);
-
 export function canUseFeature(feature: FeatureKey, plan: UserPlan): boolean {
   if (plan === "premium") return true;
   if (PREMIUM_ONLY.has(feature)) return false;
-  if (FREE_AND_UP.has(feature)) return plan === "free";
   return false;
 }

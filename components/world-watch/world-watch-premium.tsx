@@ -68,7 +68,7 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
             notes below still apply while this space fills in.
           </p>
           <Link
-            href={"/explore" as Route}
+            href={"/browse" as Route}
             className="mt-6 inline-block text-sm font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline"
           >
             Browse the catalog →
@@ -126,7 +126,7 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
           concrete passage. If you left notes on an episode this week, let the headline and the sermon speak to each other: same King, same
           patience.
         </p>
-        <Link href={"/explore" as Route} className="inline-block pt-1 text-sm font-medium text-amber-200/90 hover:underline">
+        <Link href={"/browse" as Route} className="inline-block pt-1 text-sm font-medium text-amber-200/90 hover:underline">
           Browse the catalog →
         </Link>
       </Section>
