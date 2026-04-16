@@ -6,17 +6,20 @@ import type { User } from "@supabase/supabase-js";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import type { LucideIcon } from "lucide-react";
-import { CircleDollarSign, Globe, Headphones, Home, LogIn } from "lucide-react";
+import { BookOpen, CircleDollarSign, Globe, Headphones, Home, LayoutDashboard, LogIn } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
-const nav: NavItem[] = [
+const mainNav: NavItem[] = [
   { href: "/browse", label: "Browse", icon: Headphones },
+  { href: "/bible", label: "Bible", icon: BookOpen },
   { href: "/world-watch", label: "World Watch", icon: Globe },
   { href: "/pricing", label: "Pricing", icon: CircleDollarSign },
 ];
+
+const dashboardNav: NavItem = { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard };
 
 const linkClass =
   "flex min-h-[44px] items-center gap-2 rounded-full border border-line px-3 py-2 text-sm text-muted transition hover:border-accent/40 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] max-md:min-h-[40px] max-md:gap-1.5 max-md:px-2.5 max-md:py-1.5 max-md:text-[13px] sm:min-h-0 sm:px-4 sm:text-sm";
@@ -78,6 +81,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
   }, [isMobileLayout]);
 
   const scrollHiddenMobile = isMobileLayout && !headerVisible;
+  const DashboardIcon = dashboardNav.icon;
 
   return (
     <>
@@ -113,7 +117,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
               <Home className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
               Home
             </Link>
-            {nav.map((item) => {
+            {mainNav.map((item) => {
               const Icon = item.icon;
               return (
                 <Link key={item.href} href={item.href as Route} className={linkClass}>
@@ -122,21 +126,19 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
                 </Link>
               );
             })}
+            {!user ? (
+              <Link href={"/login" as Route} className={linkClass}>
+                <LogIn className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
+                Sign In
+              </Link>
+            ) : null}
             <Link
-              href={
-                !user
-                  ? ("/login" as Route)
-                  : plan === "premium"
-                    ? ("/dashboard" as Route)
-                    : ("/pricing" as Route)
-              }
+              href={dashboardNav.href as Route}
               className={linkClass}
-              aria-label={
-                !user ? "Sign in" : plan === "premium" ? "Premium dashboard" : "Subscribe to unlock your personal Deep Well"
-              }
+              aria-label="Dashboard — saved teaching, notes, and library"
             >
-              <LogIn className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
-              {!user ? "Sign In" : plan === "premium" ? "Dashboard" : "Subscribe"}
+              <DashboardIcon className="h-[1.125rem] w-[1.125rem] shrink-0 sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden />
+              {dashboardNav.label}
             </Link>
             <div className="sm:ml-1 sm:border-l sm:border-line/80 sm:pl-4">
               <AuthMenu user={user} plan={plan} />
