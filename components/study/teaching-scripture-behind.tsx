@@ -41,7 +41,7 @@ export function TeachingScriptureBehind({
     }
 
     if (out.length === 0 && variant === "default") {
-      for (const ref of topicScriptureMap[TEACHING_SCRIPTURE_FALLBACK_TOPIC]) {
+      for (const ref of topicScriptureMap[TEACHING_SCRIPTURE_FALLBACK_TOPIC].verses) {
         const s = normalizeScriptureTagInput(ref);
         if (!parseScriptureTagForStudy(s) || seen.has(s)) continue;
         seen.add(s);

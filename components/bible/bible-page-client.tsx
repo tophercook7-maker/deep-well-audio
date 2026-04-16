@@ -6,7 +6,15 @@ import { useCallback, useEffect, useId, useState } from "react";
 import { useAccountPlan } from "@/components/plan/plan-context";
 import { useStudy, type StudySavedVerseListRow } from "@/components/study/study-provider";
 import { studyTranslationShortLabel } from "@/lib/study/bible-api";
-import { readStudyLastPassage, type StudyLastPassage } from "@/lib/study/client-storage";
+import {
+  readStudyLastPassage,
+  readStudyLastBibleTopic,
+  writeStudyLastBibleTopic,
+  STUDY_CONTINUITY_UPDATED_EVENT,
+  type StudyLastPassage,
+  type StudyLastBibleTopic,
+} from "@/lib/study/client-storage";
+import { firstVerseRefForTopic, pickBiblePageContinueWinner } from "@/lib/study/bible-continue";
 import {
   collapsePassagePreviewText,
   passagePreviewArgsForSavedVerse,
@@ -54,15 +62,31 @@ export function BiblePageClient() {
   const inputId = useId();
   const [raw, setRaw] = useState("");
   const [err, setErr] = useState<string | null>(null);
-  const [lastLocal, setLastLocal] = useState<StudyLastPassage | null>(null);
+  const [lastLocal, setLastLocal] = useState<StudyLastPassage | null>(() =>
+    typeof window !== "undefined" ? readStudyLastPassage() : null,
+  );
   const [saved, setSaved] = useState<StudySavedVerseListRow[] | null>(null);
   const [recentNotes, setRecentNotes] = useState<DashboardNote[] | null>(null);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [studyTopic, setStudyTopic] = useState<TopicKey | null>(null);
+  const [lastBibleTopicSnap, setLastBibleTopicSnap] = useState<StudyLastBibleTopic | null>(() =>
+    typeof window !== "undefined" ? readStudyLastBibleTopic() : null,
+  );
+
+  const refreshContinuity = useCallback(() => {
+    setLastLocal(readStudyLastPassage());
+    setLastBibleTopicSnap(readStudyLastBibleTopic());
+  }, []);
 
   useEffect(() => {
-    setLastLocal(readStudyLastPassage());
-  }, []);
+    refreshContinuity();
+    window.addEventListener(STUDY_CONTINUITY_UPDATED_EVENT, refreshContinuity);
+    window.addEventListener("focus", refreshContinuity);
+    return () => {
+      window.removeEventListener(STUDY_CONTINUITY_UPDATED_EVENT, refreshContinuity);
+      window.removeEventListener("focus", refreshContinuity);
+    };
+  }, [refreshContinuity]);
 
   useEffect(() => {
     if (plan !== "premium") {
@@ -139,22 +163,39 @@ export function BiblePageClient() {
     study.openFromScriptureTag(s, { teachingKey: null });
   }, [raw, study]);
 
-  const reopenLast = useCallback(() => {
-    if (!lastLocal) return;
-    const s = normalizeScriptureTagInput(lastLocal.label);
+  const reopenPassage = useCallback((p: StudyLastPassage) => {
+    const s = normalizeScriptureTagInput(p.label);
     if (parseScriptureTagForStudy(s)) {
-      study.openFromScriptureTag(s, { teachingKey: null, translation: lastLocal.t });
+      study.openFromScriptureTag(s, { teachingKey: null, translation: p.t });
       return;
     }
-    study.openReaderQuery(lastLocal.q.trim(), {
-      translation: lastLocal.t,
+    study.openReaderQuery(p.q.trim(), {
+      translation: p.t,
       readingMode: "chapter",
     });
-  }, [lastLocal, study]);
+  }, [study]);
 
   const viewAllHref = "/library#saved-passages" as Route;
 
-  const lastLine = lastLocal ? lastLocal.label || lastLocal.q : null;
+  const continueWinner = pickBiblePageContinueWinner({
+    lastLocal,
+    lastBibleTopic: lastBibleTopicSnap,
+    recentNotes,
+    plan,
+  });
+
+  const handleContinuePrimary = useCallback(() => {
+    if (!continueWinner) return;
+    if (continueWinner.kind === "passage") {
+      reopenPassage(continueWinner.passage);
+      return;
+    }
+    if (continueWinner.kind === "note") {
+      study.openFromVerseContentKey(continueWinner.contentKey);
+      return;
+    }
+    study.openFromScriptureTag(firstVerseRefForTopic(continueWinner.topicKey), { teachingKey: null });
+  }, [continueWinner, reopenPassage, study]);
 
   const h2 = "text-base font-semibold text-white";
   const lead = "mt-2 max-w-prose text-sm leading-relaxed text-slate-400/95";
@@ -245,7 +286,14 @@ export function BiblePageClient() {
               <button
                 key={key}
                 type="button"
-                onClick={() => setStudyTopic(active ? null : key)}
+                onClick={() => {
+                  if (active) {
+                    setStudyTopic(null);
+                  } else {
+                    writeStudyLastBibleTopic(key);
+                    setStudyTopic(key);
+                  }
+                }}
                 className={[
                   "min-h-[48px] rounded-full border px-4 py-2.5 text-sm transition",
                   active
@@ -261,8 +309,9 @@ export function BiblePageClient() {
         </div>
         {studyTopic ? (
           <div className="mt-6 space-y-3">
+            <p className="text-sm leading-relaxed text-slate-500">{topicScriptureMap[studyTopic].description}</p>
             <p className="text-xs text-slate-500">Tap a verse to open Study.</p>
-            <TopicScriptureLinks references={topicScriptureMap[studyTopic]} />
+            <TopicScriptureLinks references={topicScriptureMap[studyTopic].verses} />
           </div>
         ) : (
           <p className="mt-5 text-sm text-slate-500">Choose a topic to see related passages.</p>
@@ -273,19 +322,46 @@ export function BiblePageClient() {
         <h2 id="bible-continue-heading" className={h2}>
           Continue studying
         </h2>
-        <p className={lead}>Return to what you last had open in Study on this device.</p>
-        {lastLine ? (
+        <p className={lead}>
+          We use your last passage in Study on this device, your latest verse note when you&apos;re signed in with
+          Premium, or the last topic you chose below—whichever was most recent.
+        </p>
+        {continueWinner ? (
           <button
             type="button"
-            onClick={reopenLast}
+            onClick={handleContinuePrimary}
             className="mt-5 w-full rounded-2xl border border-line/55 bg-[rgba(9,12,18,0.45)] px-4 py-4 text-left transition hover:border-accent/30 hover:bg-white/[0.03]"
           >
-            <span className="block text-xs font-medium uppercase tracking-[0.12em] text-slate-500">Resume</span>
-            <span className="mt-1.5 block text-base font-medium text-white">{lastLine}</span>
-            <span className="mt-2 block text-xs text-slate-500">Opens in Study</span>
+            {continueWinner.kind === "passage" ? (
+              <>
+                <span className="block text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
+                  Continue where you left off
+                </span>
+                <span className="mt-1.5 block text-base font-medium text-white">
+                  Continue studying {continueWinner.passage.label || continueWinner.passage.q}
+                </span>
+                <span className="mt-2 block text-xs text-slate-500">Opens in Study</span>
+              </>
+            ) : continueWinner.kind === "note" ? (
+              <>
+                <span className="block text-base font-medium text-white">
+                  Continue your note on {continueWinner.verseLabel}
+                </span>
+                <span className="mt-2 block text-xs text-slate-500">From your Bible study · Opens in Study</span>
+              </>
+            ) : (
+              <>
+                <span className="block text-base font-medium text-white">
+                  Continue your study on {topicScriptureMap[continueWinner.topicKey].label}
+                </span>
+                <span className="mt-2 block text-xs text-slate-500">Opens a starting passage in Study</span>
+              </>
+            )}
           </button>
         ) : (
-          <p className="mt-4 text-sm text-slate-500">After you open a passage, your last spot will show here.</p>
+          <p className="mt-4 text-sm text-slate-500">
+            After you open Scripture, save a note, or pick a topic below, your natural next step will show here.
+          </p>
         )}
       </section>
 
@@ -376,11 +452,10 @@ export function BiblePageClient() {
                         onClick={() => study.openFromVerseContentKey(n.content_key)}
                         className="w-full rounded-2xl border border-line/40 bg-[rgba(9,12,18,0.35)] px-4 py-3.5 text-left transition hover:border-accent/22"
                       >
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                          <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-sky-200/75">Verse note</span>
-                          <span className="text-[10px] text-slate-500">{studyTranslationShortLabel(verseHit.translationId)}</span>
-                        </div>
-                        <p className="mt-1.5 font-medium text-slate-100">{verseHit.passage.label}</p>
+                        <p className="text-xs leading-relaxed text-slate-500">
+                          From your study on {verseHit.passage.label}
+                          <span className="text-slate-600"> · {studyTranslationShortLabel(verseHit.translationId)}</span>
+                        </p>
                         {previewText ? (
                           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-300/95">{previewText}</p>
                         ) : null}
@@ -424,7 +499,7 @@ export function BiblePageClient() {
                 <li key={n.id}>
                   <div className="rounded-2xl border border-line/30 bg-[rgba(9,12,18,0.22)] px-4 py-3.5">
                     <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500">
-                      {isYoutubeTeaching ? "From a teaching" : "Note"}
+                      {isYoutubeTeaching ? "From a teaching" : "From your Bible study"}
                     </p>
                     {isYoutubeTeaching ? <p className="mt-1 text-xs text-slate-500/90">Curated video</p> : null}
                     {previewText ? (

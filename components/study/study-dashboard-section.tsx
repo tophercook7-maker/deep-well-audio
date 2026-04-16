@@ -277,14 +277,14 @@ export function StudyDashboardSection() {
         return {
           phase: "ready" as const,
           label: savedRowTitle(t1.row),
-          hint: "Your most recent saved passage",
+          hint: "Continue with a passage you saved in My Study",
           onOpen: () => study?.openFromSavedVerse(t1.row),
         };
       }
       return {
         phase: "ready" as const,
-        label: t1.row.passage_ref,
-        hint: "Recently opened in Study",
+        label: `Continue studying ${t1.row.passage_ref}`,
+        hint: "Recently opened in Study on your account",
         onOpen: () => study?.openFromScriptureTag(t1.row.passage_ref, { translation: t1.row.translation_id }),
       };
     }
@@ -293,16 +293,16 @@ export function StudyDashboardSection() {
     if (verseNote && parsedVerseNote) {
       return {
         phase: "ready" as const,
-        label: parsedVerseNote.passage.label,
-        hint: "Linked to your latest verse note",
+        label: `Continue your note on ${parsedVerseNote.passage.label}`,
+        hint: "From your Bible study",
         onOpen: () => study?.openFromVerseContentKey(verseNote.content_key),
       };
     }
     if (lastLocal) {
       return {
         phase: "ready" as const,
-        label: lastLocal.label,
-        hint: "Last passage on this device",
+        label: `Continue studying ${lastLocal.label || lastLocal.q}`,
+        hint: "Last opened on this device",
         onOpen: () => study?.openReaderQuery(lastLocal.q, { translation: lastLocal.t, title: lastLocal.label }),
       };
     }
