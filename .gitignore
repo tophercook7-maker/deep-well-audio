@@ -17,6 +17,7 @@ out/
 .vercel
 
 # misc
+.vscode/
 .DS_Store
 *.log
 npm-debug.log*
