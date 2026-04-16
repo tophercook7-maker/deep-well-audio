@@ -14,8 +14,7 @@ import { studyTranslationShortLabel } from "@/lib/study/bible-api";
 import { dispatchStudyDashboardRefresh, STUDY_DASHBOARD_REFRESH_EVENT } from "@/lib/study/copy";
 import { useStudyOptional, type StudySavedVerseListRow } from "@/components/study/study-provider";
 import { DEFAULT_READER_QUERY } from "@/components/study/study-provider";
-
-const LS_LAST = "dwa-study-last";
+import { readStudyLastPassage } from "@/lib/study/client-storage";
 
 type DashboardNote = {
   id: string;
@@ -34,16 +33,7 @@ type DashboardPayload = {
 type LocalLast = { q: string; t: string; label: string };
 
 function readLastLocal(): LocalLast | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(LS_LAST);
-    if (!raw) return null;
-    const o = JSON.parse(raw) as { q?: string; t?: string; label?: string };
-    if (typeof o.q === "string" && o.q) return { q: o.q, t: typeof o.t === "string" ? o.t : "web", label: o.label ?? o.q };
-  } catch {
-    /* ignore */
-  }
-  return null;
+  return readStudyLastPassage();
 }
 
 function parseIsoTs(iso?: string): number {

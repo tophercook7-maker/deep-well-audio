@@ -1,7 +1,7 @@
 export const STUDY_TRANSLATIONS = [
   { id: "web", shortLabel: "WEB", label: "Clear English (WEB)" },
   { id: "kjv", shortLabel: "KJV", label: "King James (KJV)" },
-  { id: "asv", shortLabel: "ASV", label: "Classic literal (ASV)" },
+  { id: "asv", shortLabel: "ASV", label: "American Standard (ASV)" },
 ] as const;
 
 export function studyTranslationShortLabel(translationId: string): string {

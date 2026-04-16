@@ -13,16 +13,7 @@ import { parsePassageFromParts, verseContentKey } from "@/lib/study/refs";
 import { resolveBookFromMatch } from "@/lib/study/bible-books";
 import { keywordsForPassage, type StudyKeyword } from "@/lib/study/keywords";
 import { dispatchStudyDashboardRefresh, STUDY_PREMIUM_UPGRADE } from "@/lib/study/copy";
-/** Future saved highlights: align with `lib/study/highlight-anchor.ts` and `data-study-verse-key` below. */
-const LS_LAST = "dwa-study-last";
-
-function writeLastPassage(q: string, t: string, label: string) {
-  try {
-    localStorage.setItem(LS_LAST, JSON.stringify({ q, t, label }));
-  } catch {
-    /* ignore */
-  }
-}
+import { writeStudyLastPassage } from "@/lib/study/client-storage";
 
 async function fetchPassageClient(q: string, t: string): Promise<BibleApiPassageResponse | null> {
   const res = await fetch(`/api/study/passage?q=${encodeURIComponent(q)}&t=${encodeURIComponent(t)}`, {
@@ -119,7 +110,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
   }, [passage.apiQuery, t]);
 
   useEffect(() => {
-    writeLastPassage(passage.apiQuery, t, passage.label);
+    writeStudyLastPassage(passage.apiQuery, t, passage.label);
   }, [passage.apiQuery, passage.label, t]);
 
   useEffect(() => {
@@ -563,7 +554,7 @@ function ReaderDrawer({ state }: { state: StudyReaderState }) {
       setData(d);
       setLoading(false);
       if (d?.reference) {
-        writeLastPassage(state.apiQuery, t, d.reference);
+        writeStudyLastPassage(state.apiQuery, t, d.reference);
       }
     })();
     return () => {
