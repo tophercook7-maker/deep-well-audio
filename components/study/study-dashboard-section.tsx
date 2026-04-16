@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { BookOpen, History, Sparkles } from "lucide-react";
 import { parseScriptureTagForStudy, parseVerseContentKey } from "@/lib/study/refs";
 import {
@@ -10,6 +11,7 @@ import {
   passagePreviewKey,
 } from "@/lib/study/passage-preview";
 import { studyTranslationShortLabel } from "@/lib/study/bible-api";
+import { dispatchStudyDashboardRefresh, STUDY_DASHBOARD_REFRESH_EVENT } from "@/lib/study/copy";
 import { useStudyOptional, type StudySavedVerseListRow } from "@/components/study/study-provider";
 import { DEFAULT_READER_QUERY } from "@/components/study/study-provider";
 
@@ -86,11 +88,14 @@ const inlineOpen =
   "shrink-0 rounded-lg border border-line/50 px-2.5 py-1 text-[11px] font-medium text-amber-100/90 transition hover:border-accent/35 hover:bg-white/[0.04]";
 
 export function StudyDashboardSection() {
+  const router = useRouter();
   const study = useStudyOptional();
   const [data, setData] = useState<DashboardPayload | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [lastLocal, setLastLocal] = useState<LocalLast | null>(null);
   const [passagePreviews, setPassagePreviews] = useState<Record<string, string>>({});
+  const [removingSavedId, setRemovingSavedId] = useState<string | null>(null);
+  const [studyListHint, setStudyListHint] = useState<{ text: string; tone: "success" | "caution" } | null>(null);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -117,10 +122,66 @@ export function StudyDashboardSection() {
   }, [load]);
 
   useEffect(() => {
+    if (!studyListHint) return;
+    const t = window.setTimeout(() => setStudyListHint(null), 3500);
+    return () => window.clearTimeout(t);
+  }, [studyListHint]);
+
+  const removeSavedPassage = useCallback(
+    async (row: StudySavedVerseListRow) => {
+      setStudyListHint(null);
+      setRemovingSavedId(row.id);
+      try {
+        const res = await fetch(`/api/study/saved-verses?id=${encodeURIComponent(row.id)}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        if (!res.ok) {
+          if (res.status === 401) {
+            setStudyListHint({
+              text: j.error?.trim() || "Sign in to manage saved passages.",
+              tone: "caution",
+            });
+          } else if (res.status === 403) {
+            setStudyListHint({
+              text: j.error?.trim() || "Premium is required to manage saved passages.",
+              tone: "caution",
+            });
+          } else {
+            setStudyListHint({ text: j.error ?? "Could not remove that passage.", tone: "caution" });
+          }
+          return;
+        }
+        setData((prev) => {
+          if (!prev) return prev;
+          return { ...prev, savedVerses: prev.savedVerses.filter((x) => x.id !== row.id) };
+        });
+        setStudyListHint({ text: "Removed from My Study.", tone: "success" });
+        dispatchStudyDashboardRefresh();
+      } catch {
+        setStudyListHint({ text: "Something went wrong. Try again.", tone: "caution" });
+      } finally {
+        setRemovingSavedId(null);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    const onRefresh = () => {
+      load();
+      router.refresh();
+    };
+    window.addEventListener(STUDY_DASHBOARD_REFRESH_EVENT, onRefresh);
+    return () => window.removeEventListener(STUDY_DASHBOARD_REFRESH_EVENT, onRefresh);
+  }, [load, router]);
+
+  useEffect(() => {
     if (!data) return;
     const ac = new AbortController();
     const byKey = new Map<string, { q: string; t: string }>();
-    for (const v of data.savedVerses.slice(0, 6)) {
+    for (const v of data.savedVerses.slice(0, 8)) {
       const a = passagePreviewArgsForSavedVerse(v);
       if (a) byKey.set(passagePreviewKey(a.q, a.t), a);
     }
@@ -224,9 +285,9 @@ export function StudyDashboardSection() {
         </div>
         <div className="min-w-0 flex-1 space-y-6">
           <div>
-            <h2 className="text-xl font-semibold text-white">Study</h2>
+            <h2 className="text-xl font-semibold text-white">My Study</h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-              Your private space for saved passages, notes, and recent reading—organized in one calm view.
+              Saved passages, notes, and recent reading from Study—your private hub on this account.
             </p>
           </div>
 
@@ -262,22 +323,41 @@ export function StudyDashboardSection() {
             </div>
 
             <div className="mt-2 divide-y divide-line/40 rounded-2xl border border-line/30 bg-[rgba(7,10,15,0.25)]">
-              <div className="p-4 sm:p-5">
+              <div id="saved-passages" className="scroll-mt-28 p-4 sm:p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Saved passages</p>
+                {studyListHint ? (
+                  <p
+                    className={`mt-2 text-xs leading-snug ${
+                      studyListHint.tone === "success" ? "text-emerald-200/80" : "text-amber-200/85"
+                    }`}
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {studyListHint.text}
+                  </p>
+                ) : null}
                 {!data ? (
                   <p className="mt-3 text-sm text-muted">Loading…</p>
                 ) : data.savedVerses.length === 0 ? (
-                  <p className="mt-3 text-sm text-muted">Passages you save from Study appear here.</p>
+                  <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
+                    <p>You haven&apos;t saved any passages yet.</p>
+                    <p>When you tap Save this verse in Study, it will appear here in your account.</p>
+                  </div>
                 ) : (
                   <ul className="mt-4 space-y-2">
-                    {data.savedVerses.slice(0, 6).map((v) => {
+                    {data.savedVerses.slice(0, 8).map((v) => {
                       const pv = passagePreviewArgsForSavedVerse(v);
                       const pk = pv ? passagePreviewKey(pv.q, pv.t) : "";
                       const preview = pk ? passagePreviews[pk] : undefined;
+                      const busy = removingSavedId === v.id;
                       return (
-                        <li key={v.id}>
+                        <li key={v.id} className="flex gap-2 rounded-xl border border-transparent transition hover:border-line/35 hover:bg-white/[0.02]">
                           {study ? (
-                            <button type="button" onClick={() => study.openFromSavedVerse(v)} className={rowBtn}>
+                            <button
+                              type="button"
+                              onClick={() => study.openFromSavedVerse(v)}
+                              className={`${rowBtn} min-w-0 flex-1 rounded-xl`}
+                            >
                               <span className="block font-medium text-slate-100/95">{savedRowTitle(v)}</span>
                               <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-500">
                                 <span>{studyTranslationShortLabel(v.translation_id)}</span>
@@ -291,7 +371,7 @@ export function StudyDashboardSection() {
                               ) : null}
                             </button>
                           ) : (
-                            <div className={rowBtn}>
+                            <div className={`${rowBtn} min-w-0 flex-1 rounded-xl`}>
                               <span className="block font-medium text-slate-100/95">{savedRowTitle(v)}</span>
                               <span className="mt-1 text-[11px] text-slate-500">
                                 {studyTranslationShortLabel(v.translation_id)} · {savedRowKindCue(v)}
@@ -303,6 +383,15 @@ export function StudyDashboardSection() {
                               ) : null}
                             </div>
                           )}
+                          <button
+                            type="button"
+                            disabled={busy}
+                            onClick={() => void removeSavedPassage(v)}
+                            className="mt-1 shrink-0 self-start rounded-lg px-2 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-white/[0.04] hover:text-slate-300 disabled:opacity-40"
+                            aria-label={`Remove ${savedRowTitle(v)} from My Study`}
+                          >
+                            {busy ? "…" : "Remove"}
+                          </button>
                         </li>
                       );
                     })}

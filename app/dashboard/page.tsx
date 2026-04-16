@@ -72,8 +72,8 @@ export default async function DashboardPage() {
         <a href="#world-watch" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
           Full World Watch
         </a>
-        <a href="#study" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
-          Study
+        <a href="#saved-passages" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
+          My Study
         </a>
       </nav>
 
@@ -89,10 +89,10 @@ export default async function DashboardPage() {
               recently.
             </p>
             <a
-              href="#study"
+              href="#saved-passages"
               className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-6 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
             >
-              Jump to Study hub
+              Jump to My Study
             </a>
           </div>
         </div>

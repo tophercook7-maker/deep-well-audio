@@ -3,6 +3,7 @@ import type { Route } from "next";
 import { BookOpen, Sparkles } from "lucide-react";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { BackButton } from "@/components/buttons/back-button";
+import { StudyDashboardSection } from "@/components/study/study-dashboard-section";
 
 export const metadata = {
   title: "Library",
@@ -74,15 +75,15 @@ export default async function LibraryPage() {
           </Link>
 
           <Link
-            href={"/dashboard#study" as Route}
+            href={"/library#saved-passages" as Route}
             className="group flex flex-col rounded-[22px] border border-line/55 bg-[rgba(9,12,18,0.45)] p-8 backdrop-blur-md transition hover:border-sky-400/35"
           >
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-sky-400/30 bg-sky-500/[0.1] text-sky-100">
               <BookOpen className="h-6 w-6" aria-hidden />
             </div>
-            <h2 className="mt-5 text-xl font-semibold text-white">Study hub</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">Saved verses, recent notes, and the last passage you opened.</p>
-            <span className="mt-5 text-sm font-medium text-sky-200/85 group-hover:underline">Open Study</span>
+            <h2 className="mt-5 text-xl font-semibold text-white">My Study</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">Saved passages and notes from Scripture reading on this account.</p>
+            <span className="mt-5 text-sm font-medium text-sky-200/85 group-hover:underline">Jump to My Study</span>
           </Link>
 
           <Link
@@ -93,6 +94,17 @@ export default async function LibraryPage() {
             <p className="mt-2 text-sm leading-relaxed text-muted">Episode tools from your library flow live on the dashboard.</p>
             <span className="mt-4 text-sm font-medium text-amber-200/85 group-hover:underline">Go to notes</span>
           </Link>
+
+          <div className="md:col-span-2">
+            <p className="mb-4 text-sm leading-relaxed text-muted">
+              Passages you save from Study appear below—same private list as on your{" "}
+              <Link href={"/dashboard#saved-passages" as Route} className="text-amber-200/85 underline-offset-2 hover:underline">
+                subscriber dashboard
+              </Link>
+              .
+            </p>
+            <StudyDashboardSection />
+          </div>
         </div>
       )}
     </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Route } from "next";
 import { BookOpen, ChevronRight, X } from "lucide-react";
@@ -12,7 +12,7 @@ import type { ParsedPassage } from "@/lib/study/refs";
 import { parsePassageFromParts, verseContentKey } from "@/lib/study/refs";
 import { resolveBookFromMatch } from "@/lib/study/bible-books";
 import { keywordsForPassage, type StudyKeyword } from "@/lib/study/keywords";
-import { STUDY_PREMIUM_UPGRADE } from "@/lib/study/copy";
+import { dispatchStudyDashboardRefresh, STUDY_PREMIUM_UPGRADE } from "@/lib/study/copy";
 /** Future saved highlights: align with `lib/study/highlight-anchor.ts` and `data-study-verse-key` below. */
 const LS_LAST = "dwa-study-last";
 
@@ -68,6 +68,38 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
   const [compareOpen, setCompareOpen] = useState(false);
   const [compareRows, setCompareRows] = useState<BibleApiPassageResponse[] | null>(null);
   const [compareBusy, setCompareBusy] = useState(false);
+  const [saveVerseHint, setSaveVerseHint] = useState<string | null>(null);
+  const [saveVerseBusy, setSaveVerseBusy] = useState(false);
+  const [saveVerseHighlight, setSaveVerseHighlight] = useState(false);
+  const saveVerseHighlightTimer = useRef<number | null>(null);
+  const [saveToast, setSaveToast] = useState<string | null>(null);
+  const saveToastTimer = useRef<number | null>(null);
+
+  const clearSaveVerseHighlightTimer = useCallback(() => {
+    if (saveVerseHighlightTimer.current != null) {
+      window.clearTimeout(saveVerseHighlightTimer.current);
+      saveVerseHighlightTimer.current = null;
+    }
+  }, []);
+
+  const clearSaveToastTimer = useCallback(() => {
+    if (saveToastTimer.current != null) {
+      window.clearTimeout(saveToastTimer.current);
+      saveToastTimer.current = null;
+    }
+  }, []);
+
+  const showSaveToast = useCallback(
+    (message: string) => {
+      clearSaveToastTimer();
+      setSaveToast(message);
+      saveToastTimer.current = window.setTimeout(() => {
+        setSaveToast(null);
+        saveToastTimer.current = null;
+      }, 3200);
+    },
+    [clearSaveToastTimer]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -108,36 +140,112 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
     return () => window.removeEventListener("keydown", onKey);
   }, [closeVerse]);
 
+  useEffect(() => {
+    clearSaveVerseHighlightTimer();
+    clearSaveToastTimer();
+    setSaveVerseHint(null);
+    setSaveVerseHighlight(false);
+    setSaveToast(null);
+    return () => {
+      clearSaveVerseHighlightTimer();
+      clearSaveToastTimer();
+    };
+  }, [passage.verseKey, passage.apiQuery, t, clearSaveVerseHighlightTimer, clearSaveToastTimer]);
+
   const keywordLimit = plan === "premium" ? 5 : 2;
   const keywords = useMemo(() => keywordsForPassage(passage, keywordLimit), [passage, keywordLimit]);
 
   const onSaveVerse = useCallback(async () => {
+    setSaveVerseHint(null);
+
+    if (plan === "guest") {
+      setSaveVerseHint("Sign in to save passages to your account.");
+      return;
+    }
+
     if (plan !== "premium") {
       openUpgradeModal();
+      setSaveVerseHint(STUDY_PREMIUM_UPGRADE);
       return;
     }
+
     const v0 = data?.verses?.[0];
-    if (!v0) return;
-    const res = await fetch("/api/study/saved-verses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        book_id: v0.book_id,
-        book_name: v0.book_name,
-        chapter: passage.chapter,
-        verse_from: passage.verseFrom,
-        verse_to: passage.verseTo,
-        translation_id: t,
-        passage_label: passage.label,
-        entry_kind: "verse",
-      }),
-    });
-    if (res.status === 403) {
-      openUpgradeModal();
+    if (!v0) {
+      setSaveVerseHint(loading ? "Wait for the passage to finish loading." : "Could not load this passage to save.");
       return;
     }
-  }, [data?.verses, openUpgradeModal, passage.chapter, passage.label, passage.verseFrom, passage.verseTo, plan, t]);
+
+    setSaveVerseBusy(true);
+    try {
+      const res = await fetch("/api/study/saved-verses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          book_id: v0.book_id,
+          book_name: v0.book_name,
+          chapter: passage.chapter,
+          verse_from: passage.verseFrom,
+          verse_to: passage.verseTo,
+          translation_id: t,
+          passage_label: passage.label,
+          entry_kind: "verse",
+        }),
+      });
+      const j = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        duplicate?: boolean;
+        error?: string;
+        code?: string;
+      };
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          setSaveVerseHint(j.error?.trim() || "Sign in to save passages.");
+          return;
+        }
+        if (res.status === 403) {
+          openUpgradeModal();
+          setSaveVerseHint(j.error ?? STUDY_PREMIUM_UPGRADE);
+          return;
+        }
+        setSaveVerseHint(j.error ?? "Could not save. Try again in a moment.");
+        return;
+      }
+
+      if (j.duplicate) {
+        setSaveVerseHint(null);
+        showSaveToast("Already in My Study.");
+        dispatchStudyDashboardRefresh();
+      } else {
+        setSaveVerseHint(null);
+        showSaveToast("Saved to My Study.");
+        setSaveVerseHighlight(true);
+        clearSaveVerseHighlightTimer();
+        saveVerseHighlightTimer.current = window.setTimeout(() => {
+          setSaveVerseHighlight(false);
+          saveVerseHighlightTimer.current = null;
+        }, 4000);
+        dispatchStudyDashboardRefresh();
+      }
+    } catch {
+      setSaveVerseHint("Something went wrong. Check your connection and try again.");
+    } finally {
+      setSaveVerseBusy(false);
+    }
+  }, [
+    clearSaveVerseHighlightTimer,
+    showSaveToast,
+    data?.verses,
+    loading,
+    openUpgradeModal,
+    passage.chapter,
+    passage.label,
+    passage.verseFrom,
+    passage.verseTo,
+    plan,
+    t,
+  ]);
 
   const onSaveNote = useCallback(async () => {
     setNoteHint(null);
@@ -344,13 +452,38 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
               </div>
             ) : null}
 
-            <button
-              type="button"
-              onClick={() => void onSaveVerse()}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-line/75 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/40"
-            >
-              Save this verse
-            </button>
+            <div className="space-y-1.5">
+              <button
+                type="button"
+                disabled={saveVerseBusy}
+                aria-busy={saveVerseBusy}
+                aria-label={saveVerseHighlight ? "Saved to My Study" : "Save this verse"}
+                onClick={() => void onSaveVerse()}
+                className={`inline-flex w-full items-center justify-center gap-2 rounded-full border py-2.5 text-sm font-medium transition disabled:cursor-wait disabled:opacity-60 ${
+                  saveVerseHighlight
+                    ? "border-emerald-400/35 bg-emerald-500/[0.08] text-emerald-100/95"
+                    : "border-line/75 text-slate-100 hover:border-accent/40"
+                }`}
+              >
+                {saveVerseBusy ? "Saving…" : saveVerseHighlight ? "Saved to My Study" : "Save this verse"}
+              </button>
+              {saveVerseHint ? (
+                <p className="text-center text-xs leading-snug text-amber-200/85" role="status" aria-live="polite">
+                  {saveVerseHint}
+                  {saveVerseHint.toLowerCase().includes("sign in") ? (
+                    <>
+                      {" "}
+                      <Link
+                        href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/")}` as Route}
+                        className="font-medium text-sky-200/90 underline-offset-2 hover:underline"
+                      >
+                        Sign in
+                      </Link>
+                    </>
+                  ) : null}
+                </p>
+              ) : null}
+            </div>
 
             <button
               type="button"
@@ -396,6 +529,18 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
             </button>
           </div>
         </div>
+
+        {saveToast ? (
+          <div
+            className="pointer-events-none absolute inset-x-3 bottom-4 flex justify-center sm:inset-x-5"
+            aria-live="polite"
+            role="status"
+          >
+            <p className="pointer-events-none max-w-[min(100%,20rem)] rounded-2xl border border-emerald-400/20 bg-[rgba(7,14,12,0.92)] px-4 py-2.5 text-center text-sm text-emerald-100/95 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+              {saveToast}
+            </p>
+          </div>
+        ) : null}
       </aside>
     </div>
   );
