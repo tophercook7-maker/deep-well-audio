@@ -87,6 +87,12 @@ const rowBtn =
 const inlineOpen =
   "shrink-0 rounded-lg border border-line/50 px-2.5 py-1 text-[11px] font-medium text-amber-100/90 transition hover:border-accent/35 hover:bg-white/[0.04]";
 
+type SavedPassageFilter = "all" | "verse" | "reader";
+type SavedPassageSort = "newest" | "oldest";
+
+const savedPassageSelectClass =
+  "w-full min-w-0 max-w-full rounded-lg border border-line/55 bg-[rgba(10,14,20,0.4)] px-2.5 py-2 text-xs text-slate-200 outline-none ring-accent/25 focus-visible:ring-2 sm:max-w-[10.5rem]";
+
 export function StudyDashboardSection() {
   const router = useRouter();
   const study = useStudyOptional();
@@ -96,6 +102,9 @@ export function StudyDashboardSection() {
   const [passagePreviews, setPassagePreviews] = useState<Record<string, string>>({});
   const [removingSavedId, setRemovingSavedId] = useState<string | null>(null);
   const [studyListHint, setStudyListHint] = useState<{ text: string; tone: "success" | "caution" } | null>(null);
+  const [savedPassageFilter, setSavedPassageFilter] = useState<SavedPassageFilter>("all");
+  const [savedPassageSort, setSavedPassageSort] = useState<SavedPassageSort>("newest");
+  const [savedPassageTranslation, setSavedPassageTranslation] = useState<string>("all");
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -237,6 +246,39 @@ export function StudyDashboardSection() {
     };
   }, [data]);
 
+  const savedPassageTranslationOptions = useMemo(() => {
+    if (!data?.savedVerses.length) return [];
+    const ids = [...new Set(data.savedVerses.map((r) => r.translation_id))];
+    ids.sort();
+    return ids;
+  }, [data?.savedVerses]);
+
+  const filteredSavedPassages = useMemo(() => {
+    if (!data) return [];
+    let rows = [...data.savedVerses];
+    if (savedPassageFilter === "verse") {
+      rows = rows.filter((r) => (r.entry_kind ?? "verse") === "verse");
+    } else if (savedPassageFilter === "reader") {
+      rows = rows.filter((r) => r.entry_kind === "reader");
+    }
+    if (savedPassageTranslation !== "all") {
+      rows = rows.filter((r) => r.translation_id === savedPassageTranslation);
+    }
+    rows.sort((a, b) => {
+      const ta = parseIsoTs(a.created_at);
+      const tb = parseIsoTs(b.created_at);
+      return savedPassageSort === "newest" ? tb - ta : ta - tb;
+    });
+    return rows;
+  }, [data, savedPassageFilter, savedPassageSort, savedPassageTranslation]);
+
+  useEffect(() => {
+    if (savedPassageTranslation === "all") return;
+    if (!savedPassageTranslationOptions.includes(savedPassageTranslation)) {
+      setSavedPassageTranslation("all");
+    }
+  }, [savedPassageTranslation, savedPassageTranslationOptions]);
+
   const continueTarget = useMemo(() => {
     if (!data) return { phase: "loading" as const };
     const t1 = pickTier1SavedOrHistory(data);
@@ -344,8 +386,63 @@ export function StudyDashboardSection() {
                     <p>When you tap Save this verse in Study, it will appear here in your account.</p>
                   </div>
                 ) : (
+                  <>
+                    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:gap-x-4 sm:gap-y-3">
+                      <div className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[11rem]">
+                        <label htmlFor="saved-passage-filter" className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                          Show
+                        </label>
+                        <select
+                          id="saved-passage-filter"
+                          value={savedPassageFilter}
+                          onChange={(e) => setSavedPassageFilter(e.target.value as SavedPassageFilter)}
+                          className={savedPassageSelectClass}
+                        >
+                          <option value="all">All</option>
+                          <option value="verse">Verse view</option>
+                          <option value="reader">Chapter reading</option>
+                        </select>
+                      </div>
+                      <div className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[11rem]">
+                        <label htmlFor="saved-passage-sort" className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                          Sort
+                        </label>
+                        <select
+                          id="saved-passage-sort"
+                          value={savedPassageSort}
+                          onChange={(e) => setSavedPassageSort(e.target.value as SavedPassageSort)}
+                          className={savedPassageSelectClass}
+                        >
+                          <option value="newest">Newest</option>
+                          <option value="oldest">Oldest</option>
+                        </select>
+                      </div>
+                      {savedPassageTranslationOptions.length >= 2 ? (
+                        <div className="flex min-w-0 flex-1 flex-col gap-1 sm:max-w-[11rem]">
+                          <label htmlFor="saved-passage-translation" className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                            Translation
+                          </label>
+                          <select
+                            id="saved-passage-translation"
+                            value={savedPassageTranslation}
+                            onChange={(e) => setSavedPassageTranslation(e.target.value)}
+                            className={savedPassageSelectClass}
+                          >
+                            <option value="all">All translations</option>
+                            {savedPassageTranslationOptions.map((tid) => (
+                              <option key={tid} value={tid}>
+                                {studyTranslationShortLabel(tid)}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ) : null}
+                    </div>
+                    {filteredSavedPassages.length === 0 ? (
+                      <p className="mt-4 text-sm leading-relaxed text-muted">No saved passages match this view.</p>
+                    ) : (
                   <ul className="mt-4 space-y-2">
-                    {data.savedVerses.slice(0, 8).map((v) => {
+                    {filteredSavedPassages.map((v) => {
                       const pv = passagePreviewArgsForSavedVerse(v);
                       const pk = pv ? passagePreviewKey(pv.q, pv.t) : "";
                       const preview = pk ? passagePreviews[pk] : undefined;
@@ -396,6 +493,8 @@ export function StudyDashboardSection() {
                       );
                     })}
                   </ul>
+                    )}
+                  </>
                 )}
               </div>
 
