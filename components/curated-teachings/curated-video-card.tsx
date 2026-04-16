@@ -9,6 +9,7 @@ import { CuratedWatchLink } from "@/components/curated-teachings/curated-watch-l
 import { CuratedVideoStudyToolbar } from "@/components/curated-teachings/curated-video-study-toolbar";
 import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
 import { CuratedStudyLaunch } from "@/components/study/curated-study-launch";
+import { TeachingScriptureBehind } from "@/components/study/teaching-scripture-behind";
 import { teachingContentKey } from "@/lib/study/refs";
 
 function formatPublished(iso: string): string {
@@ -153,6 +154,9 @@ export function CuratedVideoCard({
         ) : (
           <div className="flex-1" />
         )}
+        {!hideExcerpt && item.excerpt ? (
+          <TeachingScriptureBehind scriptureTags={[]} descriptionPlain={item.excerpt} variant="compact" />
+        ) : null}
         <CuratedStudyLaunch excerpt={item.excerpt ?? null} />
 
         <div className={compact ? "mt-2.5 space-y-1.5 border-t border-line/45 pt-2.5 sm:mt-5 sm:space-y-2 sm:pt-4" : "mt-5 space-y-2 border-t border-line/45 pt-4"}>

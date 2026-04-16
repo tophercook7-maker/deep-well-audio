@@ -12,6 +12,7 @@ import { BackButton } from "@/components/buttons/back-button";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { episodeListDescription } from "@/lib/present";
 import { EpisodeStudyBlock } from "@/components/study/episode-study-block";
+import { TeachingScriptureBehind } from "@/components/study/teaching-scripture-behind";
 
 export default async function EpisodePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -92,6 +93,11 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
           episodePageNotes={user && plan === "premium" ? "premium" : "upsell"}
         />
       </div>
+
+      <TeachingScriptureBehind
+        scriptureTags={episode.scripture_tags ?? []}
+        descriptionPlain={episodeListDescription(episode.description) ?? ""}
+      />
 
       {plan === "premium" && user ? (
         <EpisodeBookmarksNotesClient

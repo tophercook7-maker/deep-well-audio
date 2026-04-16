@@ -2,6 +2,7 @@ import { BookOpen, ListChecks, Scale, ScrollText, Sparkles } from "lucide-react"
 import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
 import { worldWatchCategoryLabel, worldWatchHeroImage } from "@/lib/world-watch/items";
 import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
+import { WorldWatchRelatedScripture } from "@/components/world-watch/world-watch-related-scripture";
 
 function formatPublishedDate(iso: string) {
   try {
@@ -326,6 +327,9 @@ export function WorldWatchItemCard({
             </div>
           </div>
         ) : null}
+        <div className={featured ? "mt-2" : "mt-1"}>
+          <WorldWatchRelatedScripture category={item.category} />
+        </div>
         {item.premium_depth ? (
           (() => {
             const depth = item.premium_depth;

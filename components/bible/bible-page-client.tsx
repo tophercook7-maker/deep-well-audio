@@ -12,6 +12,8 @@ import {
   passagePreviewArgsForSavedVerse,
   passagePreviewKey,
 } from "@/lib/study/passage-preview";
+import { TopicScriptureLinks } from "@/components/study/topic-scripture-links";
+import { STUDY_TOPIC_PICKER, topicScriptureMap, type TopicKey } from "@/lib/study/topic-scripture-map";
 import { normalizeScriptureTagInput, parseScriptureTagForStudy, parseVerseContentKey } from "@/lib/study/refs";
 
 type DashboardNote = {
@@ -53,6 +55,7 @@ export function BiblePageClient() {
   const [saved, setSaved] = useState<StudySavedVerseListRow[] | null>(null);
   const [recentNotes, setRecentNotes] = useState<DashboardNote[] | null>(null);
   const [previews, setPreviews] = useState<Record<string, string>>({});
+  const [studyTopic, setStudyTopic] = useState<TopicKey | null>(null);
 
   useEffect(() => {
     setLastLocal(readStudyLastPassage());
@@ -150,21 +153,30 @@ export function BiblePageClient() {
 
   const lastLine = lastLocal ? lastLocal.label || lastLocal.q : null;
 
+  const h2 = "text-base font-semibold text-white";
+  const lead = "mt-2 max-w-prose text-sm leading-relaxed text-slate-400/95";
+
   return (
-    <div className="mx-auto max-w-xl space-y-12">
-      <header>
+    <div className="mx-auto max-w-xl space-y-14 sm:space-y-16">
+      <header className="space-y-4">
         <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Bible Study</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate-300/95">
-          Read Scripture, explore meaning, and keep your study in one place.
+        <p className="max-w-prose text-base leading-relaxed text-slate-300/95">
+          Start with Scripture here—by reference or by topic—then save notes and pick up where you left off.
+        </p>
+        <p className="max-w-prose text-sm leading-relaxed text-slate-500">
+          <span className="text-slate-400/95">Browse</span> is for teaching audio.{" "}
+          <span className="text-slate-400/95">World Watch</span> ties news to faith.{" "}
+          <span className="text-slate-400/95">Dashboard</span> is your saved listening and account home—this page is for reading and studying
+          the Bible itself.
         </p>
       </header>
 
-      <section aria-labelledby="bible-open-heading">
-        <h2 id="bible-open-heading" className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+      <section className="space-y-0" aria-labelledby="bible-open-heading">
+        <h2 id="bible-open-heading" className={h2}>
           Open a passage
         </h2>
-        <p className="mt-2 text-sm text-muted">Examples: John 3 · Romans 8 · Psalm 23 · John 3:16</p>
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <p className={lead}>Type a book and chapter, or a verse. Examples: John 3 · Romans 8 · Psalm 23 · John 3:16</p>
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-stretch">
           <label htmlFor={inputId} className="sr-only">
             Passage reference
           </label>
@@ -178,43 +190,85 @@ export function BiblePageClient() {
             onKeyDown={(e) => {
               if (e.key === "Enter") openPassage();
             }}
-            placeholder="John 3 or John 3:16"
+            placeholder="John 3, Romans 8, Psalm 23, John 3:16…"
             autoComplete="off"
-            className="min-h-[48px] w-full flex-1 rounded-2xl border border-line/60 bg-[rgba(8,11,17,0.55)] px-4 text-base text-slate-100 placeholder:text-slate-500 outline-none ring-accent/20 focus-visible:ring-2"
+            className="min-h-[52px] w-full flex-1 rounded-2xl border border-line/60 bg-[rgba(8,11,17,0.55)] px-4 text-base text-slate-100 placeholder:text-slate-500 outline-none ring-accent/20 focus-visible:ring-2"
           />
           <button
             type="button"
             onClick={openPassage}
-            className="inline-flex min-h-[48px] shrink-0 items-center justify-center rounded-2xl bg-accent px-6 text-sm font-semibold text-slate-950 transition hover:opacity-95"
+            className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-2xl bg-accent px-7 text-sm font-semibold text-slate-950 transition hover:opacity-95"
           >
-            Open
+            Open in Study
           </button>
         </div>
-        {err ? <p className="mt-3 text-sm text-amber-200/90">{err}</p> : null}
+        <p className="mt-3 text-sm text-slate-500">Enter a chapter or verse to open it in Study.</p>
+        {err ? <p className="mt-2 text-sm text-amber-200/90">{err}</p> : null}
       </section>
 
-      <section aria-labelledby="bible-continue-heading">
-        <h2 id="bible-continue-heading" className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+      <section className="space-y-0" aria-labelledby="bible-study-by-topic-heading">
+        <h2 id="bible-study-by-topic-heading" className={h2}>
+          Study by topic
+        </h2>
+        <p className={lead}>
+          Not sure where to begin? Choose a life topic—verses appear below. Tap any reference to open it in Study.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2.5">
+          {STUDY_TOPIC_PICKER.map(({ key, label }) => {
+            const active = studyTopic === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setStudyTopic(active ? null : key)}
+                className={[
+                  "min-h-[48px] rounded-full border px-4 py-2.5 text-sm transition",
+                  active
+                    ? "border-accent/45 bg-accent/12 text-amber-50"
+                    : "border-line/50 bg-[rgba(9,12,18,0.4)] text-slate-200 hover:border-accent/25",
+                ].join(" ")}
+              >
+                {label}
+                {active ? <span className="sr-only"> (selected)</span> : null}
+              </button>
+            );
+          })}
+        </div>
+        {studyTopic ? (
+          <div className="mt-6 space-y-3">
+            <p className="text-xs text-slate-500">Tap a verse to open Study.</p>
+            <TopicScriptureLinks references={topicScriptureMap[studyTopic]} />
+          </div>
+        ) : (
+          <p className="mt-5 text-sm text-slate-500">Choose a topic to see related passages.</p>
+        )}
+      </section>
+
+      <section className="space-y-0" aria-labelledby="bible-continue-heading">
+        <h2 id="bible-continue-heading" className={h2}>
           Continue studying
         </h2>
+        <p className={lead}>Return to what you last had open in Study on this device.</p>
         {lastLine ? (
           <button
             type="button"
             onClick={reopenLast}
-            className="mt-4 w-full rounded-2xl border border-line/55 bg-[rgba(9,12,18,0.45)] px-4 py-4 text-left text-sm text-slate-200 transition hover:border-accent/30 hover:bg-white/[0.03]"
+            className="mt-5 w-full rounded-2xl border border-line/55 bg-[rgba(9,12,18,0.45)] px-4 py-4 text-left transition hover:border-accent/30 hover:bg-white/[0.03]"
           >
-            <span className="block text-xs uppercase tracking-[0.14em] text-slate-500">Last opened</span>
-            <span className="mt-1 block font-medium text-white">{lastLine}</span>
+            <span className="block text-xs font-medium uppercase tracking-[0.12em] text-slate-500">Resume</span>
+            <span className="mt-1.5 block text-base font-medium text-white">{lastLine}</span>
+            <span className="mt-2 block text-xs text-slate-500">Opens in Study</span>
           </button>
         ) : (
-          <p className="mt-3 text-sm text-muted">Open a passage above—your last spot will show up here on this device.</p>
+          <p className="mt-4 text-sm text-slate-500">After you open a passage, your last spot will show here.</p>
         )}
       </section>
 
-      <section aria-labelledby="bible-saved-heading">
-        <h2 id="bible-saved-heading" className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+      <section className="space-y-0" aria-labelledby="bible-saved-heading">
+        <h2 id="bible-saved-heading" className={h2}>
           Saved passages
         </h2>
+        <p className={lead}>Verses and chapters you save in Study show up here. The full list is in My Study on Library.</p>
         {plan !== "premium" ? (
           <p className="mt-3 text-sm leading-relaxed text-muted">
             Save passages from any verse view with Premium.{" "}
@@ -245,6 +299,7 @@ export function BiblePageClient() {
                       <span className="text-xs text-slate-500">{studyTranslationShortLabel(row.translation_id)}</span>
                     </div>
                     {preview ? <p className="mt-2 text-sm leading-relaxed text-muted">{preview}</p> : null}
+                    <span className="mt-2 block text-xs text-slate-500">Opens in Study</span>
                   </button>
                 </li>
               );
@@ -261,13 +316,11 @@ export function BiblePageClient() {
         ) : null}
       </section>
 
-      <section aria-labelledby="bible-notes-heading">
-        <h2 id="bible-notes-heading" className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
-          Recent Study Notes
+      <section className="space-y-0" aria-labelledby="bible-notes-heading">
+        <h2 id="bible-notes-heading" className={h2}>
+          Recent study notes
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted">
-          Pick up where you left off in your notes and verse study.
-        </p>
+        <p className={lead}>A quick look at notes you&apos;ve saved from Study—verse notes open right back to that passage.</p>
         {plan !== "premium" ? (
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Synced notes on this page are part of Premium.{" "}
@@ -306,6 +359,7 @@ export function BiblePageClient() {
                         {previewText ? (
                           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-300/95">{previewText}</p>
                         ) : null}
+                        <span className="mt-2 block text-xs text-slate-500">Opens this verse in Study</span>
                       </button>
                     </li>
                   );
@@ -367,22 +421,19 @@ export function BiblePageClient() {
         ) : null}
       </section>
 
-      <section aria-labelledby="bible-word-meaning-heading">
-        <h2 id="bible-word-meaning-heading" className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
-          Word Meaning
+      <section className="space-y-0" aria-labelledby="bible-word-meaning-heading">
+        <h2 id="bible-word-meaning-heading" className={h2}>
+          Word meaning
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted">
-          Tap key words in a verse to explore original meaning, pronunciation, and study detail.
+        <p className={lead}>
+          Optional, and easy to skip until you want it—after a verse is open, you can dig into important words: what they meant originally,
+          how they sound, and a bit more to read if you like.
         </p>
-        <p className="mt-4 text-sm leading-relaxed text-slate-400/95">
-          When a verse is open, you&apos;ll see <span className="text-slate-300/95">Key words</span>—pick one to read the original term, how it
-          sounds, and a short explanation. Nothing heavy; just enough to go deeper when you want.
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {["Original meaning", "Greek / Hebrew word study", "Key word detail"].map((label) => (
+        <div className="mt-5 flex flex-wrap gap-2">
+          {["Key words in the verse", "Original meaning", "A little more detail"].map((label) => (
             <span
               key={label}
-              className="rounded-full border border-line/40 bg-[rgba(9,12,18,0.3)] px-3 py-1.5 text-xs text-slate-300/95"
+              className="rounded-full border border-line/35 bg-[rgba(9,12,18,0.28)] px-3 py-1.5 text-xs text-slate-400/95"
             >
               {label}
             </span>
@@ -391,11 +442,11 @@ export function BiblePageClient() {
         <button
           type="button"
           onClick={() => study.openFromScriptureTag("John 3:16", { teachingKey: null })}
-          className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-line/55 bg-[rgba(9,12,18,0.35)] px-5 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/28 hover:bg-white/[0.04]"
+          className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-line/55 bg-[rgba(9,12,18,0.35)] px-6 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/28 hover:bg-white/[0.04]"
         >
-          Open a passage to explore word meaning
+          Try it on John 3:16
         </button>
-        <p className="mt-2 text-xs text-slate-500">Opens John 3:16 in Study—then tap a key word below the verse text.</p>
+        <p className="mt-2 text-xs text-slate-500">Opens that verse in Study—then scroll to Key words under the text.</p>
       </section>
     </div>
   );
