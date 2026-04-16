@@ -44,6 +44,9 @@ function teachingEpisodeId(contentKey: string): string | null {
   return rest.length > 0 ? rest : null;
 }
 
+/** Quick-open picks for first-time visitors (same flow as typing a reference). */
+const START_HERE_PASSAGES = ["John 3", "Psalm 23", "Romans 8", "Matthew 5", "Proverbs 3"] as const;
+
 export function BiblePageClient() {
   const study = useStudy();
   const { plan } = useAccountPlan();
@@ -163,6 +166,9 @@ export function BiblePageClient() {
         <p className="max-w-prose text-base leading-relaxed text-slate-300/95">
           Start with Scripture here—by reference or by topic—then save notes and pick up where you left off.
         </p>
+        <p className="max-w-prose text-sm leading-relaxed text-slate-500/90">
+          Start with a passage, or explore Scripture connected to what you&apos;re going through.
+        </p>
         <p className="max-w-prose text-sm leading-relaxed text-slate-500">
           <span className="text-slate-400/95">Browse</span> is for teaching audio.{" "}
           <span className="text-slate-400/95">World Watch</span> ties news to faith.{" "}
@@ -204,14 +210,33 @@ export function BiblePageClient() {
         </div>
         <p className="mt-3 text-sm text-slate-500">Enter a chapter or verse to open it in Study.</p>
         {err ? <p className="mt-2 text-sm text-amber-200/90">{err}</p> : null}
+        <div className="mt-5">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">Start here</p>
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {START_HERE_PASSAGES.map((ref) => (
+              <button
+                key={ref}
+                type="button"
+                onClick={() => {
+                  setErr(null);
+                  study.openFromScriptureTag(normalizeScriptureTagInput(ref), { teachingKey: null });
+                }}
+                className="inline-flex min-h-[40px] items-center rounded-full border border-line/50 bg-[rgba(9,12,18,0.4)] px-3.5 py-2 text-sm text-slate-200 transition hover:border-accent/28 hover:bg-white/[0.03]"
+              >
+                {ref}
+              </button>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="space-y-0" aria-labelledby="bible-study-by-topic-heading">
         <h2 id="bible-study-by-topic-heading" className={h2}>
           Study by topic
         </h2>
+        <p className="mt-2 text-sm leading-relaxed text-slate-500">Not sure where to start? Choose a topic.</p>
         <p className={lead}>
-          Not sure where to begin? Choose a life topic—verses appear below. Tap any reference to open it in Study.
+          Verses show up after you pick a topic—tap a reference to open it in Study.
         </p>
         <div className="mt-5 flex flex-wrap gap-2.5">
           {STUDY_TOPIC_PICKER.map(({ key, label }) => {
@@ -366,7 +391,7 @@ export function BiblePageClient() {
                 }
                 return (
                   <li key={n.id}>
-                    <div className="rounded-2xl border border-line/35 bg-[rgba(9,12,18,0.25)] px-4 py-3.5">
+                    <div className="cursor-default rounded-2xl border border-dashed border-line/25 bg-[rgba(9,12,18,0.2)] px-4 py-3.5 text-left">
                       <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-slate-500">Verse note</p>
                       {previewText ? (
                         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-300/95">{previewText}</p>
