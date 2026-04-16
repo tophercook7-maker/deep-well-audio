@@ -111,6 +111,10 @@ export default async function AdminMetricsPage() {
         <Link href={"/admin/feedback" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
           Feedback admin
         </Link>
+        <span className="mx-2 text-slate-600">·</span>
+        <Link href={"/admin/study-debug" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+          Study debug
+        </Link>
       </p>
     </main>
   );
