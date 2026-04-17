@@ -3,7 +3,8 @@ import { BackButton } from "@/components/buttons/back-button";
 
 export const metadata = {
   title: "Bible Study",
-  description: "Read Scripture and study with Deep Well—open a passage, continue where you left off, and browse saved verses.",
+  description:
+    "Study Scripture without losing your place—read, save passages, keep notes, and return to what you were learning.",
 };
 
 export default function BiblePage() {

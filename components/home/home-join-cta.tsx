@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import type { UserPlan } from "@/lib/permissions";
+import { CTA } from "@/lib/site-messaging";
 import { ArrowRight, Library } from "lucide-react";
 
 export function HomeJoinCta({ plan }: { plan: UserPlan }) {
@@ -38,7 +39,7 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
                   href={"/signup?next=/library" as Route}
                   className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)] transition hover:opacity-90"
                 >
-                  Create account
+                  {CTA.CREATE_FREE_ACCOUNT}
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
                 <Link
@@ -54,7 +55,7 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
                 funnelEvent="view_plans_click"
                 className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
               >
-                View plans
+                {CTA.SEE_PREMIUM}
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </FunnelLink>
             )}

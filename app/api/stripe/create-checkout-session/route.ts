@@ -76,10 +76,13 @@ export async function POST(request: Request) {
       client_reference_id: user.id,
       metadata: {
         user_id: user.id,
+        plan_tier: "premium",
+        billing_interval: priceType,
       },
       subscription_data: {
         metadata: {
           user_id: user.id,
+          plan_tier: "premium",
         },
       },
       ...(customerId

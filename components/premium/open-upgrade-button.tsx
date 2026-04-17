@@ -2,13 +2,14 @@
 
 import type { ReactNode } from "react";
 import { useAccountPlanOptional } from "@/components/plan/plan-context";
+import { CTA } from "@/lib/site-messaging";
 
 type Props = {
   children?: ReactNode;
   className?: string;
 };
 
-export function OpenUpgradeButton({ children = "View plans", className }: Props) {
+export function OpenUpgradeButton({ children = CTA.SEE_PREMIUM, className }: Props) {
   const ctx = useAccountPlanOptional();
 
   if (ctx?.plan === "premium") return null;

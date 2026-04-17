@@ -5,8 +5,8 @@ import { BookOpen } from "lucide-react";
 import { findScriptureRefs, teachingContentKey } from "@/lib/study/refs";
 import { useStudyOptional } from "@/components/study/study-provider";
 import { DEFAULT_READER_QUERY } from "@/components/study/study-provider";
-import { useAccountPlan } from "@/components/plan/plan-context";
 import type { UserPlan } from "@/lib/permissions";
+import { NotePrompt } from "@/components/monetization/named-prompts";
 
 export function EpisodeStudyBlock({
   description,
@@ -18,7 +18,6 @@ export function EpisodeStudyBlock({
   plan: UserPlan;
 }) {
   const study = useStudyOptional();
-  const { openUpgradeModal } = useAccountPlan();
   const refs = useMemo(() => findScriptureRefs(description), [description]);
   const first = refs[0] ?? null;
   if (!study) return null;
@@ -46,7 +45,7 @@ export function EpisodeStudyBlock({
       {description ? (
         <p className="mt-3 text-xs text-muted">Verse references in the description above open in Study when tapped.</p>
       ) : null}
-      <StudyTeachingNoteRow episodeId={episodeId} plan={plan} openUpgradeModal={openUpgradeModal} />
+      <StudyTeachingNoteRow episodeId={episodeId} plan={plan} />
     </div>
   );
 }
@@ -54,17 +53,16 @@ export function EpisodeStudyBlock({
 function StudyTeachingNoteRow({
   episodeId,
   plan,
-  openUpgradeModal,
 }: {
   episodeId: string;
   plan: UserPlan;
-  openUpgradeModal: () => void;
 }) {
   const key = teachingContentKey("episode", episodeId);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
+  const [premiumGate, setPremiumGate] = useState(false);
 
   const save = useCallback(async () => {
     setHint(null);
@@ -89,7 +87,9 @@ function StudyTeachingNoteRow({
       const j = (await res.json().catch(() => ({}))) as { error?: string; code?: string };
       if (!res.ok) {
         if (res.status === 403 && j.code === "premium_required") {
-          openUpgradeModal();
+          setPremiumGate(true);
+          setHint(null);
+          return;
         }
         setHint(j.error ?? "Could not save");
         return;
@@ -99,19 +99,32 @@ function StudyTeachingNoteRow({
     } finally {
       setBusy(false);
     }
-  }, [draft, key, openUpgradeModal, plan]);
+  }, [draft, key, plan]);
 
   return (
     <div className="mt-5 border-t border-line/40 pt-4">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() =>
+          setOpen((o) => {
+            const next = !o;
+            if (!next) setPremiumGate(false);
+            return next;
+          })
+        }
         className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-200/80 transition hover:text-amber-50"
       >
         Add note on this teaching
       </button>
       {open ? (
         <div className="mt-3 rounded-xl border border-line/55 bg-soft/10 p-4">
+          {premiumGate ? (
+            <NotePrompt
+              intent="episode_note"
+              onDismiss={() => setPremiumGate(false)}
+              className="mb-4"
+            />
+          ) : null}
           <textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}

@@ -23,7 +23,7 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
   if (!locked) {
     return (
       <label>
-        <span className="text-xs uppercase tracking-wide text-amber-100/70">Min meaty</span>
+        <span className="text-xs uppercase tracking-wide text-amber-100/70">Min. teaching depth</span>
         <select
           name="meaty"
           defaultValue={defaultApplied}
@@ -43,7 +43,7 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
   return (
     <div>
       <span className="flex items-center gap-2 text-xs uppercase tracking-wide text-amber-100/70">
-        Min meaty
+        Teaching depth
         <span className="rounded-full border border-accent/35 bg-accent/10 px-2 py-0.5 text-[10px] font-semibold normal-case tracking-normal text-amber-100/90">
           Premium
         </span>
@@ -58,7 +58,7 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
           }}
           className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
         >
-          <span>Any — filter by meaty score with Premium</span>
+          <span>Any — refine by depth with Premium</span>
           <span className="text-accent" aria-hidden>
             →
           </span>
@@ -69,7 +69,7 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
           funnelEvent="view_plans_click"
           className="mt-2 flex min-h-[48px] w-full items-center justify-between rounded-2xl border border-line/80 bg-soft/25 px-3 py-3 text-left text-sm text-muted transition hover:border-accent/35 hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
         >
-          <span>Any — View plans for meaty filters</span>
+          <span>Any — See Premium for depth filters</span>
           <span className="text-accent" aria-hidden>
             →
           </span>
@@ -77,7 +77,7 @@ export function ExploreMeatyField({ defaultApplied, showStrippedNotice }: Props)
       )}
       {showStrippedNotice ? (
         <p className="mt-2 text-xs text-amber-200/80">
-          A minimum meaty score was in the link, but only Premium applies that filter. Everything else still works as usual.
+          A depth filter was in the link, but only Premium applies it. Everything else still works as usual.
         </p>
       ) : null}
     </div>

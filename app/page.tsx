@@ -3,6 +3,8 @@ import { HomeSetupStatusPanel } from "@/components/home-setup-status";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import type { EpisodeWithShow } from "@/lib/types";
 import { SimplifiedHome } from "@/components/home/simplified-home";
+import { getSessionUser, getUserPlan } from "@/lib/auth";
+import { fetchWorldWatchTeaserForRetention } from "@/lib/world-watch/teaser-for-retention";
 
 const HOMEPAGE_RECENT_SAMPLES = 8;
 
@@ -10,27 +12,41 @@ export default async function HomePage() {
   let recentPool: EpisodeWithShow[] = [];
   let showCount = 0;
   let episodeCount = 0;
+  const user = await getSessionUser();
+  const plan = await getUserPlan();
+  let wwTeaser: Awaited<ReturnType<typeof fetchWorldWatchTeaserForRetention>> = null;
   try {
-    const [recentPoolRes, showCountRes, episodeCountRes] = await Promise.all([
+    const [recentPoolRes, showCountRes, episodeCountRes, wwRes] = await Promise.all([
       getHomeRecentEpisodes(HOMEPAGE_RECENT_SAMPLES),
       getActiveShowCount(),
       getPublicEpisodeCount(),
+      user ? fetchWorldWatchTeaserForRetention() : Promise.resolve(null),
     ]);
     recentPool = recentPoolRes;
     showCount = showCountRes;
     episodeCount = episodeCountRes;
+    wwTeaser = wwRes;
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;
     console.error("page home:", e instanceof Error ? e.message : e);
   }
 
-  void episodeCount;
-
   const hasContent = recentPool.length > 0;
 
   return (
     <main>
-      <SimplifiedHome startListening={recentPool} />
+      <SimplifiedHome
+        startListening={recentPool}
+        showCount={showCount}
+        episodeCount={episodeCount}
+        sessionUser={Boolean(user)}
+        plan={plan}
+        worldWatchLatest={
+          wwTeaser
+            ? { id: wwTeaser.id, title: wwTeaser.title, slug: wwTeaser.slug, published_at: wwTeaser.published_at }
+            : null
+        }
+      />
 
       {!hasContent && showCount === 0 ? (
         <section className="container-shell py-10">

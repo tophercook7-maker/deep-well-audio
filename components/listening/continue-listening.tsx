@@ -12,6 +12,7 @@ import {
   type ListeningProgressEntry,
   trackWithResume,
 } from "@/lib/listening-progress";
+import { CTA } from "@/lib/site-messaging";
 
 function rowProgressPct(entry: ListeningProgressEntry): number {
   const dur =
@@ -46,20 +47,54 @@ export function ContinueListeningSection({
   }, []);
 
   if (!enabled) return null;
-  if (entries.length === 0) return null;
+
+  if (entries.length === 0) {
+    return (
+      <section
+        className={`w-full pb-6 pt-0 sm:pb-8 sm:pt-0 ${className}`.trim()}
+        aria-labelledby="continue-listening-heading"
+      >
+        <div className="card border-line/90 bg-soft/25 p-6 sm:p-7">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Your session</p>
+            <h2 id="continue-listening-heading" className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+              Continue where you left off
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Start listening and we&apos;ll keep your place on this account.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link
+                href={"/browse" as Route}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-95"
+              >
+                {CTA.LISTEN_FREE}
+              </Link>
+              <Link
+                href={"/library" as Route}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-6 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
+              >
+                Your Library
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
-      className={`container-shell pb-8 pt-2 sm:pb-10 sm:pt-0 ${className}`.trim()}
+      className={`w-full pb-6 pt-0 sm:pb-8 sm:pt-0 ${className}`.trim()}
       aria-labelledby="continue-listening-heading"
     >
       <div className="card border-line/90 bg-soft/25 p-6 sm:p-7">
         <div className="mb-5 max-w-2xl">
           <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Your session</p>
           <h2 id="continue-listening-heading" className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">
-            Continue listening
+            Continue where you left off
           </h2>
-          <p className="mt-1.5 text-sm text-muted">Pick up where you left off.</p>
+          <p className="mt-1.5 text-sm text-muted">Resume your last teaching—progress syncs on this device.</p>
         </div>
         <ul className="space-y-4">
           {entries.map((entry) => {
@@ -86,6 +121,7 @@ export function ContinueListeningSection({
                   <div
                     className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-line/80"
                     role="progressbar"
+                    aria-label="Playback progress"
                     aria-valuemin={0}
                     aria-valuemax={100}
                     aria-valuenow={Math.round(pct)}

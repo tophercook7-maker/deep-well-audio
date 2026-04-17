@@ -12,6 +12,7 @@ import { getCuratedCategoriesForNav, isCuratedCategorySlug } from "@/lib/curated
 import { CuratedVideoGridWithStudy } from "@/components/curated-teachings/curated-video-grid-with-study";
 import { CuratedSectionShell } from "@/components/home/curated-section-shell";
 import { getUserPlan } from "@/lib/auth";
+import { CTA } from "@/lib/site-messaging";
 
 export const metadata: Metadata = {
   title: "Curated Bible teachings",
@@ -92,8 +93,8 @@ export default async function CuratedTeachingsPage({
           <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-amber-200/70">Curated library</p>
           <h1 className="mt-2.5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Curated teachings</h1>
           <p className="mt-4 max-w-2xl text-sm leading-[1.75] text-muted sm:text-[0.9375rem]">
-            Explore a growing collection of carefully selected Bible teachings, sermons, apologetics, and Christian resources from trusted
-            voices. Everything is aggregated on the server, deduped, and gently cached—so browsing stays fast and composed.
+            Explore a growing collection of Bible teaching, sermons, and resources from voices we trust—organized so you can browse calmly and
+            find something worth returning to.
           </p>
           {plan === "guest" ? (
             <p className="mt-4 max-w-2xl text-sm text-slate-200/90">
@@ -102,7 +103,7 @@ export default async function CuratedTeachingsPage({
               </Link>{" "}
               to continue where you left off.{" "}
               <Link href={"/pricing" as Route} className="font-medium text-amber-200/85 hover:underline">
-                View plans
+                {CTA.SEE_PREMIUM}
               </Link>{" "}
               for Premium tools.
             </p>

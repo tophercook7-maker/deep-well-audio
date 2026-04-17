@@ -16,6 +16,7 @@ export function PlayerBookmarkControl() {
   const premium = planCtx?.plan === "premium";
   const [busy, setBusy] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
+  const [savedAck, setSavedAck] = useState(false);
 
   const canBookmark =
     premium &&
@@ -43,9 +44,9 @@ export function PlayerBookmarkControl() {
         setHint(data.error ?? "Could not save bookmark");
         return;
       }
-      setHint("Saved");
+      setSavedAck(true);
       router.refresh();
-      window.setTimeout(() => setHint(null), 2000);
+      window.setTimeout(() => setSavedAck(false), 3200);
     } catch {
       setHint("Network error");
     } finally {
@@ -67,14 +68,13 @@ export function PlayerBookmarkControl() {
       >
         <BookmarkPlus className="h-5 w-5" aria-hidden />
       </button>
-      {hint ? (
-        <span
-          className={`text-[10px] font-medium leading-none ${
-            hint === "Saved" ? "text-emerald-400/90" : "text-amber-200/85"
-          }`}
-          role="status"
-          aria-live="polite"
-        >
+      {savedAck ? (
+        <span className="max-w-[10rem] text-center text-[10px] leading-snug text-emerald-400/90" role="status" aria-live="polite">
+          <span className="block font-medium">Saved to your library</span>
+          <span className="mt-0.5 block text-slate-500">Replay this moment from Bookmarks on the episode.</span>
+        </span>
+      ) : hint ? (
+        <span className="text-[10px] font-medium leading-none text-amber-200/85" role="status" aria-live="polite">
           {hint}
         </span>
       ) : null}

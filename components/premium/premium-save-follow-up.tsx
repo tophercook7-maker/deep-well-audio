@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { CTA } from "@/lib/site-messaging";
 
 type Props = {
   align?: "left" | "right";
@@ -11,12 +12,12 @@ export function PremiumSaveFollowUp({ align = "right", className = "" }: Props) 
     <p
       className={`text-[10px] leading-snug text-slate-500/75 ${align === "right" ? "text-right" : "text-left"} ${className}`}
     >
-      Premium lets you add notes and keep track of what matters{" "}
+      Save notes and moments across teachings—Premium helps you keep what mattered{" "}
       <Link
         href={"/pricing" as Route}
         className="whitespace-nowrap text-slate-400/85 underline decoration-white/10 underline-offset-[3px] transition hover:text-slate-300 hover:decoration-white/20"
       >
-        View plans →
+        {CTA.SEE_PREMIUM} →
       </Link>
     </p>
   );

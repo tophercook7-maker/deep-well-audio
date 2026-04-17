@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import type { Route } from "next";
 import { CATEGORY_OPTIONS } from "@/lib/types";
 import {
@@ -25,10 +26,11 @@ import { Search } from "lucide-react";
 import { BROWSE_CATEGORY_CARDS } from "@/lib/browse-discovery";
 import { RemoteArtwork } from "@/components/artwork/remote-artwork";
 import { getShowDisplayLabel } from "@/lib/display";
+import { BrowseTopicContextStrip } from "@/components/retention/browse-topic-context-strip";
 
 export const metadata = {
   title: "Browse",
-  description: "Discover trusted Bible teaching—search, topics, and sources. Listen freely without an account.",
+  description: "Find teaching worth keeping—trusted sources, topics, and episodes. Listen freely.",
 };
 
 function toInt(v: string | undefined, fallback?: number) {
@@ -120,7 +122,7 @@ export default async function BrowsePage({
     const parts: string[] = [];
     if (q.trim()) parts.push(`Search “${q.trim()}”`);
     if (activeCategoryLabel) parts.push(activeCategoryLabel);
-    if (meatyApplies && typeof meatyFromUrl === "number") parts.push(`Meaty ${meatyFromUrl}+`);
+    if (meatyApplies && typeof meatyFromUrl === "number") parts.push(`Depth ${meatyFromUrl}+`);
     if (source && source !== "all") parts.push(source === "rss" ? "RSS" : source === "youtube" ? "YouTube" : "Hybrid");
     if (!parts.length) return null;
     return parts.join(" · ");
@@ -171,11 +173,14 @@ export default async function BrowsePage({
       <div className="mb-8 border-b border-line/50 pb-6">
         <BackButton fallbackHref="/" label="Back" />
       </div>
+      <Suspense fallback={null}>
+        <BrowseTopicContextStrip />
+      </Suspense>
       <div className="mb-10">
         <span className="tag">Browse</span>
-        <h1 className="mt-4 text-4xl font-semibold text-white">Discover teaching</h1>
+        <h1 className="mt-4 text-4xl font-semibold text-white">Find teaching worth keeping</h1>
         <p className="mt-4 max-w-2xl leading-relaxed text-slate-100/95">
-          Search the catalog, open a topic, or start with a trusted source. Listen freely—no account needed.
+          Search, browse topics, or start with a trusted voice. Listen freely—no account needed.
         </p>
         {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
           <div className="mt-6 rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/[0.12] via-transparent to-transparent px-6 py-5 shadow-glow">
@@ -183,15 +188,15 @@ export default async function BrowsePage({
             <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-2xl font-semibold text-white sm:text-3xl">
               <span className="tabular-nums text-amber-100">{showCount}</span>
               <span className="text-lg font-normal text-slate-200 sm:text-xl">
-                {showCount === 1 ? "curated source" : "curated sources"}
+                {showCount === 1 ? "trusted source" : "trusted sources"}
               </span>
               {episodeCount > 0 ? (
                 <>
                   <span className="hidden text-slate-500 sm:inline" aria-hidden>
                     ·
                   </span>
-                  <span className="tabular-nums text-amber-100">{episodeCount}</span>
-                  <span className="text-lg font-normal text-slate-200 sm:text-xl">episodes indexed</span>
+                  <span className="tabular-nums text-amber-100">{episodeCount.toLocaleString()}+</span>
+                  <span className="text-lg font-normal text-slate-200 sm:text-xl">teachings</span>
                 </>
               ) : null}
             </p>
@@ -363,16 +368,16 @@ export default async function BrowsePage({
 
       <section id="browse-categories" className="scroll-mt-28 mb-12">
         <div className="mb-6 max-w-2xl">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Categories</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Browse by topic</h2>
-          <p className="mt-2 text-sm text-muted">Open recent episodes tagged for each theme.</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Topics</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Explore by topic</h2>
+          <p className="mt-2 text-sm font-medium text-slate-400/95">Start with what you&apos;re carrying</p>
+          <p className="mt-2 text-sm text-muted">
+            Each topic opens a dedicated page with teaching, context, and links into Explore—grounded in catalog tags, not algorithms.
+          </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {BROWSE_CATEGORY_CARDS.map((c) => {
-            const chipParams = new URLSearchParams();
-            chipParams.set("topic", c.slug);
-            chipParams.set("view", "episodes");
-            const href = (`/browse?${chipParams.toString()}`) as Route;
+            const href = `/topics/${encodeURIComponent(c.slug)}` as Route;
             return (
               <Link
                 key={c.slug}
@@ -385,11 +390,11 @@ export default async function BrowsePage({
           })}
         </div>
         <p className="mt-4 text-xs text-muted">
-          Want more? See{" "}
-          <Link href="/topics/end-times" className="text-amber-200/85 underline-offset-2 hover:underline">
-            topic hubs
+          Prefer the full filter view?{" "}
+          <Link href={"/browse?topic=end-times&view=episodes" as Route} className="text-amber-200/85 underline-offset-2 hover:underline">
+            Open Explore with a topic tag
           </Link>{" "}
-          for longer guides.
+          anytime.
         </p>
       </section>
 
@@ -501,7 +506,7 @@ export default async function BrowsePage({
         ) : (
           <ExploreEmptyState
             message="No shows match what you asked for."
-            detail="Try clearing one filter, loosening the meaty score, or searching a shorter phrase."
+            detail="Try clearing one filter, lowering the depth threshold, or searching a shorter phrase."
             relatedTopics={emptyRelatedTopics}
           />
         )
@@ -528,7 +533,7 @@ export default async function BrowsePage({
               ) : activeTopicMeta ? (
                 <>Newest episodes tagged for this topic—tap a row for the full episode page.</>
               ) : (
-                <>Newest matches for your filters—tap a row for the full episode page.</>
+                <>Newest results for your filters—tap a row for the full episode page.</>
               )}
             </p>
           </div>

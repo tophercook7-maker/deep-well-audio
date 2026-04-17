@@ -203,19 +203,26 @@ export function BiblePageClient() {
   return (
     <div className="mx-auto max-w-xl space-y-14 sm:space-y-16">
       <header className="space-y-4">
-        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Bible Study</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Study Scripture without losing your place</h1>
         <p className="max-w-prose text-base leading-relaxed text-slate-300/95">
-          Start with Scripture here—by reference or by topic—then save notes and pick up where you left off.
+          Read, save passages, and keep your study connected over time—continue where you left off, keep notes, and revisit saved verses.
         </p>
         <p className="max-w-prose text-sm leading-relaxed text-slate-500/90">
-          Start with a passage, or explore Scripture connected to what you&apos;re going through.
+          Open a reference or explore by topic. Scripture stays with you across sessions.
         </p>
         <p className="max-w-prose text-sm leading-relaxed text-slate-500">
-          <span className="text-slate-400/95">Browse</span> is for teaching audio.{" "}
-          <span className="text-slate-400/95">World Watch</span> ties news to faith.{" "}
-          <span className="text-slate-400/95">Dashboard</span> is your saved listening and account home—this page is for reading and studying
-          the Bible itself.
+          <span className="text-slate-400/95">Browse</span> is for finding teaching.{" "}
+          <span className="text-slate-400/95">Library</span> is for what you&apos;ve saved.{" "}
+          <span className="text-slate-400/95">World Watch</span> connects news to Scripture. This page is for reading and study.
         </p>
+        {plan === "premium" && saved !== null && recentNotes !== null ? (
+          <div className="rounded-2xl border border-line/40 bg-[rgba(9,12,18,0.4)] px-4 py-3 text-sm text-slate-400/95">
+            <span className="text-slate-500">Your study snapshot · </span>
+            {saved.length} saved passage{saved.length !== 1 ? "s" : ""}
+            {" · "}
+            {recentNotes.length} recent note{recentNotes.length !== 1 ? "s" : ""} shown below
+          </div>
+        ) : null}
       </header>
 
       <section className="space-y-0" aria-labelledby="bible-open-heading">
@@ -369,18 +376,21 @@ export function BiblePageClient() {
         <h2 id="bible-saved-heading" className={h2}>
           Saved passages
         </h2>
-        <p className={lead}>Verses and chapters you save in Study show up here. The full list is in My Study on Library.</p>
+        <p className="mt-2 text-sm text-slate-500/95">Passages you wanted to keep close.</p>
+        <p className={lead}>Verses and chapters you save in Bible Study show up here. The full list lives in Your Library.</p>
         {plan !== "premium" ? (
           <p className="mt-3 text-sm leading-relaxed text-muted">
             Save passages from any verse view with Premium.{" "}
             <Link href={"/pricing" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
-              View plans
+              See Premium
             </Link>
           </p>
         ) : saved === null ? (
           <p className="mt-3 text-sm text-muted">Loading…</p>
         ) : !saved.length ? (
-          <p className="mt-3 text-sm text-muted">No saved passages yet—save one from a verse or chapter reader.</p>
+          <p className="mt-3 text-sm leading-relaxed text-muted">
+            You haven&apos;t saved anything yet. Open a verse or chapter in Bible Study and tap save—passages you mark will gather here.
+          </p>
         ) : (
           <ul className="mt-4 space-y-3">
             {saved.slice(0, 5).map((row) => {
@@ -400,7 +410,7 @@ export function BiblePageClient() {
                       <span className="text-xs text-slate-500">{studyTranslationShortLabel(row.translation_id)}</span>
                     </div>
                     {preview ? <p className="mt-2 text-sm leading-relaxed text-muted">{preview}</p> : null}
-                    <span className="mt-2 block text-xs text-slate-500">Opens in Study</span>
+                    <span className="mt-2 block text-xs text-slate-500">Opens in Bible Study</span>
                   </button>
                 </li>
               );
@@ -412,7 +422,7 @@ export function BiblePageClient() {
             href={viewAllHref}
             className="mt-5 inline-flex text-sm font-medium text-amber-200/85 underline-offset-2 hover:underline"
           >
-            View all in My Study
+            View all in Bible Study
           </Link>
         ) : null}
       </section>
@@ -426,7 +436,7 @@ export function BiblePageClient() {
           <p className="mt-4 text-sm leading-relaxed text-muted">
             Synced notes on this page are part of Premium.{" "}
             <Link href={"/pricing" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
-              View plans
+              See Premium
             </Link>
           </p>
         ) : recentNotes === null ? (
@@ -516,7 +526,7 @@ export function BiblePageClient() {
             href={"/dashboard#notes" as Route}
             className="mt-5 inline-flex text-sm font-medium text-amber-200/85 underline-offset-2 hover:underline"
           >
-            All notes on Dashboard
+            All notes in Your Home
           </Link>
         ) : null}
       </section>

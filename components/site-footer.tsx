@@ -15,11 +15,11 @@ export function SiteFooter() {
           <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
         </div>
         <p className="mx-auto mt-2 max-w-lg text-[13px] leading-relaxed text-slate-500">
-          Listen freely. No account needed.{" "}
+          Listen freely.{" "}
           <Link href={"/pricing" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-100/90 hover:underline">
-            Subscribe
+            See Premium
           </Link>{" "}
-          to save teachings, keep notes, follow topics, and unlock full World Watch.
+          to save teachings, keep notes, and build a library that lasts.
         </p>
         <p className="mt-5 text-[13px] leading-relaxed text-slate-600">
           © {year}
@@ -34,8 +34,20 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
+          <Link href={"/bible" as Route} className="transition hover:text-amber-100/85">
+            Bible Study
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
           <Link href={"/world-watch" as Route} className="transition hover:text-amber-100/85">
             World Watch
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href={"/library" as Route} className="transition hover:text-amber-100/85">
+            Library
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·
@@ -52,12 +64,18 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
-          <FooterJoinLink className="transition hover:text-amber-100/85">Short updates. No noise.</FooterJoinLink>
+          <FooterJoinLink className="transition hover:text-amber-100/85">Short updates. No spam.</FooterJoinLink>
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
           <Link href="/feedback" className="transition hover:text-amber-100/85">
             Send feedback
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
+          <Link href={"/about" as Route} className="transition hover:text-amber-100/85">
+            About
           </Link>
         </nav>
       </div>

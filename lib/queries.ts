@@ -5,6 +5,7 @@ import { hasPublicSupabaseEnv } from "@/lib/env";
 import { isCategoryKey } from "@/lib/normalizers";
 import { getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { utcMondayWeekStartIso } from "@/lib/week-boundaries";
 
 function logQueryError(scope: string, err: unknown) {
   const msg = err instanceof Error ? err.message : String(err);
@@ -328,6 +329,69 @@ export async function getEpisodesByTopicTag(
   }
 }
 
+function episodePublishedTs(ep: EpisodeWithShow): number {
+  const raw = ep.published_at;
+  if (!raw) return 0;
+  const t = Date.parse(raw);
+  return Number.isFinite(t) ? t : 0;
+}
+
+/** Episodes tagged with any of the given catalog tags — deduped, newest first. */
+export async function getEpisodesByTopicTags(
+  tagSlugs: string[],
+  limit = 80
+): Promise<{ episodes: EpisodeWithShow[]; dataOk: boolean }> {
+  const tags = [...new Set(tagSlugs.map((s) => normalizeTopicSlug(s)).filter(Boolean))];
+  if (tags.length === 0) return { episodes: [], dataOk: true };
+  if (tags.length === 1) return getEpisodesByTopicTag(tags[0]!, limit);
+
+  let dataOk = true;
+  const byId = new Map<string, EpisodeWithShow>();
+  const perTag = Math.min(200, Math.max(limit, Math.ceil(limit / tags.length) + 20));
+
+  for (const tag of tags) {
+    const { episodes, dataOk: ok } = await getEpisodesByTopicTag(tag, perTag);
+    if (!ok) dataOk = false;
+    for (const ep of episodes) {
+      if (!byId.has(ep.id)) byId.set(ep.id, ep);
+    }
+  }
+
+  const merged = [...byId.values()].sort((a, b) => episodePublishedTs(b) - episodePublishedTs(a));
+  return { episodes: merged.slice(0, limit), dataOk };
+}
+
+/** Distinct episodes matching any catalog tag (for counts on multi-tag topic pages). */
+export async function countEpisodesByTopicTags(tagSlugs: string[]): Promise<number> {
+  const tags = [...new Set(tagSlugs.map((s) => normalizeTopicSlug(s)).filter(Boolean))];
+  if (tags.length === 0) return 0;
+  if (tags.length === 1) return countEpisodesByTopicTag(tags[0]!);
+
+  if (!hasPublicSupabaseEnv()) return 0;
+  const supabase = await createClient();
+  if (!supabase) return 0;
+
+  try {
+    const ids = new Set<string>();
+    for (const tag of tags) {
+      const { data, error } = await supabase.from("episodes").select("id").contains("topic_tags", [tag]);
+      if (error) {
+        logQueryError(`countEpisodesByTopicTags:${tag}`, error);
+        continue;
+      }
+      for (const row of data ?? []) {
+        const id = typeof (row as { id?: string }).id === "string" ? (row as { id: string }).id : "";
+        if (id) ids.add(id);
+      }
+    }
+    return ids.size;
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError("countEpisodesByTopicTags", e);
+    return 0;
+  }
+}
+
 export async function countEpisodesByTopicTag(tagSlug: string): Promise<number> {
   const clean = normalizeTopicSlug(tagSlug);
   if (!clean) return 0;
@@ -562,6 +626,28 @@ export async function getEpisodeById(id: string): Promise<{
   }
 }
 
+export async function countUserFavoriteEpisodes(userId: string): Promise<number> {
+  if (!hasPublicSupabaseEnv() || !userId) return 0;
+  const supabase = await createClient();
+  if (!supabase) return 0;
+  try {
+    const { count, error } = await supabase
+      .from("favorites")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId);
+
+    if (error) {
+      logQueryError("countUserFavoriteEpisodes", error);
+      return 0;
+    }
+    return count ?? 0;
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError("countUserFavoriteEpisodes", e);
+    return 0;
+  }
+}
+
 export async function getFavoriteEpisodeIds(userId: string): Promise<string[]> {
   if (!hasPublicSupabaseEnv() || !userId) return [];
   const supabase = await createClient();
@@ -645,6 +731,135 @@ export async function getLibrarySavedShows(userId: string) {
   } catch (e) {
     rethrowIfDynamic(e);
     logQueryError("getLibrarySavedShows", e);
+    return [];
+  }
+}
+
+export type UserLibraryGrowthStats = {
+  savedTeachings: number;
+  studyNotes: number;
+  episodeNotes: number;
+  savedPassages: number;
+};
+
+async function countTableForUser(
+  table: "study_notes" | "episode_notes" | "study_saved_verses",
+  userId: string
+): Promise<number> {
+  if (!hasPublicSupabaseEnv() || !userId) return 0;
+  const supabase = await createClient();
+  if (!supabase) return 0;
+  try {
+    const { count, error } = await supabase.from(table).select("id", { count: "exact", head: true }).eq("user_id", userId);
+    if (error) {
+      logQueryError(`countTableForUser:${table}`, error);
+      return 0;
+    }
+    return count ?? 0;
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError(`countTableForUser:${table}`, e);
+    return 0;
+  }
+}
+
+/** Saved teachings, study notes, episode notes, and saved passages — for ownership / continuity UI. */
+export async function getUserLibraryGrowthStats(userId: string): Promise<UserLibraryGrowthStats> {
+  const [savedTeachings, studyNotes, episodeNotes, savedPassages] = await Promise.all([
+    countUserFavoriteEpisodes(userId),
+    countTableForUser("study_notes", userId),
+    countTableForUser("episode_notes", userId),
+    countTableForUser("study_saved_verses", userId),
+  ]);
+  return { savedTeachings, studyNotes, episodeNotes, savedPassages };
+}
+
+/** Notes first saved this calendar week (Monday UTC), across Study and episode notes. */
+export async function countUserNotesCreatedThisWeek(userId: string): Promise<number> {
+  if (!hasPublicSupabaseEnv() || !userId) return 0;
+  const since = utcMondayWeekStartIso();
+  const supabase = await createClient();
+  if (!supabase) return 0;
+  try {
+    const [sn, en] = await Promise.all([
+      supabase.from("study_notes").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", since),
+      supabase.from("episode_notes").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", since),
+    ]);
+    if (sn.error) logQueryError("countUserNotesCreatedThisWeek:study_notes", sn.error);
+    if (en.error) logQueryError("countUserNotesCreatedThisWeek:episode_notes", en.error);
+    return (sn.count ?? 0) + (en.count ?? 0);
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError("countUserNotesCreatedThisWeek", e);
+    return 0;
+  }
+}
+
+export type EpisodeNoteListRow = {
+  id: string;
+  episode_id: string;
+  body: string;
+  updated_at: string;
+  episode_title: string | null;
+  show_slug: string | null;
+};
+
+export async function getRecentEpisodeNotesForUser(userId: string, limit = 40): Promise<EpisodeNoteListRow[]> {
+  if (!hasPublicSupabaseEnv() || !userId) return [];
+  const supabase = await createClient();
+  if (!supabase) return [];
+  try {
+    const { data: notes, error } = await supabase
+      .from("episode_notes")
+      .select("id, episode_id, body, updated_at")
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      logQueryError("getRecentEpisodeNotesForUser", error);
+      return [];
+    }
+    const list = notes ?? [];
+    if (list.length === 0) return [];
+
+    const episodeIds = [...new Set(list.map((n) => n.episode_id as string).filter(Boolean))];
+    const { data: eps, error: epErr } = await supabase
+      .from("episodes")
+      .select("id, title, show:shows(slug)")
+      .in("id", episodeIds);
+
+    if (epErr) {
+      logQueryError("getRecentEpisodeNotesForUser:episodes", epErr);
+    }
+
+    const meta = new Map<string, { title: string | null; slug: string | null }>();
+    for (const raw of eps ?? []) {
+      const row = raw as unknown as {
+        id: string;
+        title: string | null;
+        show: { slug: string | null } | null | { slug: string | null }[];
+      };
+      const show = Array.isArray(row.show) ? row.show[0] ?? null : row.show;
+      meta.set(row.id, { title: row.title ?? null, slug: show?.slug ?? null });
+    }
+
+    return list.map((n) => {
+      const id = n.id as string;
+      const episode_id = n.episode_id as string;
+      const m = meta.get(episode_id);
+      return {
+        id,
+        episode_id,
+        body: typeof n.body === "string" ? n.body : "",
+        updated_at: typeof n.updated_at === "string" ? n.updated_at : "",
+        episode_title: m?.title ?? null,
+        show_slug: m?.slug ?? null,
+      };
+    });
+  } catch (e) {
+    rethrowIfDynamic(e);
+    logQueryError("getRecentEpisodeNotesForUser", e);
     return [];
   }
 }

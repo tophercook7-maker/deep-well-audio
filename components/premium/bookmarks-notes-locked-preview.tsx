@@ -11,7 +11,9 @@ export function BookmarksNotesLockedPreview() {
       <h2 id="study-locked-heading" className="mt-2 text-xl font-semibold text-white">
         Bookmarks &amp; notes
       </h2>
-      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">Premium adds tools to stay with what you hear.</p>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+        Save this and come back to it later—Premium helps you keep what mattered from each teaching.
+      </p>
       <ul className="mt-4 space-y-2 text-sm text-slate-200">
         <li className="flex gap-2">
           <Bookmark className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />

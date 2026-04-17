@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ContextualPremiumPrompt } from "@/components/monetization/contextual-premium-prompt";
 
 type Props = {
   episodeId: string;
@@ -117,18 +116,12 @@ export function EpisodeAddNoteAction({ episodeId, mode }: Props) {
         Add note
       </button>
       {upsellOpen ? (
-        <div className="max-w-[14.5rem] text-right animate-dwa-hint-reveal">
-          <p className="text-[11px] leading-snug text-slate-400/95">Add notes to what you hear</p>
-          <p className="mt-1 text-[11px] leading-snug text-slate-500/90">Keep track of what matters</p>
-          <p className="mt-2 text-[10px] leading-snug text-slate-500/75">
-            <Link
-              href={"/pricing" as Route}
-              className="text-slate-400/85 underline decoration-white/10 underline-offset-[3px] transition hover:text-slate-300 hover:decoration-white/20"
-            >
-              View plans →
-            </Link>
-          </p>
-        </div>
+        <ContextualPremiumPrompt
+          variant="note"
+          intent="note"
+          onDismiss={() => setUpsellOpen(false)}
+          className="max-w-[17rem] animate-dwa-hint-reveal text-left"
+        />
       ) : null}
     </div>
   );

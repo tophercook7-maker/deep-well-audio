@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Globe, Lock, Radar } from "lucide-react";
+import { Check, Globe, Lock, Radar } from "lucide-react";
+import { CTA } from "@/lib/site-messaging";
 import { BackButton } from "@/components/buttons/back-button";
 import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { FunnelLink } from "@/components/analytics/funnel-link";
@@ -14,11 +15,12 @@ import { canUseFeature } from "@/lib/permissions";
 import { fetchPublishedWorldWatchItems } from "@/lib/world-watch/items";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { getWorldWatchYoutubeVideos } from "@/lib/curated-teachings/aggregate";
+import { WorldWatchVisitTracker } from "@/components/world-watch/world-watch-visit-tracker";
 
 export const metadata = {
   title: "World Watch",
   description:
-    "Biblically framed updates and listening for the times we live in. Preview free; unlock the full digest with Premium.",
+    "A calmer, Scripture-grounded read on what is happening—summaries and reflection without sensationalism. Preview free; full digest with Premium.",
 };
 
 export const dynamic = "force-dynamic";
@@ -54,6 +56,7 @@ export default async function WorldWatchPage() {
 
   return (
     <main className="container-shell max-w-3xl space-y-10 py-10 sm:space-y-14 sm:py-14 lg:max-w-5xl">
+      <WorldWatchVisitTracker />
       <ConversionPageBeacon page="world_watch" />
       <div className="border-b border-line/50 pb-4 sm:pb-5">
         <BackButton fallbackHref="/" label="Home" />
@@ -63,11 +66,47 @@ export default async function WorldWatchPage() {
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-accent/35 bg-accent/10 text-accent">
           <Globe className="h-6 w-6" aria-hidden />
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Stay grounded in a noisy world</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          Understand the world without being shaped by its noise.
+        </h1>
         <p className="max-w-2xl text-base leading-relaxed text-slate-300/95 sm:text-lg">
-          Biblically framed updates and listening for the times we live in.
+          World Watch gives you a calmer, Scripture-grounded way to follow what&apos;s happening.
+        </p>
+        <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
+          Stories publish on a rolling rhythm—meant for discernment, not alarm.
         </p>
       </header>
+
+      <section
+        className="rounded-[22px] border border-line/50 bg-[rgba(9,12,18,0.42)] p-6 backdrop-blur-md sm:p-8"
+        aria-labelledby="ww-what-heading"
+      >
+        <h2 id="ww-what-heading" className="text-lg font-semibold text-white">
+          What you get
+        </h2>
+        <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-slate-400/95">
+          <li className="flex gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+            Clear summaries of important stories
+          </li>
+          <li className="flex gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+            Scripture connected to real events
+          </li>
+          <li className="flex gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+            Teaching that helps you think biblically
+          </li>
+          <li className="flex gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+            A slower, more grounded pace
+          </li>
+        </ul>
+        <p className="mt-5 text-sm text-slate-500">
+          <span className="font-medium text-slate-400/95">Premium</span> adds the full written digest, deeper commentary, and richer connections
+          across entries.
+        </p>
+      </section>
 
       {!premium ? (
         <section className="space-y-6" aria-labelledby="ww-preview-heading">
@@ -154,7 +193,7 @@ export default async function WorldWatchPage() {
               Unlock full World Watch with Premium
             </p>
             <p className="max-w-xl text-sm leading-relaxed text-slate-400">
-              Subscribers get the complete written digest, deeper context, and a steadier read—continuity for the news you need to think about.
+              Premium includes the complete written digest, deeper context, and a steadier read—continuity for the news you need to think about.
             </p>
             <FunnelLink
               href={"/pricing" as Route}
@@ -162,7 +201,7 @@ export default async function WorldWatchPage() {
               funnelData={{ placement: "world_watch_lock" }}
               className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_28px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
             >
-              Upgrade
+              {CTA.UPGRADE_TO_PREMIUM}
             </FunnelLink>
             <p className="text-xs text-slate-500">
               Already a member?{" "}

@@ -4,6 +4,7 @@
  */
 
 import type { PlayerTrack } from "@/lib/player/types";
+import { bumpWeeklyListening } from "@/lib/weekly-listening";
 
 export const LISTENING_PROGRESS_STORAGE_KEY = "deepwell:progress";
 export const LISTENING_PROGRESS_EVENT = "deepwell:progress-updated";
@@ -128,6 +129,9 @@ export function saveListeningProgress(track: PlayerTrack, currentTime: number, d
   const ct = Number.isFinite(currentTime) ? Math.max(0, currentTime) : 0;
   const d = Number.isFinite(duration) && duration > 0 ? duration : 0;
   const prev = readStore();
+  const prevTime = prev?.byId[track.id]?.currentTime;
+  const prevT = Number.isFinite(prevTime) ? (prevTime as number) : 0;
+  bumpWeeklyListening(track.id, ct, prevT);
   const byId = { ...(prev?.byId ?? {}) };
   const storedTrack = stripResumeFromTrack(track);
   byId[track.id] = {

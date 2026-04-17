@@ -38,7 +38,8 @@ export function RecentlyPlayedSection({
 
   return (
     <section
-      className={`container-shell pb-8 pt-0 sm:pb-10 ${className}`.trim()}
+      id="recent"
+      className={`w-full scroll-mt-28 pb-6 pt-0 sm:pb-8 ${className}`.trim()}
       aria-labelledby="recently-played-heading"
     >
       <div className="rounded-2xl border border-line/70 bg-soft/15 px-5 py-5 sm:px-6">

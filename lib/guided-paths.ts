@@ -14,8 +14,8 @@ export type GuidedPathDefinition = {
 };
 
 export const GUIDED_PATH_DEFINITIONS: Record<string, GuidedPathDefinition> = {
-  "anxiety-and-trust": {
-    slug: "anxiety-and-trust",
+  anxiety: {
+    slug: "anxiety",
     topicSlug: "anxiety-and-trust",
     orderedSlots: [
       { title: "When worry runs ahead of you", matchTerms: ["worry", "anxiety"] },
@@ -34,8 +34,8 @@ export const GUIDED_PATH_DEFINITIONS: Record<string, GuidedPathDefinition> = {
       { title: "Perseverance with tenderness", matchTerms: ["persever", "endur"] },
     ],
   },
-  "identity-in-christ": {
-    slug: "identity-in-christ",
+  identity: {
+    slug: "identity",
     topicSlug: "identity-in-christ",
     orderedSlots: [
       { title: "Chosen and loved", matchTerms: ["chosen", "elect"] },
@@ -77,7 +77,7 @@ export function getAllGuidedPathSlugs(): string[] {
 
 export function getGuidedPathDisplayTitle(def: GuidedPathDefinition): string {
   if (def.titleOverride?.trim()) return def.titleOverride.trim();
-  const topic = getTopicDefinition(def.topicSlug);
+  const topic = getTopicDefinition(def.slug) ?? getTopicDefinition(def.topicSlug);
   return topic?.label ?? def.slug;
 }
 

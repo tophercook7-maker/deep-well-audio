@@ -1,11 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { Heart } from "lucide-react";
 import type { Route } from "next";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { hasPublicSupabaseEnv } from "@/lib/env";
 import { PremiumSaveFollowUp } from "@/components/premium/premium-save-follow-up";
+import { ContextualPremiumPrompt } from "@/components/monetization/contextual-premium-prompt";
+import { incrementSaveAttemptCount } from "@/lib/save-attempt-tracking";
 
 type Props = {
   episodeId: string;
@@ -16,10 +19,12 @@ type Props = {
 
 export function FavoriteButton({ episodeId, initial, showPremiumSaveFollowUp = false }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const [favorited, setFavorited] = useState(initial);
   const [pending, startTransition] = useTransition();
   const [hint, setHint] = useState<string | null>(null);
   const [saveAck, setSaveAck] = useState(false);
+  const [saveGate, setSaveGate] = useState(false);
 
   useEffect(() => {
     if (!saveAck) return;
@@ -43,8 +48,14 @@ export function FavoriteButton({ episodeId, initial, showPremiumSaveFollowUp = f
           body: JSON.stringify({ episode_id: episodeId }),
         });
 
-        if (res.status === 401 || res.status === 403) {
-          router.push("/pricing?intent=save" as Route);
+        if (res.status === 401) {
+          const next = pathname ? `?next=${encodeURIComponent(pathname)}` : "";
+          router.push(`/login${next}` as Route);
+          return;
+        }
+        if (res.status === 403) {
+          incrementSaveAttemptCount();
+          setSaveGate(true);
           return;
         }
 
@@ -109,16 +120,30 @@ export function FavoriteButton({ episodeId, initial, showPremiumSaveFollowUp = f
             if (e.target === e.currentTarget && e.animationName.includes("dwa-save-ack")) setSaveAck(false);
           }}
         >
-          <p className="pointer-events-none text-xs font-medium text-slate-200">Saved</p>
+          <p className="pointer-events-none text-xs font-medium text-slate-200">Saved to your library</p>
           <p className="pointer-events-none mt-0.5 text-[11px] leading-snug text-slate-500">
-            Come back to this anytime in your library
+            You can come back to this anytime.
           </p>
+          <Link
+            href={"/library" as Route}
+            className="pointer-events-auto mt-2 inline-block text-[11px] font-medium text-amber-200/85 underline-offset-2 hover:underline"
+          >
+            View your library
+          </Link>
           {showPremiumSaveFollowUp ? (
             <div className="pointer-events-auto mt-2">
               <PremiumSaveFollowUp />
             </div>
           ) : null}
         </div>
+      ) : null}
+      {saveGate ? (
+        <ContextualPremiumPrompt
+          variant="save"
+          intent="save"
+          onDismiss={() => setSaveGate(false)}
+          className="max-w-[18rem] text-left"
+        />
       ) : null}
       {hint ? <span className="text-right text-[11px] text-amber-200/90">{hint}</span> : null}
     </div>

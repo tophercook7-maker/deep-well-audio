@@ -3,8 +3,7 @@ import type { Route } from "next";
 import { getTopicPack } from "@/lib/topic-packs";
 import type { ResolvedTopicPackSection } from "@/lib/topic-pack-resolve";
 import { PremiumFeatureGate } from "@/components/premium/premium-feature-gate";
-import { FunnelLink } from "@/components/analytics/funnel-link";
-import { LockKeyhole } from "lucide-react";
+import { TopicPackPremiumFallback } from "@/components/monetization/topic-pack-premium-fallback";
 
 function PathStepCard({
   section,
@@ -80,24 +79,7 @@ function StructuredPack({
         <PathStepCard section={firstSection} step={1} anchorId="topic-pack-start" />
       </div>
 
-      <PremiumFeatureGate
-        feature="topic_packs"
-        fallback={
-          <div className="mt-2 rounded-2xl border border-dashed border-line/80 bg-soft/15 px-5 py-6 text-center sm:px-8">
-            <LockKeyhole className="mx-auto h-8 w-8 text-amber-200/50" aria-hidden />
-            <p className="mt-3 text-base font-semibold text-white">Premium adds tools to stay with what you hear.</p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <FunnelLink
-                href={"/pricing" as Route}
-                funnelEvent="view_plans_click"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
-              >
-                View plans
-              </FunnelLink>
-            </div>
-          </div>
-        }
-      >
+      <PremiumFeatureGate feature="topic_packs" fallback={<TopicPackPremiumFallback />}>
         <div className="mt-2 space-y-2">
           {restSections.map((section, i) => (
             <PathStepCard key={section.id} section={section} step={i + 2} />
@@ -127,23 +109,7 @@ function LegacyTopicPackSection({
         </ul>
       </div>
 
-      <PremiumFeatureGate
-        feature="topic_packs"
-        fallback={
-          <div className="mt-5 rounded-2xl border border-dashed border-line/75 bg-bg/50 p-5 text-center">
-            <p className="text-sm font-medium text-slate-200">Premium adds tools to stay with what you hear.</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <FunnelLink
-                href={"/pricing" as Route}
-                funnelEvent="view_plans_click"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
-              >
-                View plans
-              </FunnelLink>
-            </div>
-          </div>
-        }
-      >
+      <PremiumFeatureGate feature="topic_packs" fallback={<TopicPackPremiumFallback />}>
         <div className="mt-5 rounded-2xl border border-accent/25 bg-accent/[0.06] p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/70">Your curated track</p>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-100">

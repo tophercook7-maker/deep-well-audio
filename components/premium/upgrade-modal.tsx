@@ -8,6 +8,7 @@ import { useAccountPlan } from "@/components/plan/plan-context";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 import { isClientCheckoutConfigured } from "@/lib/stripe-checkout-client";
+import { CTA } from "@/lib/site-messaging";
 
 const btnPrimary =
   "inline-flex min-h-[44px] flex-1 items-center justify-center rounded-full bg-accent px-4 py-2.5 text-center text-sm font-semibold text-slate-950 transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-45 sm:flex-none";
@@ -85,20 +86,20 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
         </h2>
         <p className="mt-3 text-sm leading-[1.65] text-muted">Billing runs through Stripe.</p>
 
-        <p className="mt-6 rounded-2xl border border-accent/20 bg-accent/5 px-4 py-3 text-center text-sm text-amber-100/90">
-          <span className="font-semibold text-white">$9/month</span> or <span className="font-semibold text-white">$90/year</span>
+        <p className="mt-6 rounded-2xl border border-accent/25 bg-accent/[0.07] px-4 py-3 text-sm text-amber-100/90">
+          <span className="font-semibold text-white">Best for consistency:</span> annual is $90/year (save about $18 vs. monthly).
           <span className="mt-1 block text-xs text-muted">
-            Secure checkout with Stripe. Cancel anytime through Stripe—billing links are in your receipts, or contact us if you need help.
+            Secure checkout with Stripe. Cancel anytime—no long-term lock-in.
           </span>
         </p>
 
         <div className="mt-6 flex flex-col gap-3">
           <div className="flex flex-col gap-2 sm:flex-row sm:justify-stretch">
-            <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
-              Monthly
-            </StartCheckoutButton>
             <StartCheckoutButton interval="yearly" disabled={!checkoutOk} className={btnPrimary}>
-              Yearly
+              {CTA.UPGRADE_TO_PREMIUM} — annual
+            </StartCheckoutButton>
+            <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnGhost}>
+              Monthly · $9/mo
             </StartCheckoutButton>
           </div>
           {!checkoutOk ? (
@@ -116,7 +117,7 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
               onClick={close}
               className={`${btnGhost} order-3 whitespace-normal text-center sm:order-2 sm:whitespace-nowrap`}
             >
-              Short updates. No noise.
+              Short updates. No spam.
             </FunnelLink>
             <FunnelLink
               href={"/pricing#subscribe" as Route}
@@ -124,7 +125,7 @@ export function UpgradeModal({ open, onOpenChange }: Props) {
               onClick={close}
               className={`${btnGhost} order-1 text-center sm:order-3`}
             >
-              View plans
+              {CTA.SEE_PREMIUM}
             </FunnelLink>
           </div>
         </div>

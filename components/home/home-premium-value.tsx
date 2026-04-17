@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { CTA } from "@/lib/site-messaging";
 
 /**
  * Calm Premium note on the homepage.
@@ -19,7 +20,7 @@ export function HomePremiumValue() {
               funnelEvent="view_plans_click"
               className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-accent/40 bg-accent/10 px-5 py-2.5 text-sm font-medium text-amber-100/95 transition hover:border-accent/55 hover:bg-accent/[0.14]"
             >
-              View plans
+              {CTA.SEE_PREMIUM}
             </FunnelLink>
             <Link
               href={"/world-watch" as Route}

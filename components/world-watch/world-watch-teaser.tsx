@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { CTA } from "@/lib/site-messaging";
 
 function BulletList({ items, className = "" }: { items: string[]; className?: string }) {
   return (
@@ -74,7 +75,7 @@ export function WorldWatchTeaserUpgrade({ tight = false, condense = false }: { t
             : "mt-6 inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
         }
       >
-        View plans
+        {CTA.SEE_PREMIUM}
       </FunnelLink>
       <p className={condense ? "mt-4 max-w-prose text-[11px] leading-relaxed text-slate-400/95 sm:mt-5 sm:text-xs" : "mt-5 max-w-prose text-xs leading-relaxed text-slate-400/95"}>
         Cancel anytime through Stripe—billing links are in your Stripe receipts, or contact us if you need a hand.

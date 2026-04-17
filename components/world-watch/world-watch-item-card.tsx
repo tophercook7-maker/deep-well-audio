@@ -39,7 +39,7 @@ const depthShell: Record<
     soft: "from-amber-500/[0.07] via-transparent to-transparent",
   },
   scripture: {
-    label: "Scripture for this story",
+    label: "Biblical framing",
     icon: ScrollText,
     bar: "border-l-[3px] border-sky-200/40",
     soft: "from-sky-500/[0.06] via-transparent to-transparent",
@@ -328,7 +328,7 @@ export function WorldWatchItemCard({
           </div>
         ) : null}
         <div className={featured ? "mt-2" : "mt-1"}>
-          <WorldWatchRelatedScripture category={item.category} />
+          <WorldWatchRelatedScripture category={item.category} storyKey={item.id} />
         </div>
         {item.premium_depth ? (
           (() => {

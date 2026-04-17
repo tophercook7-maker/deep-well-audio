@@ -6,6 +6,7 @@ import type { EpisodeWithShow, ShowWithMeta } from "@/lib/types";
 import type { UserPlan } from "@/lib/permissions";
 import type { WorldWatchItemPublic } from "@/lib/world-watch/items";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { CTA } from "@/lib/site-messaging";
 import { RemoteArtwork } from "@/components/artwork/remote-artwork";
 import { WorldWatchItemCard } from "@/components/world-watch/world-watch-item-card";
 import { getShowDisplayLabel } from "@/lib/display";
@@ -596,7 +597,7 @@ function PricingTeaser() {
               funnelData={{ placement: "home_pricing_teaser" }}
               className="inline-flex min-h-[48px] items-center justify-center rounded-[22px] border border-line/90 px-7 py-3 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
             >
-              View Plans
+              {CTA.SEE_PREMIUM}
             </FunnelLink>
           </div>
         </div>
@@ -613,14 +614,14 @@ function FinalCta() {
           Build a library that helps you grow.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base text-slate-300/95">
-          Less noise. More truth. A better place to stay with what matters.
+          A calmer place to return to teaching, notes, and Scripture—without the scroll.
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3">
           <Link
             href={"/signup?next=/library" as Route}
             className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[22px] bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_12px_32px_-12px_rgba(212,175,55,0.5)] transition hover:opacity-95"
           >
-            Create Your Library
+            {CTA.CREATE_FREE_ACCOUNT}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>
@@ -631,7 +632,7 @@ function FinalCta() {
             funnelData={{ placement: "home_footer" }}
             className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
           >
-            Short updates. No noise.
+            Short updates. No spam.
           </FunnelLink>
           <span className="text-slate-600"> · </span>
           <span>Your email stays private.</span>

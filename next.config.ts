@@ -1,6 +1,30 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/topics/anxiety-and-trust",
+        destination: "/topics/anxiety",
+        permanent: true,
+      },
+      {
+        source: "/paths/anxiety-and-trust",
+        destination: "/paths/anxiety",
+        permanent: true,
+      },
+      {
+        source: "/topics/identity-in-christ",
+        destination: "/topics/identity",
+        permanent: true,
+      },
+      {
+        source: "/paths/identity-in-christ",
+        destination: "/paths/identity",
+        permanent: true,
+      },
+    ];
+  },
   experimental: {
     typedRoutes: true,
   },

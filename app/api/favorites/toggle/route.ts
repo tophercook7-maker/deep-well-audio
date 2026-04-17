@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/auth";
+import { scheduleRetentionEmail } from "@/lib/email-outbox-stub";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
       console.error("[api:favorites/toggle] insert", error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    scheduleRetentionEmail(user.id, "saved_teaching", { episode_id: episodeId });
     return NextResponse.json({ favorited: true });
   } catch (e) {
     console.error("[api:favorites/toggle]", e instanceof Error ? e.message : e);

@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SiteAtmosphere } from "@/components/site/site-atmosphere";
 import { PlayerProvider } from "@/components/player/player-provider";
 import { AccountPlanProvider } from "@/components/plan/plan-context";
+import { SoftUpgradeBanner } from "@/components/monetization/soft-upgrade-banner";
 import { StudyProvider } from "@/components/study/study-provider";
 import { StudyOverlays } from "@/components/study/study-overlays";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
@@ -30,7 +31,8 @@ const metadataBase: URL = (() => {
   }
 })();
 
-const defaultDescription = "Trusted Christian teaching without the noise. Listen freely—subscribe for your personal library, notes, and full World Watch.";
+const defaultDescription =
+  "Deep Well helps Christians keep the teaching that shapes them—listen freely, save what matters, connect it to Scripture, and return to it over time.";
 
 export const metadata: Metadata = {
   metadataBase,
@@ -107,6 +109,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               {/* Single stacking layer above the fixed atmosphere so all pages scroll over the Bible backdrop */}
               <div className="relative z-10 flex min-h-full flex-1 flex-col">
                 <SiteHeader user={user} plan={plan} />
+                <SoftUpgradeBanner />
                 <div className="flex min-h-0 flex-1 flex-col">{children}</div>
                 <SiteFooter />
                 <Analytics />

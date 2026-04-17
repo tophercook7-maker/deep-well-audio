@@ -206,11 +206,11 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
 
       if (j.duplicate) {
         setSaveVerseHint(null);
-        showSaveToast("Already in My Study.");
+        showSaveToast("Already in Bible Study.");
         dispatchStudyDashboardRefresh();
       } else {
         setSaveVerseHint(null);
-        showSaveToast("Saved to My Study.");
+        showSaveToast("Saved to Bible Study.");
         setSaveVerseHighlight(true);
         clearSaveVerseHighlightTimer();
         saveVerseHighlightTimer.current = window.setTimeout(() => {
@@ -448,7 +448,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
                 type="button"
                 disabled={saveVerseBusy}
                 aria-busy={saveVerseBusy}
-                aria-label={saveVerseHighlight ? "Saved to My Study" : "Save this verse"}
+                aria-label={saveVerseHighlight ? "Saved to Bible Study" : "Save this verse"}
                 onClick={() => void onSaveVerse()}
                 className={`inline-flex w-full items-center justify-center gap-2 rounded-full border py-2.5 text-sm font-medium transition disabled:cursor-wait disabled:opacity-60 ${
                   saveVerseHighlight
@@ -456,7 +456,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
                     : "border-line/75 text-slate-100 hover:border-accent/40"
                 }`}
               >
-                {saveVerseBusy ? "Saving…" : saveVerseHighlight ? "Saved to My Study" : "Save this verse"}
+                {saveVerseBusy ? "Saving…" : saveVerseHighlight ? "Saved to Bible Study" : "Save this verse"}
               </button>
               {saveVerseHint ? (
                 <p className="text-center text-xs leading-snug text-amber-200/85" role="status" aria-live="polite">

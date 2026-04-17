@@ -1,5 +1,6 @@
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { CTA } from "@/lib/site-messaging";
 
 export function GuidedPathPremiumPrompt() {
   return (
@@ -11,7 +12,7 @@ export function GuidedPathPremiumPrompt() {
         funnelData={{ placement: "guided_path" }}
         className="whitespace-nowrap text-slate-400/85 underline decoration-white/10 underline-offset-[3px] transition hover:text-slate-300 hover:decoration-white/20"
       >
-        View plans →
+        {CTA.SEE_PREMIUM} →
       </FunnelLink>
     </p>
   );

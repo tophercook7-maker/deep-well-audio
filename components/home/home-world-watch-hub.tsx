@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { Globe } from "lucide-react";
 import { FunnelLink } from "@/components/analytics/funnel-link";
+import { CTA } from "@/lib/site-messaging";
 import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 import type { UserPlan } from "@/lib/permissions";
 import { CuratedVideoGridWithStudy } from "@/components/curated-teachings/curated-video-grid-with-study";
@@ -96,7 +97,7 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
               funnelData={{ placement: "home_world_watch_hub" }}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-5 py-3 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
             >
-              View plans
+              {CTA.SEE_PREMIUM}
             </FunnelLink>
           </div>
           <p className="mt-6 max-w-xl text-sm leading-[1.65] text-slate-400">

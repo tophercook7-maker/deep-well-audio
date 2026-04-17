@@ -6,6 +6,7 @@ import { useAccountPlanOptional } from "@/components/plan/plan-context";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 import { isClientCheckoutConfigured } from "@/lib/stripe-checkout-client";
+import { CTA } from "@/lib/site-messaging";
 
 const btnPrimary =
   "inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:cursor-not-allowed disabled:opacity-45";
@@ -23,7 +24,7 @@ type Props = {
 };
 
 /**
- * Subscribe opens Stripe Checkout when configured; "View plans" goes to pricing. Optional join hint for updates only.
+ * Checkout uses Upgrade to Premium; secondary link uses See Premium for comparison. Optional join hint for updates only.
  */
 export function PremiumUpgradeActions({
   className = "",
@@ -46,7 +47,7 @@ export function PremiumUpgradeActions({
     <div className={className.trim()}>
       <div className={`flex flex-wrap gap-3 sm:gap-3.5 ${justify}`}>
         <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
-          Subscribe — $9/month
+          {CTA.UPGRADE_TO_PREMIUM} — $9/mo
         </StartCheckoutButton>
         <FunnelLink
           href={"/pricing#subscribe" as Route}
@@ -54,9 +55,12 @@ export function PremiumUpgradeActions({
           funnelData={funnelPlacement}
           className={btnGhost}
         >
-          View plans
+          {CTA.SEE_PREMIUM}
         </FunnelLink>
       </div>
+      <p className={`mt-3 max-w-md text-xs leading-relaxed text-slate-500 ${hintAlign}`}>
+        Cancel anytime. No tricks—just a calmer way to keep growing.
+      </p>
       {showJoinLink ? (
         <div className={`mt-3 max-w-md space-y-1 text-xs leading-relaxed text-muted ${hintAlign}`}>
           <p>
@@ -66,7 +70,7 @@ export function PremiumUpgradeActions({
               funnelData={funnelPlacement}
               className="font-medium text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
             >
-              Short updates. No noise.
+              Short updates. No spam.
             </FunnelLink>
           </p>
           <p className="text-slate-500">Your email stays private.</p>

@@ -156,7 +156,7 @@ export function StudyDashboardSection() {
           if (!prev) return prev;
           return { ...prev, savedVerses: prev.savedVerses.filter((x) => x.id !== row.id) };
         });
-        setStudyListHint({ text: "Removed from My Study.", tone: "success" });
+        setStudyListHint({ text: "Removed from Bible Study.", tone: "success" });
         dispatchStudyDashboardRefresh();
       } catch {
         setStudyListHint({ text: "Something went wrong. Try again.", tone: "caution" });
@@ -277,7 +277,7 @@ export function StudyDashboardSection() {
         return {
           phase: "ready" as const,
           label: savedRowTitle(t1.row),
-          hint: "Continue with a passage you saved in My Study",
+          hint: "Continue with a passage you saved in Bible Study",
           onOpen: () => study?.openFromSavedVerse(t1.row),
         };
       }
@@ -310,16 +310,17 @@ export function StudyDashboardSection() {
   }, [data, lastLocal, study]);
 
   return (
-    <section id="study" className="scroll-mt-28 rounded-[22px] border border-line/55 bg-[rgba(9,12,18,0.45)] p-8 backdrop-blur-md">
+    <section id="bible-study" className="scroll-mt-28 rounded-[22px] border border-line/55 bg-[rgba(9,12,18,0.45)] p-6 shadow-[0_20px_48px_-28px_rgba(0,0,0,0.45)] backdrop-blur-md sm:p-8">
       <div className="flex flex-wrap items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-sky-400/25 bg-sky-500/[0.08] text-sky-100">
           <BookOpen className="h-6 w-6" aria-hidden />
         </div>
         <div className="min-w-0 flex-1 space-y-6">
           <div>
-            <h2 className="text-xl font-semibold text-white">My Study</h2>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-200/65">Bible Study</p>
+            <h2 className="mt-2 text-xl font-semibold text-white">Saved passages &amp; study notes</h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-              Saved passages, notes, and recent reading from Study—your private hub on this account.
+              Scripture you save and notes you write in the reader—private to this account, synced with Your Library.
             </p>
           </div>
 
@@ -340,7 +341,9 @@ export function StudyDashboardSection() {
                   <span className="mt-1 block text-xs text-muted">{continueTarget.hint}</span>
                 </button>
               ) : (
-                <p className="mt-3 text-sm text-muted">Open a passage from Browse or a teaching—your rhythm will gather here.</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">
+                  Open Scripture from Browse or tap a verse on a teaching—what you save next will show up here.
+                </p>
               )}
               {study && continueTarget.phase !== "loading" ? (
                 <button
@@ -357,6 +360,7 @@ export function StudyDashboardSection() {
             <div className="mt-2 divide-y divide-line/40 rounded-2xl border border-line/30 bg-[rgba(7,10,15,0.25)]">
               <div id="saved-passages" className="scroll-mt-28 p-4 sm:p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Saved passages</p>
+                <p className="mt-1 text-xs text-slate-500">Passages you wanted to keep close.</p>
                 {studyListHint ? (
                   <p
                     className={`mt-2 text-xs leading-snug ${
@@ -373,7 +377,7 @@ export function StudyDashboardSection() {
                 ) : data.savedVerses.length === 0 ? (
                   <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
                     <p>You haven&apos;t saved any passages yet.</p>
-                    <p>When you tap Save this verse in Study, it will appear here in your account.</p>
+                    <p>Open Bible Study from a teaching, tap a verse, and choose save—passages you care about will collect here.</p>
                   </div>
                 ) : (
                   <>
@@ -475,7 +479,7 @@ export function StudyDashboardSection() {
                             disabled={busy}
                             onClick={() => void removeSavedPassage(v)}
                             className="mt-1 shrink-0 self-start rounded-lg px-2 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-white/[0.04] hover:text-slate-300 disabled:opacity-40"
-                            aria-label={`Remove ${savedRowTitle(v)} from My Study`}
+                            aria-label={`Remove ${savedRowTitle(v)} from Bible Study`}
                           >
                             {busy ? "…" : "Remove"}
                           </button>
@@ -493,7 +497,10 @@ export function StudyDashboardSection() {
                 {!data ? (
                   <p className="mt-3 text-sm text-muted">Loading…</p>
                 ) : data.recentNotes.length === 0 ? (
-                  <p className="mt-3 text-sm text-muted">Notes you write in Study show up here.</p>
+                  <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
+                    <p>You haven&apos;t added verse notes in Bible Study yet.</p>
+                    <p>When you jot something next to a passage, a short preview will appear here so you can jump back in.</p>
+                  </div>
                 ) : (
                   <ul className="mt-4 space-y-2">
                     {data.recentNotes.slice(0, 5).map((n) => {
@@ -559,7 +566,9 @@ export function StudyDashboardSection() {
                 {!data ? (
                   <p className="mt-3 text-sm text-muted">Loading…</p>
                 ) : data.recentHistory.length === 0 ? (
-                  <p className="mt-3 text-sm text-muted">Passages you open in Study will list here.</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    Passages you open in Bible Study will list here—handy when you want to pick up a chapter or reference again.
+                  </p>
                 ) : (
                   <ul className="mt-4 space-y-1">
                     {data.recentHistory.slice(0, 6).map((h) => {

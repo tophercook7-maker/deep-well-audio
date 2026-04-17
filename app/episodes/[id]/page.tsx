@@ -13,6 +13,7 @@ import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { episodeListDescription } from "@/lib/present";
 import { EpisodeStudyBlock } from "@/components/study/episode-study-block";
 import { TeachingScriptureBehind } from "@/components/study/teaching-scripture-behind";
+import { EpisodeRevisitNudge } from "@/components/retention/episode-revisit-nudge";
 
 export default async function EpisodePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -81,6 +82,8 @@ export default async function EpisodePage({ params }: { params: Promise<{ id: st
       <div className="mb-6 border-b border-line/50 pb-5">
         <BackButton fallbackHref={backFallback} label="Back" />
       </div>
+
+      <EpisodeRevisitNudge episodeId={episode.id} />
 
       <div className="mt-2">
         <EpisodeRow

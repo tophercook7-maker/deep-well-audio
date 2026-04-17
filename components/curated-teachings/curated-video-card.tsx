@@ -11,6 +11,7 @@ import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
 import { CuratedStudyLaunch } from "@/components/study/curated-study-launch";
 import { TeachingScriptureBehind } from "@/components/study/teaching-scripture-behind";
 import { teachingContentKey } from "@/lib/study/refs";
+import { CTA } from "@/lib/site-messaging";
 
 function formatPublished(iso: string): string {
   try {
@@ -200,7 +201,7 @@ export function CuratedVideoCard({
                 href={"/pricing" as Route}
                 className="inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-line/80 px-4 py-2 text-xs font-medium text-slate-300 transition hover:border-accent/35 hover:text-white sm:min-h-0"
               >
-                View plans
+                {CTA.SEE_PREMIUM}
               </Link>
             </>
           ) : (

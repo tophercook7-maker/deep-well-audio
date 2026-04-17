@@ -1,8 +1,8 @@
 /** The four guided paths highlighted on the marketing homepage (subset of `/paths/[slug]`). */
 export const HOME_START_HERE_CARDS = [
   {
-    slug: "anxiety-and-trust",
-    title: "Anxiety and trust",
+    slug: "anxiety",
+    title: "Anxiety",
     description: "When worry runs ahead of truth, Scripture keeps you grounded.",
   },
   {
@@ -11,8 +11,8 @@ export const HOME_START_HERE_CARDS = [
     description: "Honest teaching for seasons that do not resolve on demand.",
   },
   {
-    slug: "identity-in-christ",
-    title: "Identity in Christ",
+    slug: "identity",
+    title: "Identity",
     description: "Who you are in Him—before labels, noise, or performance.",
   },
   {

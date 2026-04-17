@@ -28,13 +28,13 @@ export default async function LoginPage({
           <Link href="/browse" className="font-medium text-amber-200/90 underline-offset-2 hover:underline">
             Browse
           </Link>
-          . Subscribe to unlock your personal library and tools.
+          . Premium unlocks your personal library, Bible Study tools, and synced saves.
         </p>
         <LoginForm authAvailable={authAvailable} />
         <p className="mt-8 text-sm text-slate-400">
-          Not subscribed yet?{" "}
+          No Premium yet?{" "}
           <Link href={"/pricing" as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">
-            View Premium
+            See Premium
           </Link>
         </p>
       </div>
