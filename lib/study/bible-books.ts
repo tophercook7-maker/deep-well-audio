@@ -26,6 +26,8 @@ export const BIBLE_BOOKS: BibleBookDef[] = [
   def("2 Thessalonians", "2+thessalonians", "2TH", ["2 Thessalonians", "Second Thessalonians", "2 Thess", "2Thess"]),
   def("1 Timothy", "1+timothy", "1TI", ["1 Timothy", "First Timothy", "1 Tim", "1Tim"]),
   def("2 Timothy", "2+timothy", "2TI", ["2 Timothy", "Second Timothy", "2 Tim", "2Tim"]),
+  def("Titus", "titus", "TIT", ["Titus"]),
+  def("Philemon", "philemon", "PHM", ["Philemon", "Phlm"]),
   def("1 Peter", "1+peter", "1PE", ["1 Peter", "First Peter", "1 Pet", "1Pet"]),
   def("2 Peter", "2+peter", "2PE", ["2 Peter", "Second Peter", "2 Pet", "2Pet"]),
   def("1 John", "1+john", "1JN", ["1 John", "First John", "1 Jn", "1Jn"]),

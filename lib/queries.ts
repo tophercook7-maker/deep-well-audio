@@ -6,6 +6,11 @@ import { isCategoryKey } from "@/lib/normalizers";
 import { getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { utcMondayWeekStartIso } from "@/lib/week-boundaries";
+import {
+  filterEpisodesExcludingRetired,
+  sortEpisodesForFeaturedPool,
+  sortEpisodesForStudySupport,
+} from "@/lib/content-lifecycle";
 
 function logQueryError(scope: string, err: unknown) {
   const msg = err instanceof Error ? err.message : String(err);
@@ -65,7 +70,10 @@ export async function getPublicEpisodeCount(): Promise<number> {
   const supabase = await createClient();
   if (!supabase) return 0;
   try {
-    const { count, error } = await supabase.from("episodes").select("*", { count: "exact", head: true });
+    const { count, error } = await supabase
+      .from("episodes")
+      .select("*", { count: "exact", head: true })
+      .neq("lifecycle_status", "retired");
     if (error) {
       logQueryError("getPublicEpisodeCount", error);
       return 0;
@@ -109,18 +117,21 @@ export async function getHomeRecentEpisodes(limit = 8): Promise<EpisodeWithShow[
   const supabase = await createClient();
   if (!supabase) return [];
   try {
+    const pool = Math.min(120, Math.max(limit * 12, 48));
     const { data, error } = await supabase
       .from("episodes")
       .select("*, show:shows!inner(slug,title,host,artwork_url,category,official_url)")
+      .neq("lifecycle_status", "retired")
       .order("published_at", { ascending: false, nullsFirst: false })
-      .limit(limit);
+      .limit(pool);
 
     if (error) {
       logQueryError("getHomeRecentEpisodes", error);
       return [];
     }
     if (!data) return [];
-    return data as EpisodeWithShow[];
+    const rows = filterEpisodesExcludingRetired(data as EpisodeWithShow[]);
+    return sortEpisodesForFeaturedPool(rows).slice(0, limit);
   } catch (e) {
     rethrowIfDynamic(e);
     logQueryError("getHomeRecentEpisodes", e);
@@ -313,6 +324,7 @@ export async function getEpisodesByTopicTag(
       .from("episodes")
       .select("*, show:shows!inner(slug,title,host,artwork_url,category,official_url)")
       .contains("topic_tags", [clean])
+      .neq("lifecycle_status", "retired")
       .order("published_at", { ascending: false, nullsFirst: false })
       .limit(limit);
 
@@ -321,7 +333,7 @@ export async function getEpisodesByTopicTag(
       return { episodes: [], dataOk: false };
     }
     if (!data) return { episodes: [], dataOk: true };
-    return { episodes: data as EpisodeWithShow[], dataOk: true };
+    return { episodes: filterEpisodesExcludingRetired(data as EpisodeWithShow[]), dataOk: true };
   } catch (e) {
     rethrowIfDynamic(e);
     logQueryError(`getEpisodesByTopicTag:${clean}`, e);
@@ -336,14 +348,26 @@ function episodePublishedTs(ep: EpisodeWithShow): number {
   return Number.isFinite(t) ? t : 0;
 }
 
-/** Episodes tagged with any of the given catalog tags — deduped, newest first. */
+export type EpisodesByTopicTagsOptions = {
+  /** When set (e.g. study topic slug), prioritizes study-support and evergreen over timely-only rows. */
+  studyTopicSlug?: string | null;
+};
+
+/** Episodes tagged with any of the given catalog tags — deduped, newest first (or study-aware sort). */
 export async function getEpisodesByTopicTags(
   tagSlugs: string[],
-  limit = 80
+  limit = 80,
+  options?: EpisodesByTopicTagsOptions
 ): Promise<{ episodes: EpisodeWithShow[]; dataOk: boolean }> {
   const tags = [...new Set(tagSlugs.map((s) => normalizeTopicSlug(s)).filter(Boolean))];
   if (tags.length === 0) return { episodes: [], dataOk: true };
-  if (tags.length === 1) return getEpisodesByTopicTag(tags[0]!, limit);
+  if (tags.length === 1) {
+    const one = await getEpisodesByTopicTag(tags[0]!, Math.min(200, limit * 3));
+    let eps = filterEpisodesExcludingRetired(one.episodes);
+    if (options?.studyTopicSlug) eps = sortEpisodesForStudySupport(eps, options.studyTopicSlug);
+    else eps = [...eps].sort((a, b) => episodePublishedTs(b) - episodePublishedTs(a));
+    return { episodes: eps.slice(0, limit), dataOk: one.dataOk };
+  }
 
   let dataOk = true;
   const byId = new Map<string, EpisodeWithShow>();
@@ -357,7 +381,9 @@ export async function getEpisodesByTopicTags(
     }
   }
 
-  const merged = [...byId.values()].sort((a, b) => episodePublishedTs(b) - episodePublishedTs(a));
+  let merged = filterEpisodesExcludingRetired([...byId.values()]);
+  if (options?.studyTopicSlug) merged = sortEpisodesForStudySupport(merged, options.studyTopicSlug);
+  else merged = merged.sort((a, b) => episodePublishedTs(b) - episodePublishedTs(a));
   return { episodes: merged.slice(0, limit), dataOk };
 }
 
@@ -374,7 +400,11 @@ export async function countEpisodesByTopicTags(tagSlugs: string[]): Promise<numb
   try {
     const ids = new Set<string>();
     for (const tag of tags) {
-      const { data, error } = await supabase.from("episodes").select("id").contains("topic_tags", [tag]);
+      const { data, error } = await supabase
+        .from("episodes")
+        .select("id")
+        .contains("topic_tags", [tag])
+        .neq("lifecycle_status", "retired");
       if (error) {
         logQueryError(`countEpisodesByTopicTags:${tag}`, error);
         continue;
@@ -405,7 +435,8 @@ export async function countEpisodesByTopicTag(tagSlug: string): Promise<number> 
     const { count, error } = await supabase
       .from("episodes")
       .select("id", { count: "exact", head: true })
-      .contains("topic_tags", [clean]);
+      .contains("topic_tags", [clean])
+      .neq("lifecycle_status", "retired");
 
     if (error) {
       logQueryError(`countEpisodesByTopicTag:${clean}`, error);
@@ -447,6 +478,7 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- PostgREST chain is too polymorphic to name here.
     function applyEpisodeFilters(base: any): any {
       let q = base;
+      q = q.neq("lifecycle_status", "retired");
       if (showIds) q = q.in("show_id", showIds);
       if (typeof meatyMin === "number" && !Number.isNaN(meatyMin)) {
         q = q.gte("meaty_score", meatyMin);
@@ -471,7 +503,7 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
         return [];
       }
       if (!data) return [];
-      return (data as EpisodeWithShow[]).slice(0, 80);
+      return filterEpisodesExcludingRetired(data as EpisodeWithShow[]).slice(0, 80);
     }
 
     const cleaned = cleanSearchTerm(term);
@@ -485,7 +517,7 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
         return [];
       }
       if (!data) return [];
-      return (data as EpisodeWithShow[]).slice(0, 80);
+      return filterEpisodesExcludingRetired(data as EpisodeWithShow[]).slice(0, 80);
     }
 
     const p = `%${cleaned}%`;
@@ -534,7 +566,7 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
       if (cap !== token) await tryTags(cap);
     }
 
-    return Array.from(merged.values())
+    return filterEpisodesExcludingRetired(Array.from(merged.values()))
       .sort((a, b) => {
         const ta = a.published_at ? new Date(a.published_at).getTime() : 0;
         const tb = b.published_at ? new Date(b.published_at).getTime() : 0;
@@ -576,6 +608,7 @@ export async function getShowBySlug(slug: string): Promise<{
       .from("episodes")
       .select("*")
       .eq("show_id", show.id)
+      .neq("lifecycle_status", "retired")
       .order("published_at", { ascending: false, nullsFirst: false })
       .limit(120);
 
@@ -584,7 +617,8 @@ export async function getShowBySlug(slug: string): Promise<{
       return { show: show as ShowRow, episodes: [], dataOk: true };
     }
 
-    return { show: show as ShowRow, episodes: (episodes ?? []) as EpisodeRow[], dataOk: true };
+    const eps = filterEpisodesExcludingRetired((episodes ?? []) as EpisodeRow[]);
+    return { show: show as ShowRow, episodes: eps, dataOk: true };
   } catch (e) {
     rethrowIfDynamic(e);
     logQueryError(`getShowBySlug:${clean}`, e);

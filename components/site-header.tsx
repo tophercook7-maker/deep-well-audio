@@ -6,16 +6,17 @@ import type { User } from "@supabase/supabase-js";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, CircleDollarSign, Globe, Headphones, Library, LogIn } from "lucide-react";
+import { BookOpen, CircleDollarSign, Globe, Headphones, Library, LogIn, ScrollText } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import type { UserPlan } from "@/lib/permissions";
 import { CTA } from "@/lib/site-messaging";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
-/** Primary destinations — consistent sitewide (Browse · Bible Study · World Watch · Library · Pricing). */
+/** Primary destinations — consistent sitewide (Browse · Study · Bible Study · World Watch · Library · Pricing). */
 const mainNav: NavItem[] = [
   { href: "/browse", label: "Browse", icon: Headphones },
+  { href: "/study", label: "Study", icon: ScrollText },
   { href: "/bible", label: "Bible Study", icon: BookOpen },
   { href: "/world-watch", label: "World Watch", icon: Globe },
   { href: "/library", label: "Library", icon: Library },

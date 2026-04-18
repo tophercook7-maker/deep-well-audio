@@ -35,6 +35,8 @@ export type ShowRow = {
   updated_at: string;
 };
 
+export type EpisodeLifecycleStatus = "evergreen" | "current" | "archived" | "retired";
+
 export type EpisodeRow = {
   id: string;
   show_id: string;
@@ -54,6 +56,16 @@ export type EpisodeRow = {
   artwork_url: string | null;
   created_at: string;
   updated_at: string;
+  /** Editorial lifecycle; retired rows are excluded from browse/search. */
+  lifecycle_status?: EpisodeLifecycleStatus;
+  /** While in the future, eligible for homepage/featured rotation. */
+  featured_until?: string | null;
+  archived_at?: string | null;
+  retired_reason?: string | null;
+  /** Study topic slugs for prioritizing “related teaching” on /study pages. */
+  study_support_topic_slugs?: string[];
+  /** Higher = preferred for evergreen/home fallbacks. */
+  evergreen_priority?: number;
 };
 
 export type ShowWithMeta = ShowRow & {

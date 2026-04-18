@@ -210,6 +210,15 @@ export function BiblePageClient() {
         <p className="max-w-prose text-sm leading-relaxed text-slate-500/90">
           Open a reference or explore by topic. Scripture stays with you across sessions.
         </p>
+        <p className="mt-3 max-w-prose text-sm leading-relaxed text-slate-400/95">
+          <Link
+            href={"/bible/listen" as Route}
+            className="font-medium text-amber-200/90 underline-offset-2 hover:underline"
+          >
+            Read & listen
+          </Link>
+          <span className="text-slate-500"> — follow along verse by verse with read-aloud.</span>
+        </p>
         <p className="max-w-prose text-sm leading-relaxed text-slate-500">
           <span className="text-slate-400/95">Browse</span> is for finding teaching.{" "}
           <span className="text-slate-400/95">Library</span> is for what you&apos;ve saved.{" "}

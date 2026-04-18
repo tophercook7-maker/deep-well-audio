@@ -58,7 +58,7 @@ export type WorldWatchItemAdminRow = Omit<WorldWatchItemPublic, "premium_depth">
 };
 
 const SELECT_CORE =
-  "id, published_at, title, slug, source_name, source_url, image_url, external_image_url, summary, reflection, category, pinned, pinned_rank, source_feed, public_teaser, member_commentary, scripture_refs, discernment_notes, key_takeaways";
+  "id, published_at, title, slug, source_name, source_url, image_url, external_image_url, summary, reflection, category, pinned, pinned_rank, source_feed, public_teaser, member_commentary, scripture_refs, discernment_notes, key_takeaways, featured_until, archived_at, retired_at";
 
 type RawWorldWatchRow = Record<string, unknown>;
 
@@ -121,21 +121,37 @@ function shapeWorldWatchItem(raw: RawWorldWatchRow, audience: "teaser" | "premiu
   return base;
 }
 
-function sortPublishedItems(rows: WorldWatchItemPublic[]): WorldWatchItemPublic[] {
+function wwFeaturedBoost(raw: RawWorldWatchRow): number {
+  const fu = raw.featured_until;
+  if (typeof fu !== "string" || !fu.trim()) return 0;
+  const t = Date.parse(fu);
+  return Number.isFinite(t) && t > Date.now() ? 1 : 0;
+}
+
+/** Pinned first; active featured window; non-archived before archived; then recency. */
+function sortRawWorldWatchRows(rows: RawWorldWatchRow[]): RawWorldWatchRow[] {
   return [...rows].sort((a, b) => {
-    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-    if (a.pinned && b.pinned) {
-      const ar = a.pinned_rank ?? 10_000;
-      const br = b.pinned_rank ?? 10_000;
+    const ap = a.pinned === true;
+    const bp = b.pinned === true;
+    if (ap !== bp) return ap ? -1 : 1;
+    if (ap && bp) {
+      const ar = typeof a.pinned_rank === "number" ? a.pinned_rank : 10_000;
+      const br = typeof b.pinned_rank === "number" ? b.pinned_rank : 10_000;
       if (ar !== br) return ar - br;
     }
-    const ta = new Date(a.published_at).getTime();
-    const tb = new Date(b.published_at).getTime();
+    const af = wwFeaturedBoost(a);
+    const bf = wwFeaturedBoost(b);
+    if (af !== bf) return bf - af;
+    const aa = typeof a.archived_at === "string" && a.archived_at.length > 0 ? 1 : 0;
+    const ba = typeof b.archived_at === "string" && b.archived_at.length > 0 ? 1 : 0;
+    if (aa !== ba) return aa - ba;
+    const ta = new Date(String(a.published_at ?? 0)).getTime();
+    const tb = new Date(String(b.published_at ?? 0)).getTime();
     if (ta !== tb) return tb - ta;
-    const pa = getFeedOrderingPriority(a.source_feed ?? null);
-    const pb = getFeedOrderingPriority(b.source_feed ?? null);
+    const pa = getFeedOrderingPriority(typeof a.source_feed === "string" ? a.source_feed : null);
+    const pb = getFeedOrderingPriority(typeof b.source_feed === "string" ? b.source_feed : null);
     if (pa !== pb) return pa - pb;
-    return a.id.localeCompare(b.id);
+    return String(a.id ?? "").localeCompare(String(b.id ?? ""));
   });
 }
 
@@ -151,21 +167,22 @@ export async function fetchPublishedWorldWatchItems(
   options?: { audience?: FetchWorldWatchAudience }
 ): Promise<WorldWatchItemPublic[]> {
   const audience = options?.audience ?? "teaser";
-  const { data, error } = await admin
-    .from("world_watch_items")
-    .select(SELECT_CORE)
-    .eq("is_published", true)
-    .order("published_at", { ascending: false })
-    .limit(Math.min(limit * 2, 120));
+  let q = admin.from("world_watch_items").select(SELECT_CORE).eq("is_published", true).is("retired_at", null);
+
+  if (audience === "teaser") {
+    q = q.is("archived_at", null);
+  }
+
+  const { data, error } = await q.order("published_at", { ascending: false }).limit(Math.min(limit * 3, 150));
 
   if (error) {
     console.error("[world-watch] fetchPublishedWorldWatchItems", error.message);
     return [];
   }
 
-  const rows = (data ?? []) as RawWorldWatchRow[];
+  const rows = sortRawWorldWatchRows((data ?? []) as RawWorldWatchRow[]);
   const shaped = rows.map((r) => shapeWorldWatchItem(r, audience));
-  return sortPublishedItems(shaped).slice(0, limit);
+  return shaped.slice(0, limit);
 }
 
 export type { WorldWatchCategory };

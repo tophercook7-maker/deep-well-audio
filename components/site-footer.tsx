@@ -34,6 +34,12 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
+          <Link href={"/study" as Route} className="transition hover:text-amber-100/85">
+            Study
+          </Link>
+          <span className="select-none text-slate-600" aria-hidden>
+            ·
+          </span>
           <Link href={"/bible" as Route} className="transition hover:text-amber-100/85">
             Bible Study
           </Link>
