@@ -40,6 +40,10 @@ export default async function CuratedTeachingsPage({
   const featVal = Array.isArray(rawFeat) ? rawFeat[0] : rawFeat;
   const featuredOnly = featVal === "1" || featVal === "true";
 
+  const rawSort = sp.sort;
+  const sortVal = Array.isArray(rawSort) ? rawSort[0] : rawSort;
+  const sortFeatured = sortVal === "featured";
+
   const rawQ = sp.q;
   const q = Array.isArray(rawQ) ? rawQ[0] : rawQ;
   const search = typeof q === "string" ? q : undefined;
@@ -51,6 +55,7 @@ export default async function CuratedTeachingsPage({
       category,
       featuredOnly,
       search,
+      sort: sortFeatured ? "featured" : "date",
     }),
   ]);
 
@@ -64,16 +69,20 @@ export default async function CuratedTeachingsPage({
     category?: string | null;
     featured?: boolean | null;
     q?: string | null;
+    sort?: "date" | "featured" | null;
   }): Route => {
     const u = new URLSearchParams();
     const s = p.source === null ? undefined : p.source ?? requestedSource;
     const c = p.category === null ? undefined : p.category ?? category;
     const f = p.featured === null ? false : p.featured ?? featuredOnly;
     const qu = p.q === null ? undefined : p.q ?? search;
+    const nextSort: "date" | "featured" =
+      p.sort === "featured" ? "featured" : p.sort === "date" ? "date" : sortFeatured ? "featured" : "date";
     if (s) u.set("source", s);
     if (c) u.set("category", c);
     if (f) u.set("featured", "1");
     if (qu?.trim()) u.set("q", qu.trim());
+    if (nextSort === "featured") u.set("sort", "featured");
     const qs = u.toString();
     return (qs ? `/curated-teachings?${qs}` : "/curated-teachings") as Route;
   };
@@ -115,6 +124,7 @@ export default async function CuratedTeachingsPage({
           {requestedSource ? <input type="hidden" name="source" value={requestedSource} /> : null}
           {category ? <input type="hidden" name="category" value={category} /> : null}
           {featuredOnly ? <input type="hidden" name="featured" value="1" /> : null}
+          {sortFeatured ? <input type="hidden" name="sort" value="featured" /> : null}
           <label className="sr-only" htmlFor="curated-search-q">
             Search titles
           </label>
@@ -139,6 +149,37 @@ export default async function CuratedTeachingsPage({
             Search
           </button>
         </form>
+
+        <p className="mt-4 text-xs text-slate-500">
+          {all.length === 1 ? "1 teaching" : `${all.length} teachings`}
+          {search?.trim() ? ` matching “${search.trim()}”` : ""}
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line/30 pt-4" aria-label="Sort order">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-slate-500">Order</span>
+          <Link
+            href={buildHref({ sort: "date" })}
+            className={[
+              "rounded-full border px-3 py-1.5 text-xs font-medium transition",
+              !sortFeatured
+                ? "border-accent/45 bg-accent/[0.1] text-amber-100"
+                : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
+            ].join(" ")}
+          >
+            Newest
+          </Link>
+          <Link
+            href={buildHref({ sort: "featured" })}
+            className={[
+              "rounded-full border px-3 py-1.5 text-xs font-medium transition",
+              sortFeatured
+                ? "border-accent/45 bg-accent/[0.1] text-amber-100"
+                : "border-line/70 text-slate-300/95 hover:border-accent/35 hover:text-slate-100",
+            ].join(" ")}
+          >
+            Featured first
+          </Link>
+        </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
           <Link

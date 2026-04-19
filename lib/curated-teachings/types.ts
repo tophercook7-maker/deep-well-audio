@@ -22,6 +22,8 @@ export type CuratedYoutubeFeedItem = {
   /** All categories this item appears under (union if the same video appeared from multiple sources). */
   categorySlugs: CuratedCategorySlug[];
   tags: string[];
+  /** From YouTube Data API `videos` batch when `YOUTUBE_API_KEY` is set. */
+  durationSec?: number;
 };
 
 /**
@@ -48,6 +50,8 @@ export type CuratedVideoItem = {
   worldWatch: boolean;
   sortDate: string;
   videoId: string;
+  /** Playback length in seconds when enriched via YouTube Data API. */
+  durationSec?: number;
 };
 
 /** @deprecated Use CuratedVideoItem */

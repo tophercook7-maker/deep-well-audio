@@ -7,6 +7,7 @@ import {
 } from "@/data/curated-youtube-sources";
 import { CURATED_CATEGORY_ORDER, isCuratedCategorySlug, type CuratedCategorySlug } from "@/lib/curated-teachings/categories";
 import { fetchYoutubeChannelRssItems } from "@/lib/curated-teachings/fetch-youtube-rss";
+import { enrichFeedItemsWithVideoDetails } from "@/lib/curated-teachings/youtube-video-details";
 import { fetchYoutubeChannelViaApi } from "@/lib/curated-teachings/youtube-api-curated";
 import type { CuratedVideoItem, CuratedYoutubeFeedItem } from "@/lib/curated-teachings/types";
 import { getOptionalYoutubeApiKey } from "@/lib/env";
@@ -68,6 +69,7 @@ function feedItemToVideoItem(item: CuratedYoutubeFeedItem): CuratedVideoItem {
     worldWatch: item.worldWatch,
     sortDate: item.publishedAt,
     videoId: item.videoId,
+    durationSec: item.durationSec,
   };
 }
 
@@ -88,6 +90,7 @@ function mergeFeedItems(primary: CuratedYoutubeFeedItem, secondary: CuratedYoutu
     featured: primary.featured || secondary.featured,
     worldWatch: primary.worldWatch || secondary.worldWatch,
     membersOnly: primary.membersOnly || secondary.membersOnly,
+    durationSec: primary.durationSec ?? secondary.durationSec,
   };
 }
 
@@ -243,7 +246,16 @@ async function runIngestionForSources(
   if (!scopeLabel.startsWith("world-watch")) {
     ordered.sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
   }
-  const videos = ordered.map(feedItemToVideoItem);
+  let feedForUi = ordered;
+  if (apiKey) {
+    try {
+      feedForUi = await enrichFeedItemsWithVideoDetails(apiKey, ordered);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.warn("curated: video details enrichment skipped", msg);
+    }
+  }
+  const videos = feedForUi.map(feedItemToVideoItem);
 
   console.info(
     "curated: aggregation summary",
@@ -353,6 +365,8 @@ export type AggregateCuratedOptions = {
   featuredOnly?: boolean;
   worldWatchOnly?: boolean;
   search?: string;
+  /** `date` = newest first (default). `featured` = editorial featured strip first, then newest. */
+  sort?: "date" | "featured";
 };
 
 /**
@@ -372,6 +386,7 @@ export async function getAggregatedCuratedYoutubeItems(
   const featuredOnly = options.featuredOnly === true;
   const worldWatchOnly = options.worldWatchOnly === true;
   const search = options.search?.trim().toLowerCase() ?? "";
+  const sort = options.sort === "featured" ? "featured" : "date";
 
   let videos: CuratedVideoItem[];
   if (worldWatchOnly && !sourceFilter) {
@@ -396,6 +411,10 @@ export async function getAggregatedCuratedYoutubeItems(
         v.excerpt.toLowerCase().includes(search) ||
         v.sourceName.toLowerCase().includes(search)
     );
+  }
+
+  if (sort === "featured") {
+    videos = sortFeaturedFirst(videos);
   }
 
   videos = videos.slice(0, maxTotal);

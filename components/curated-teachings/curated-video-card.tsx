@@ -1,11 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
+import { useState } from "react";
 import { ExternalLink, Lock, PlayCircle, Sparkles } from "lucide-react";
 import type { CuratedVideoItem } from "@/lib/curated-teachings/types";
 import { CURATED_CATEGORY_META } from "@/lib/curated-teachings/categories";
+import { formatVideoDuration } from "@/lib/curated-teachings/format-video-duration";
 import type { UserPlan } from "@/lib/permissions";
-import { CuratedWatchLink } from "@/components/curated-teachings/curated-watch-link";
+import { CuratedWatchLink, recordCuratedVideoOpened } from "@/components/curated-teachings/curated-watch-link";
+import { CuratedYoutubeEmbedModal } from "@/components/curated-teachings/curated-youtube-embed-modal";
 import { CuratedVideoStudyToolbar } from "@/components/curated-teachings/curated-video-study-toolbar";
 import { ScriptureLinkedText } from "@/components/study/scripture-linked-text";
 import { CuratedStudyLaunch } from "@/components/study/curated-study-launch";
@@ -56,6 +61,17 @@ export function CuratedVideoCard({
   const premiumGated = premiumTeaser && plan === "guest";
   const premiumUpsell = premiumTeaser && plan === "free";
   const compact = density === "compact";
+  const canInlinePlay = !guestGated && !premiumGated;
+  const [embedOpen, setEmbedOpen] = useState(false);
+  const durationLabel = formatVideoDuration(item.durationSec);
+
+  const openEmbed = () => {
+    recordCuratedVideoOpened(item.videoId, item.sourceId, plan);
+    setEmbedOpen(true);
+  };
+
+  const watchBtnClass =
+    "inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-accent/35 bg-accent/[0.08] px-4 py-2.5 text-sm font-medium text-amber-100/95 transition hover:border-accent/50 hover:bg-accent/[0.12] sm:min-h-0";
 
   return (
     <article
@@ -99,9 +115,26 @@ export function CuratedVideoCard({
           aria-hidden
         />
         {item.featured ? (
-          <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full border border-accent/40 bg-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-100/95">
+          <div className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded-full border border-accent/40 bg-bg/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-100/95">
             <Sparkles className="h-3 w-3" aria-hidden />
             Featured
+          </div>
+        ) : null}
+        {durationLabel ? (
+          <div className="pointer-events-none absolute bottom-3 right-3 z-10 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-medium tabular-nums text-white">
+            {durationLabel}
+          </div>
+        ) : null}
+        {canInlinePlay ? (
+          <div className="absolute bottom-3 left-3 z-10">
+            <button
+              type="button"
+              onClick={openEmbed}
+              className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-white/35 bg-black/60 px-3 py-1.5 text-xs font-medium text-white shadow-sm backdrop-blur-sm transition hover:border-accent/45 hover:bg-black/75"
+            >
+              <PlayCircle className="h-4 w-4 text-amber-200/95" aria-hidden />
+              Play
+            </button>
           </div>
         ) : null}
       </div>
@@ -187,16 +220,10 @@ export function CuratedVideoCard({
             </>
           ) : premiumUpsell ? (
             <>
-              <CuratedWatchLink
-                href={item.url}
-                videoId={item.videoId}
-                sourceId={item.sourceId}
-                plan={plan}
-                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-accent/35 bg-accent/[0.08] px-4 py-2.5 text-sm font-medium text-amber-100/95 transition hover:border-accent/50 hover:bg-accent/[0.12] sm:min-h-0"
-              >
+              <button type="button" onClick={openEmbed} className={watchBtnClass}>
                 Watch
-                <ExternalLink className="h-4 w-4 opacity-80" aria-hidden />
-              </CuratedWatchLink>
+                <PlayCircle className="h-4 w-4 opacity-90" aria-hidden />
+              </button>
               <Link
                 href={"/pricing" as Route}
                 className="inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-line/80 px-4 py-2 text-xs font-medium text-slate-300 transition hover:border-accent/35 hover:text-white sm:min-h-0"
@@ -205,17 +232,10 @@ export function CuratedVideoCard({
               </Link>
             </>
           ) : (
-            <CuratedWatchLink
-              href={item.url}
-              videoId={item.videoId}
-              sourceId={item.sourceId}
-              plan={plan}
-              className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-accent/35 bg-accent/[0.08] px-4 py-2.5 text-sm font-medium text-amber-100/95 transition hover:border-accent/50 hover:bg-accent/[0.12] sm:min-h-0"
-            >
+            <button type="button" onClick={openEmbed} className={watchBtnClass}>
               Watch
-              <ExternalLink className="h-4 w-4 opacity-80" aria-hidden />
-              <span className="sr-only">(opens YouTube in a new tab)</span>
-            </CuratedWatchLink>
+              <PlayCircle className="h-4 w-4 opacity-90" aria-hidden />
+            </button>
           )}
           <CuratedVideoStudyToolbar
             videoId={item.videoId}
@@ -227,6 +247,27 @@ export function CuratedVideoCard({
           />
         </div>
       </div>
+
+      {canInlinePlay ? (
+        <CuratedYoutubeEmbedModal
+          videoId={item.videoId}
+          title={item.title}
+          isOpen={embedOpen}
+          onClose={() => setEmbedOpen(false)}
+          footer={
+            <CuratedWatchLink
+              href={item.url}
+              videoId={item.videoId}
+              sourceId={item.sourceId}
+              plan={plan}
+              className="inline-flex items-center gap-2 text-sm font-medium text-amber-200/90 underline-offset-2 hover:text-amber-100 hover:underline"
+            >
+              Open in YouTube
+              <ExternalLink className="h-4 w-4 opacity-80" aria-hidden />
+            </CuratedWatchLink>
+          }
+        />
+      ) : null}
     </article>
   );
 }

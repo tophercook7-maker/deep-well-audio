@@ -2,7 +2,8 @@
 
 import type { UserPlan } from "@/lib/permissions";
 
-function fireOpened(videoId: string, sourceId: string) {
+export function recordCuratedVideoOpened(videoId: string, sourceId: string, plan: UserPlan) {
+  if (plan === "guest") return;
   void fetch("/api/curated/progress", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -43,7 +44,7 @@ export function CuratedWatchLink({
       target="_blank"
       rel="noopener noreferrer"
       className={className}
-      onClick={() => fireOpened(videoId, sourceId)}
+      onClick={() => recordCuratedVideoOpened(videoId, sourceId, plan)}
     >
       {children}
     </a>
