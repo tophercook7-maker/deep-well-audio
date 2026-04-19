@@ -4,22 +4,22 @@ import { BackButton } from "@/components/buttons/back-button";
 import { StudyTopicBody } from "@/components/study/study-topic-body";
 import { getAllStudyTopics, getStudyTopic } from "@/lib/study";
 import { getSafeAbsoluteSiteUrl } from "@/lib/env";
-import { STUDY_LEGACY_ROUTES } from "@/lib/studies/study-routes";
+import { STUDIES_PLATFORM_ROUTES } from "@/lib/studies/study-routes";
 
-type Props = { params: Promise<{ topic: string }> };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return getAllStudyTopics().map((t) => ({ topic: t.slug }));
+  return getAllStudyTopics().map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { topic: raw } = await params;
+  const { slug: raw } = await params;
   const topic = getStudyTopic(raw);
-  if (!topic) return { title: "Study · Deep Well Audio" };
+  if (!topic) return { title: "Studies · Deep Well Audio" };
   const title = topic.seoTitle;
   const description = topic.seoDescription;
   const base = getSafeAbsoluteSiteUrl().replace(/\/+$/, "");
-  const url = `${base}/study/${topic.slug}`;
+  const url = `${base}/studies/topic/${topic.slug}`;
   return {
     title,
     description,
@@ -28,18 +28,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function StudyTopicPage({ params }: Props) {
-  const { topic: raw } = await params;
+export default async function StudiesTopicPage({ params }: Props) {
+  const { slug: raw } = await params;
   const topic = getStudyTopic(raw);
   if (!topic) notFound();
 
   return (
     <main className="container-shell py-12 sm:py-14">
       <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/study" label="Study" />
+        <BackButton fallbackHref="/studies" label="Studies" />
       </div>
-
-      <StudyTopicBody topic={topic} routes={STUDY_LEGACY_ROUTES} />
+      <StudyTopicBody topic={topic} routes={STUDIES_PLATFORM_ROUTES} />
     </main>
   );
 }

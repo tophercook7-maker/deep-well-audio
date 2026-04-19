@@ -52,6 +52,7 @@ export const BIBLE_BOOKS: BibleBookDef[] = [
   def("Colossians", "colossians", "COL", ["Colossians", "Col"]),
   def("Genesis", "genesis", "GEN", ["Genesis", "Gen"]),
   def("Exodus", "exodus", "EXO", ["Exodus", "Exod", "Ex"]),
+  def("Numbers", "numbers", "NUM", ["Numbers", "Num", "Nm"]),
   def("Joshua", "joshua", "JOS", ["Joshua", "Josh"]),
   def("Judges", "judges", "JDG", ["Judges", "Judg"]),
   def("Ruth", "ruth", "RUT", ["Ruth"]),

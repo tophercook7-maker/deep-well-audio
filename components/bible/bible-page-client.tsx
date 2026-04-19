@@ -23,6 +23,7 @@ import {
 import { TopicScriptureLinks } from "@/components/study/topic-scripture-links";
 import { STUDY_TOPIC_PICKER, topicScriptureMap, type TopicKey } from "@/lib/study/topic-scripture-map";
 import { normalizeScriptureTagInput, parseScriptureTagForStudy, parseVerseContentKey } from "@/lib/study/refs";
+import { bibleChapterPath } from "@/lib/bible/navigation-urls";
 
 type DashboardNote = {
   id: string;
@@ -218,6 +219,16 @@ export function BiblePageClient() {
             Read & listen
           </Link>
           <span className="text-slate-500"> — follow along verse by verse with read-aloud.</span>
+        </p>
+        <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400/95">
+          <Link href={bibleChapterPath("web", "genesis", 1) as Route} className="font-medium text-amber-200/90 underline-offset-2 hover:underline">
+            Chapter reader
+          </Link>
+          <span className="text-slate-500"> — full book navigation, verse tools, and notes column.</span>{" "}
+          <Link href={"/bible/search" as Route} className="font-medium text-amber-200/90 underline-offset-2 hover:underline">
+            Search
+          </Link>
+          <span className="text-slate-500"> references or indexed text.</span>
         </p>
         <p className="max-w-prose text-sm leading-relaxed text-slate-500">
           <span className="text-slate-400/95">Browse</span> is for finding teaching.{" "}

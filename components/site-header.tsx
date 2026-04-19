@@ -16,7 +16,7 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 /** Primary destinations — consistent sitewide (Browse · Study · Bible Study · World Watch · Library · Pricing). */
 const mainNav: NavItem[] = [
   { href: "/browse", label: "Browse", icon: Headphones },
-  { href: "/study", label: "Study", icon: ScrollText },
+  { href: "/studies", label: "Studies", icon: ScrollText },
   { href: "/bible", label: "Bible Study", icon: BookOpen },
   { href: "/world-watch", label: "World Watch", icon: Globe },
   { href: "/library", label: "Library", icon: Library },
