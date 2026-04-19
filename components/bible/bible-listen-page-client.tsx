@@ -22,6 +22,8 @@ import {
   useEnglishSpeechVoices,
   voiceStorageKey,
 } from "@/components/bible/use-bible-speech-playback";
+import { BibleReaderShell } from "@/components/bible/bible-reader-shell";
+import { apiSlugToUrlBook, bibleChapterPath } from "@/lib/bible/navigation-urls";
 
 function sortVerses(vs: BibleApiVerse[]): BibleApiVerse[] {
   return [...vs].sort((a, b) => a.verse - b.verse);
@@ -241,25 +243,29 @@ export function BibleListenPageClient() {
     }
   };
 
+  const readChapterHref = bibleChapterPath(translation, apiSlugToUrlBook(book.apiSlug), chapter) as Route;
+
   return (
     <div className="mx-auto max-w-3xl pb-36 sm:pb-32">
-      <header className="space-y-3 border-b border-line/45 pb-8">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Bible</p>
-        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">Read & listen</h1>
-        <p className="max-w-prose text-sm leading-relaxed text-slate-400">
-          Read the chapter while your device reads it aloud, verse by verse. Choose a translation and voice. Playback uses your
-          browser&apos;s speech voices—calm and private, no account required.
+      <header className="space-y-4 border-b border-stone-700/50 pb-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-amber-200">Listen · Bible</p>
+        <h1 className="font-serif text-3xl font-normal tracking-tight text-stone-100 sm:text-[2.25rem]">Hear Scripture read aloud</h1>
+        <p className="max-w-prose text-sm leading-relaxed text-stone-400">
+          Same chapter as the reader—verse by verse with your chosen voice. Private playback in your browser; preferences are remembered on this
+          device.
         </p>
-        <Link
-          href={"/bible" as Route}
-          className="inline-flex text-sm font-medium text-amber-200/85 underline-offset-2 hover:underline"
-        >
-          Bible study hub
-        </Link>
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <Link href={"/bible" as Route} className="font-medium text-amber-200 underline-offset-2 hover:text-amber-100 hover:underline">
+            Bible home
+          </Link>
+          <Link href={readChapterHref} className="font-medium text-amber-200 underline-offset-2 hover:text-amber-100 hover:underline">
+            Read this chapter
+          </Link>
+        </div>
       </header>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
-        <label className="flex min-w-[min(100%,200px)] flex-1 flex-col gap-1.5 text-xs font-medium text-slate-500">
+        <label className="flex min-w-[min(100%,200px)] flex-1 flex-col gap-1.5 text-xs font-medium text-stone-400">
           Book
           <select
             value={book.apiBookId}
@@ -271,7 +277,7 @@ export function BibleListenPageClient() {
               setResumeVerse(1);
               writeBibleListenPrefs({ bookId: id, chapter: 1, verse: 1 });
             }}
-            className="min-h-[48px] rounded-xl border border-line/55 bg-[rgba(8,11,17,0.55)] px-3 text-base text-slate-100 outline-none ring-accent/20 focus-visible:ring-2"
+            className="min-h-[48px] rounded-xl border border-stone-600 bg-stone-950 px-3 text-base text-stone-100 shadow-inner outline-none focus-visible:border-amber-500/50 focus-visible:ring-2 focus-visible:ring-amber-500/25"
           >
             {canonicalBooks.map((b) => (
               <option key={b.apiBookId} value={b.apiBookId}>
@@ -281,7 +287,7 @@ export function BibleListenPageClient() {
           </select>
         </label>
 
-        <label className="flex w-full min-w-[100px] max-w-[120px] flex-col gap-1.5 text-xs font-medium text-slate-500 sm:w-auto">
+        <label className="flex w-full min-w-[100px] max-w-[120px] flex-col gap-1.5 text-xs font-medium text-stone-400 sm:w-auto">
           Chapter
           <select
             value={chapter}
@@ -292,7 +298,7 @@ export function BibleListenPageClient() {
               setResumeVerse(1);
               writeBibleListenPrefs({ chapter: n, verse: 1 });
             }}
-            className="min-h-[48px] rounded-xl border border-line/55 bg-[rgba(8,11,17,0.55)] px-3 text-base text-slate-100 outline-none ring-accent/20 focus-visible:ring-2"
+            className="min-h-[48px] rounded-xl border border-stone-600 bg-stone-950 px-3 text-base text-stone-100 shadow-inner outline-none focus-visible:border-amber-500/50 focus-visible:ring-2 focus-visible:ring-amber-500/25"
           >
             {Array.from({ length: maxChapter }, (_, i) => i + 1).map((n) => (
               <option key={n} value={n}>
@@ -302,7 +308,7 @@ export function BibleListenPageClient() {
           </select>
         </label>
 
-        <label className="flex min-w-[min(100%,160px)] flex-1 flex-col gap-1.5 text-xs font-medium text-slate-500">
+        <label className="flex min-w-[min(100%,160px)] flex-1 flex-col gap-1.5 text-xs font-medium text-stone-400">
           Translation
           <select
             value={translation}
@@ -310,7 +316,7 @@ export function BibleListenPageClient() {
               stop();
               setTranslation(e.target.value as StudyTranslationId);
             }}
-            className="min-h-[48px] rounded-xl border border-line/55 bg-[rgba(8,11,17,0.55)] px-3 text-base text-slate-100 outline-none ring-accent/20 focus-visible:ring-2"
+            className="min-h-[48px] rounded-xl border border-stone-600 bg-stone-950 px-3 text-base text-stone-100 shadow-inner outline-none focus-visible:border-amber-500/50 focus-visible:ring-2 focus-visible:ring-amber-500/25"
           >
             {STUDY_TRANSLATIONS.map((t) => (
               <option key={t.id} value={t.id}>
@@ -322,56 +328,60 @@ export function BibleListenPageClient() {
       </div>
 
       {!speechSupported ? (
-        <p className="mt-6 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
+        <p className="mt-6 rounded-xl border border-amber-500/40 bg-stone-950 px-4 py-3 text-sm text-amber-100">
           Read-aloud isn&apos;t available in this environment. Try Safari, Chrome, or Edge on a recent version.
         </p>
       ) : null}
 
       <div className="mt-8">
         {loading ? (
-          <p className="text-sm text-slate-500">Loading chapter…</p>
+          <p className="text-sm text-stone-400">Loading chapter…</p>
         ) : loadError ? (
-          <p className="text-sm text-amber-200/85">{loadError}</p>
+          <p className="text-sm font-medium text-amber-200">{loadError}</p>
         ) : passage ? (
-          <>
-            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="text-lg font-semibold text-white sm:text-xl">
-                {passage.reference || `${book.label} ${chapter}`}
-              </h2>
-              <span className="text-xs text-slate-500">{studyTranslationShortLabel(translation)} · read-aloud</span>
-            </div>
-            <div className="space-y-3 text-[1.05rem] leading-[1.75] text-slate-200/95 sm:text-lg sm:leading-[1.8]">
-              {verses.map((v) => {
-                const active = activeVerse === v.verse;
-                return (
-                  <p
-                    key={`${v.book_id}-${v.chapter}-${v.verse}`}
-                    ref={(el) => {
-                      verseRefs.current.set(v.verse, el);
-                    }}
-                    className={[
-                      "rounded-lg px-1 py-0.5 transition-colors",
-                      active ? "bg-accent/15 text-amber-50 ring-1 ring-accent/35" : "hover:bg-white/[0.03]",
-                    ].join(" ")}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => handlePlayFromVerse(v.verse)}
-                      className="mr-2 inline min-w-[2.25rem] select-none text-left align-top text-xs font-semibold tabular-nums text-slate-500 hover:text-amber-200/90"
-                      aria-label={`Play from verse ${v.verse}`}
+          <div className="rounded-[1.5rem] bg-stone-950/35 p-1 ring-1 ring-stone-900/15 sm:p-1.5">
+            <BibleReaderShell variant="reading" className="px-6 py-8 md:px-8 md:py-10">
+              <div className="mb-8 text-center">
+                <h2 className="font-serif text-xl text-stone-900 sm:text-2xl">
+                  {passage.reference || `${book.label} ${chapter}`}
+                </h2>
+                <p className="mt-2 text-xs text-stone-600">{studyTranslationShortLabel(translation)} · read-aloud</p>
+              </div>
+              <div className="mx-auto max-w-none space-y-5 text-[1.0625rem] leading-[1.82] text-stone-950 md:text-[1.125rem] md:leading-[1.88]">
+                {verses.map((v) => {
+                  const active = activeVerse === v.verse;
+                  return (
+                    <p
+                      key={`${v.book_id}-${v.chapter}-${v.verse}`}
+                      ref={(el) => {
+                        verseRefs.current.set(v.verse, el);
+                      }}
+                      className={[
+                        "flex gap-3 rounded-r-lg border-l-[3px] py-1 pl-3 transition-colors",
+                        active
+                          ? "border-amber-700 bg-amber-50/95 shadow-[inset_0_0_0_1px_rgba(180,83,9,0.12)]"
+                          : "border-transparent hover:bg-stone-100/90",
+                      ].join(" ")}
                     >
-                      {v.verse}
-                    </button>
-                    <span>{v.text}</span>
-                  </p>
-                );
-              })}
-            </div>
-          </>
+                      <button
+                        type="button"
+                        onClick={() => handlePlayFromVerse(v.verse)}
+                        className="mt-0.5 w-7 shrink-0 select-none text-left font-serif text-[0.68rem] font-medium tabular-nums text-stone-500 hover:text-stone-800 md:w-8 md:text-[0.75rem]"
+                        aria-label={`Play from verse ${v.verse}`}
+                      >
+                        {v.verse}
+                      </button>
+                      <span className="min-w-0">{v.text}</span>
+                    </p>
+                  );
+                })}
+              </div>
+            </BibleReaderShell>
+          </div>
         ) : null}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line/50 bg-[rgba(6,9,14,0.92)] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md supports-[backdrop-filter]:bg-[rgba(6,9,14,0.85)] sm:px-6">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-700 bg-[#0a0c10] px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_32px_rgba(0,0,0,0.45)] sm:px-6">
         <div className="mx-auto flex max-w-3xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:gap-3">
             <button
@@ -383,16 +393,16 @@ export function BibleListenPageClient() {
             >
               {playing ? <Pause className="h-5 w-5" strokeWidth={2} /> : <Play className="h-5 w-5 pl-0.5" strokeWidth={2} />}
             </button>
-            <div className="min-w-0 text-sm text-slate-300">
-              <p className="truncate font-medium text-slate-100">
+            <div className="min-w-0 text-sm text-stone-300">
+              <p className="truncate font-medium text-stone-100">
                 {book.label} {chapter}
                 {activeVerse != null ? (
-                  <span className="font-normal text-slate-500"> · verse {activeVerse}</span>
+                  <span className="font-normal text-stone-500"> · verse {activeVerse}</span>
                 ) : resumeVerse != null ? (
-                  <span className="font-normal text-slate-500"> · from v{resumeVerse}</span>
+                  <span className="font-normal text-stone-500"> · from v{resumeVerse}</span>
                 ) : null}
               </p>
-              <p className="truncate text-xs text-slate-500">
+              <p className="truncate text-xs text-stone-500">
                 {selectedVoice ? selectedVoice.name : "Default voice"} · {studyTranslationShortLabel(translation)}
               </p>
             </div>
@@ -402,7 +412,7 @@ export function BibleListenPageClient() {
             <button
               type="button"
               onClick={goPrevChapter}
-              className="inline-flex h-10 items-center gap-1 rounded-xl border border-line/50 px-3 text-xs font-medium text-slate-300 hover:border-accent/30"
+              className="inline-flex h-10 items-center gap-1 rounded-xl border border-stone-600 bg-stone-900 px-3 text-xs font-medium text-stone-200 hover:border-stone-500"
               aria-label="Previous chapter"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -411,19 +421,19 @@ export function BibleListenPageClient() {
             <button
               type="button"
               onClick={goNextChapter}
-              className="inline-flex h-10 items-center gap-1 rounded-xl border border-line/50 px-3 text-xs font-medium text-slate-300 hover:border-accent/30"
+              className="inline-flex h-10 items-center gap-1 rounded-xl border border-stone-600 bg-stone-900 px-3 text-xs font-medium text-stone-200 hover:border-stone-500"
               aria-label="Next chapter"
             >
               Next
               <ChevronRight className="h-4 w-4" />
             </button>
 
-            <label className="flex items-center gap-2 text-xs text-slate-500">
+            <label className="flex items-center gap-2 text-xs text-stone-400">
               <span className="hidden sm:inline">Speed</span>
               <select
                 value={rate}
                 onChange={(e) => setRate(Number.parseFloat(e.target.value))}
-                className="h-10 rounded-lg border border-line/50 bg-[rgba(8,11,17,0.8)] px-2 text-slate-200"
+                className="h-10 rounded-lg border border-stone-600 bg-stone-950 px-2 text-stone-100"
               >
                 {[0.75, 0.85, 1, 1.1, 1.25, 1.4].map((r) => (
                   <option key={r} value={r}>
@@ -433,7 +443,7 @@ export function BibleListenPageClient() {
               </select>
             </label>
 
-            <label className="flex min-w-[140px] max-w-[220px] flex-1 items-center gap-2 text-xs text-slate-500 sm:min-w-[180px]">
+            <label className="flex min-w-[140px] max-w-[220px] flex-1 items-center gap-2 text-xs text-stone-400 sm:min-w-[180px]">
               <span className="hidden sm:inline">Voice</span>
               <select
                 value={voiceKey ?? ""}
@@ -442,7 +452,7 @@ export function BibleListenPageClient() {
                   setVoiceKey(val || null);
                   writeBibleListenPrefs({ voiceKey: val || null });
                 }}
-                className="h-10 min-w-0 flex-1 truncate rounded-lg border border-line/50 bg-[rgba(8,11,17,0.8)] px-2 text-slate-200"
+                className="h-10 min-w-0 flex-1 truncate rounded-lg border border-stone-600 bg-stone-950 px-2 text-stone-100"
               >
                 <option value="">Auto (English)</option>
                 {voices.map((v) => (
@@ -455,7 +465,7 @@ export function BibleListenPageClient() {
           </div>
         </div>
 
-        <label className="mx-auto mt-3 flex max-w-3xl cursor-pointer items-center gap-2 text-xs text-slate-500">
+        <label className="mx-auto mt-3 flex max-w-3xl cursor-pointer items-center gap-2 text-xs text-stone-400">
           <input
             type="checkbox"
             checked={continueBook}
@@ -463,7 +473,7 @@ export function BibleListenPageClient() {
               setContinueBook(e.target.checked);
               writeBibleListenPrefs({ continueBook: e.target.checked });
             }}
-            className="rounded border-line/60"
+            className="rounded border-stone-600 bg-stone-900"
           />
           Continue into the next chapter when this one ends
         </label>

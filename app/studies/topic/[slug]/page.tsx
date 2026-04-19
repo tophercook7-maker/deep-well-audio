@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
-import { BackButton } from "@/components/buttons/back-button";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
+import { SectionBackLink } from "@/components/shared/section-back-link";
 import { StudyTopicBody } from "@/components/study/study-topic-body";
 import { getAllStudyTopics, getStudyTopic } from "@/lib/study";
 import { getSafeAbsoluteSiteUrl } from "@/lib/env";
@@ -35,8 +36,15 @@ export default async function StudiesTopicPage({ params }: Props) {
 
   return (
     <main className="container-shell py-12 sm:py-14">
-      <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/studies" label="Studies" />
+      <div className="mb-6 space-y-3 border-b border-line/50 pb-5">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" as Route },
+            { label: "Studies", href: "/studies" as Route },
+            { label: topic.title },
+          ]}
+        />
+        <SectionBackLink href={"/studies" as Route} label="Back to Studies" />
       </div>
       <StudyTopicBody topic={topic} routes={STUDIES_PLATFORM_ROUTES} />
     </main>

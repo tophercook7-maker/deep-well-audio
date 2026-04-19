@@ -1,17 +1,23 @@
 import { BiblePageClient } from "@/components/bible/bible-page-client";
-import { BackButton } from "@/components/buttons/back-button";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 
 export const metadata = {
-  title: "Bible Study",
+  title: "Bible",
   description:
-    "Study Scripture without losing your place—read, save passages, keep notes, and return to what you were learning.",
+    "Read Scripture with calm focus—browse every book, listen chapter by chapter, search the text, and keep notes and highlights as you study.",
 };
 
 export default function BiblePage() {
   return (
     <main className="container-shell py-12 sm:py-16">
-      <div className="border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/" label="Home" />
+      <div className="rounded-2xl border border-stone-800/80 bg-stone-950/55 px-4 py-5 sm:px-5">
+        <Breadcrumbs
+          tone="bible"
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Bible" },
+          ]}
+        />
       </div>
       <div className="mt-10">
         <BiblePageClient />

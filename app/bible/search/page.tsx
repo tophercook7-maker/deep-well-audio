@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BibleSearchClient } from "@/components/bible/bible-search-client";
-import { BackButton } from "@/components/buttons/back-button";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
+import { SectionBackLink } from "@/components/shared/section-back-link";
 
 export const metadata: Metadata = {
   title: "Search the Bible",
@@ -17,8 +18,16 @@ export default async function BibleSearchPage({
 
   return (
     <main className="container-shell py-12 sm:py-14">
-      <div className="mb-8 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/bible" label="Bible" />
+      <div className="mb-8 space-y-3 rounded-2xl border border-stone-800/80 bg-stone-950/55 px-4 py-5 sm:px-5">
+        <Breadcrumbs
+          tone="bible"
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Bible", href: "/bible" },
+            { label: "Search" },
+          ]}
+        />
+        <SectionBackLink href="/bible" label="Back to Bible" tone="bible" />
       </div>
       <BibleSearchClient initialQuery={qRaw} />
     </main>

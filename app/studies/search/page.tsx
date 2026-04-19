@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
-import { BackButton } from "@/components/buttons/back-button";
+import type { Metadata, Route } from "next";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
+import { SectionBackLink } from "@/components/shared/section-back-link";
 import { StudiesHub } from "@/components/studies/studies-hub";
 
 export const metadata: Metadata = {
@@ -17,8 +18,15 @@ export default async function StudiesSearchPage({
 
   return (
     <main className="container-shell py-12 sm:py-14">
-      <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/studies" label="Studies" />
+      <div className="mb-6 space-y-3 border-b border-line/50 pb-5">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" as Route },
+            { label: "Studies", href: "/studies" as Route },
+            { label: "Search" },
+          ]}
+        />
+        <SectionBackLink href={"/studies" as Route} label="Back to Studies" />
       </div>
       <StudiesHub initialQuery={qRaw} formAction="/studies/search" />
     </main>

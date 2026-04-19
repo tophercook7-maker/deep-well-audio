@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import type { ReactNode } from "react";
-import { BackButton } from "@/components/buttons/back-button";
+import { MeBreadcrumbs } from "@/components/me/me-breadcrumbs";
 
 const links: { href: Route; label: string }[] = [
   { href: "/me/notes" as Route, label: "Notes" },
@@ -13,8 +13,8 @@ const links: { href: Route; label: string }[] = [
 export default function MeLayout({ children }: { children: ReactNode }) {
   return (
     <main className="container-shell py-10 sm:py-12">
-      <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/" label="Home" />
+      <div className="mb-6 space-y-2 border-b border-line/50 pb-5">
+        <MeBreadcrumbs />
       </div>
       <nav className="mb-8 flex flex-wrap gap-2" aria-label="Study workspace">
         {links.map((l) => (

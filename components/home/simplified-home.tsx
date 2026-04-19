@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { Check } from "lucide-react";
+import { BookOpen, Bookmark, Check, FileText, Search, ScrollText } from "lucide-react";
 import type { EpisodeWithShow } from "@/lib/types";
 import type { UserPlan } from "@/lib/permissions";
 import { FunnelLink } from "@/components/analytics/funnel-link";
@@ -72,6 +72,95 @@ export function SimplifiedHome({
             </FunnelLink>
           </div>
           <p className="mt-6 text-sm text-slate-500">{statsLine}</p>
+        </div>
+      </section>
+
+      <section className="border-b border-line/60 bg-[rgba(8,11,17,0.42)] py-12 sm:py-14" aria-labelledby="home-pillars-heading">
+        <div className="container-shell">
+          <h2 id="home-pillars-heading" className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            Scripture, studies, and your saved work
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+            The Bible reader and topical studies are always one tap away—plus search, bookmarks, and notes when you&apos;re signed in.
+          </p>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <li>
+              <Link
+                href={"/bible" as Route}
+                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+              >
+                <BookOpen className="h-7 w-7 text-amber-200/85" aria-hidden />
+                <div>
+                  <span className="block text-base font-semibold text-white">Open Bible</span>
+                  <span className="mt-1 block text-sm text-slate-400">Read, listen, and search Scripture</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={"/studies" as Route}
+                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+              >
+                <ScrollText className="h-7 w-7 text-amber-200/85" aria-hidden />
+                <div>
+                  <span className="block text-base font-semibold text-white">Study topics</span>
+                  <span className="mt-1 block text-sm text-slate-400">Guided lessons with Scripture-first context</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={"/search" as Route}
+                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+              >
+                <Search className="h-7 w-7 text-amber-200/85" aria-hidden />
+                <div>
+                  <span className="block text-base font-semibold text-white">Search</span>
+                  <span className="mt-1 block text-sm text-slate-400">Bible verses or topical studies</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={"/bible#bible-continue-heading" as Route}
+                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+              >
+                <BookOpen className="h-7 w-7 text-slate-400" aria-hidden />
+                <div>
+                  <span className="block text-base font-semibold text-white">Continue reading</span>
+                  <span className="mt-1 block text-sm text-slate-400">Pick up your last passage on the Bible hub</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={(sessionUser ? "/me/bookmarks" : "/signup") as Route}
+                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+              >
+                <Bookmark className="h-7 w-7 text-amber-200/85" aria-hidden />
+                <div>
+                  <span className="block text-base font-semibold text-white">Bookmarks</span>
+                  <span className="mt-1 block text-sm text-slate-400">
+                    {sessionUser ? "Saved verses and teachings" : "Create a free account to save passages"}
+                  </span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={(sessionUser ? "/me/notes" : "/signup") as Route}
+                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+              >
+                <FileText className="h-7 w-7 text-amber-200/85" aria-hidden />
+                <div>
+                  <span className="block text-base font-semibold text-white">Notes</span>
+                  <span className="mt-1 block text-sm text-slate-400">
+                    {sessionUser ? "Your study notes in one place" : "Sign in to keep notes alongside Scripture"}
+                  </span>
+                </div>
+              </Link>
+            </li>
+          </ul>
         </div>
       </section>
 

@@ -1,7 +1,6 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import type { Route } from "next";
-import { BackButton } from "@/components/buttons/back-button";
+import type { Metadata, Route } from "next";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
+import { SectionBackLink } from "@/components/shared/section-back-link";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -16,23 +15,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StudiesSeriesPlaceholderPage({ params }: Props) {
   const { slug } = await params;
 
+  const title = slug.replace(/-/g, " ");
+
   return (
     <main className="container-shell py-12 sm:py-14">
-      <div className="mb-6 border-b border-line/50 pb-5">
-        <BackButton fallbackHref="/studies" label="Studies" />
+      <div className="mb-6 space-y-3 border-b border-line/50 pb-5">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" as Route },
+            { label: "Studies", href: "/studies" as Route },
+            { label: "Series" },
+            { label: title },
+          ]}
+        />
+        <SectionBackLink href={"/studies" as Route} label="Back to Studies" />
       </div>
 
       <header className="max-w-2xl">
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Series</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">{slug.replace(/-/g, " ")}</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">{title}</h1>
         <p className="mt-4 text-base leading-relaxed text-slate-300/95">
           Guided multi-part tracks will appear here—saved progress, structured readings, and linked lessons. For now, browse topics and lessons from the
           studies hub.
-        </p>
-        <p className="mt-6">
-          <Link href={"/studies" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
-            ← Back to studies
-          </Link>
         </p>
       </header>
     </main>

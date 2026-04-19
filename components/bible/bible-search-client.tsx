@@ -79,19 +79,19 @@ export function BibleSearchClient({ initialQuery }: { initialQuery: string }) {
   return (
     <div className="mx-auto max-w-3xl">
       <header className="max-w-2xl">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Bible</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Search Scripture</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate-300/95">
-          Jump to a reference (for example <span className="text-slate-200">John 3:16</span> or{" "}
-          <span className="text-slate-200">Psalm 23</span>), or search words once verse text is indexed in the database.
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200">Bible</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-100 sm:text-4xl">Search Scripture</h1>
+        <p className="mt-4 text-base leading-relaxed text-stone-300">
+          Jump to a reference (for example <span className="font-medium text-stone-100">John 3:16</span> or{" "}
+          <span className="font-medium text-stone-100">Psalm 23</span>), or search words once verse text is indexed in the database.
         </p>
       </header>
 
       <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-end">
-        <label className="block flex-1 text-xs font-medium text-slate-500" htmlFor={inputId}>
+        <label className="block flex-1 text-xs font-medium text-stone-400" htmlFor={inputId}>
           Search
           <div className="relative mt-1.5">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" aria-hidden />
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" aria-hidden />
             <input
               id={inputId}
               value={q}
@@ -100,14 +100,14 @@ export function BibleSearchClient({ initialQuery }: { initialQuery: string }) {
                 if (e.key === "Enter") void run();
               }}
               placeholder="e.g. hope, Romans 8:28, Genesis 1"
-              className="w-full rounded-2xl border border-line/80 bg-soft/30 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent/45 focus:outline-none focus:ring-1 focus:ring-accent/35"
+              className="w-full rounded-2xl border border-stone-600 bg-stone-950 py-3.5 pl-11 pr-4 text-sm text-stone-100 shadow-inner placeholder:text-stone-500 focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/25"
             />
           </div>
         </label>
-        <label className="block w-full text-xs font-medium text-slate-500 sm:w-44">
+        <label className="block w-full text-xs font-medium text-stone-400 sm:w-44">
           Translation
           <select
-            className="mt-1.5 w-full rounded-2xl border border-line/80 bg-soft/30 px-3 py-3 text-sm text-slate-100"
+            className="mt-1.5 w-full rounded-2xl border border-stone-600 bg-stone-950 px-3 py-3 text-sm text-stone-100 shadow-inner focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/25"
             value={translation}
             onChange={(e) => setTranslation(e.target.value as StudyTranslationId)}
           >
@@ -129,13 +129,13 @@ export function BibleSearchClient({ initialQuery }: { initialQuery: string }) {
       </div>
 
       {data?.ftsError ? (
-        <p className="mt-4 text-sm text-amber-200/80">Search index note: {data.ftsError}</p>
+        <p className="mt-4 text-sm text-amber-200">Search index note: {data.ftsError}</p>
       ) : null}
 
       {data?.referenceJump ? (
-        <section className="mt-10 rounded-2xl border border-accent/30 bg-accent/[0.07] px-5 py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/75">Open reference</p>
-          <p className="mt-2 text-sm text-slate-400">{data.referenceJump.label}</p>
+        <section className="mt-10 rounded-2xl border border-amber-500/35 bg-stone-950 px-5 py-4 shadow-md">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200">Open reference</p>
+          <p className="mt-2 text-sm text-stone-400">{data.referenceJump.label}</p>
           <Link
             href={data.referenceJump.href as Route}
             className="mt-3 inline-flex rounded-full bg-accent px-5 py-2 text-sm font-semibold text-slate-950 hover:opacity-95"
@@ -147,7 +147,7 @@ export function BibleSearchClient({ initialQuery }: { initialQuery: string }) {
 
       {data && data.verses.length > 0 ? (
         <section className="mt-10" aria-labelledby="bible-fts-results">
-          <h2 id="bible-fts-results" className="text-lg font-semibold text-white">
+          <h2 id="bible-fts-results" className="text-lg font-semibold text-stone-100">
             Verse matches
           </h2>
           <ul className="mt-4 space-y-3">
@@ -163,15 +163,13 @@ export function BibleSearchClient({ initialQuery }: { initialQuery: string }) {
                         ) as Route)
                       : ("/bible/search" as Route)
                   }
-                  className="block rounded-2xl border border-line/55 bg-soft/20 px-4 py-3 transition hover:border-accent/35"
+                  className="block rounded-2xl border border-stone-600 bg-stone-950 px-4 py-3 shadow-sm transition hover:border-stone-500 hover:bg-stone-900"
                 >
-                  <p className="text-xs font-medium text-amber-200/80">
+                  <p className="text-xs font-medium text-amber-200">
                     {v.reference}{" "}
-                    <span className="text-slate-500">
-                      ({v.translation_code.toUpperCase()})
-                    </span>
+                    <span className="font-normal text-stone-500">({v.translation_code.toUpperCase()})</span>
                   </p>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-300/95">{v.text}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-stone-200">{v.text}</p>
                 </Link>
               </li>
             ))}
@@ -180,9 +178,9 @@ export function BibleSearchClient({ initialQuery }: { initialQuery: string }) {
       ) : null}
 
       {data && data.verses.length === 0 && !data.referenceJump && q.trim().length >= 2 && !loading ? (
-        <p className="mt-10 text-sm text-slate-500">
-          No verse index hits yet. Try a reference like <span className="text-slate-400">Matthew 5:3</span>, or open the{" "}
-          <Link href="/bible" className="text-amber-200/85 underline-offset-2 hover:underline">
+        <p className="mt-10 text-sm text-stone-400">
+          No verse index hits yet. Try a reference like <span className="font-medium text-stone-200">Matthew 5:3</span>, or open the{" "}
+          <Link href="/bible" className="font-medium text-amber-200 underline-offset-2 hover:text-amber-100 hover:underline">
             Bible hub
           </Link>
           .

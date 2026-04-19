@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { Breadcrumbs } from "@/components/shared/breadcrumbs";
+import { SectionBackLink } from "@/components/shared/section-back-link";
 import { StudySupportingTeachings } from "@/components/study/study-supporting-teachings";
 import { resolveStudyLessonLink } from "@/lib/study";
 import type { StudyLesson, StudyTopic } from "@/lib/study/types";
@@ -12,33 +14,30 @@ type Props = {
 };
 
 export function StudyLessonBody({ topic, lesson, routes }: Props) {
+  const topicHref = routes.topic(topic.slug) as Route;
+  const studiesHref = routes.hub as Route;
   const relatedLessons = lesson.relatedLessonSlugs
     .map((slugOrRef) => resolveStudyLessonLink(topic.slug, slugOrRef))
     .filter((x): x is NonNullable<typeof x> => x != null);
 
   return (
     <>
-      <nav className="mb-6 text-sm text-slate-500" aria-label="Breadcrumb">
-        <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <li>
-            <Link href={routes.hub as Route} className="text-amber-200/80 hover:underline">
-              {routes.hubLabel}
-            </Link>
-          </li>
-          <li aria-hidden className="text-slate-600">
-            /
-          </li>
-          <li>
-            <Link href={routes.topic(topic.slug) as Route} className="text-amber-200/80 hover:underline">
-              {topic.title}
-            </Link>
-          </li>
-          <li aria-hidden className="text-slate-600">
-            /
-          </li>
-          <li className="text-slate-400">{lesson.title}</li>
-        </ol>
-      </nav>
+      <div className="mb-6 space-y-3 border-b border-line/50 pb-5">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: routes.hubLabel, href: studiesHref },
+            { label: topic.title, href: topicHref },
+            { label: lesson.title },
+          ]}
+        />
+        <div className="flex flex-wrap items-center gap-3">
+          <SectionBackLink href={topicHref} label="Back to Topic" />
+          <Link href={studiesHref} className="text-sm font-medium text-amber-200/80 underline-offset-2 hover:underline">
+            Back to Studies
+          </Link>
+        </div>
+      </div>
 
       <article className="max-w-3xl">
         <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-[2rem]">{lesson.title}</h1>
@@ -97,12 +96,6 @@ export function StudyLessonBody({ topic, lesson, routes }: Props) {
             </ul>
           </section>
         ) : null}
-
-        <p className="mt-10 text-sm text-slate-500">
-          <Link href={routes.topic(topic.slug) as Route} className="font-medium text-amber-200/80 hover:underline">
-            ← Back to {topic.title}
-          </Link>
-        </p>
       </article>
 
       <div className="max-w-3xl">
