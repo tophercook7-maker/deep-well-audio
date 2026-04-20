@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { BibleApiPassageResponse, BibleApiVerse, StudyTranslationId } from "@/lib/study/bible-api";
 import { studyTranslationShortLabel } from "@/lib/study/bible-api";
-import { getCanonicalBibleBooks } from "@/lib/bible/canonical-books";
+import { getCanonicalBibleBooks, getDefaultBibleBook } from "@/lib/bible/canonical-books";
 import { getChapterCountForBookId } from "@/lib/bible/chapter-counts";
 import { apiSlugToUrlBook, bibleChapterPath, resolveBookFromUrlSegment } from "@/lib/bible/navigation-urls";
 import { createChapterReferenceKey, createVerseReferenceKey, verseRefKey } from "@/lib/study/reference-keys";
@@ -16,6 +16,15 @@ import { BibleReaderShell } from "@/components/bible/bible-reader-shell";
 import { BibleStudyPanel } from "@/components/bible/bible-study-panel";
 import { BibleVerseList } from "@/components/bible/bible-verse-list";
 import type { BibleBookDef } from "@/lib/study/bible-books";
+import { BibleChapterDiscovery } from "@/components/bible/bible-chapter-discovery";
+import {
+  ChapterGuidanceStripContent,
+  topicSlugsFromChapterGuidanceSupporting,
+  useChapterGuidanceResolution,
+} from "@/components/guidance/chapter-guidance-strip";
+import { BibleHabitCalmAck } from "@/components/bible/bible-habit-calm-ack";
+import { tryRecordHabitForDailyChapter } from "@/lib/bible/daily-habit";
+import { useBibleVerseHashScroll } from "@/lib/bible/use-bible-verse-hash-scroll";
 
 type Props = {
   passage: BibleApiPassageResponse;
@@ -39,6 +48,10 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
   const canonical = useMemo(() => getCanonicalBibleBooks(), []);
   const [bookPickerOpen, setBookPickerOpen] = useState(false);
   const [chapterPickerOpen, setChapterPickerOpen] = useState(false);
+  const habitSentinelRef = useRef<HTMLDivElement | null>(null);
+  const [habitAck, setHabitAck] = useState<string | null>(null);
+  const [readerReveal, setReaderReveal] = useState(true);
+  const skipRevealAnimRef = useRef(true);
 
   const verseKeyFor = useCallback(
     (v: number) => createVerseReferenceKey({ translation, bookSlug: urlBook.toLowerCase(), chapter, verse: v }),
@@ -105,6 +118,47 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
   }, [signedIn, translation, urlBook, chapter, verses]);
 
   useEffect(() => {
+    if (!habitAck) return;
+    const t = window.setTimeout(() => setHabitAck(null), 5200);
+    return () => window.clearTimeout(t);
+  }, [habitAck]);
+
+  useEffect(() => {
+    if (skipRevealAnimRef.current) {
+      skipRevealAnimRef.current = false;
+      return;
+    }
+    setReaderReveal(false);
+    if (verses.length === 0) return;
+    const t = window.setTimeout(() => setReaderReveal(true), 170);
+    return () => window.clearTimeout(t);
+  }, [urlBook, chapter, verses.length]);
+
+  useEffect(() => {
+    if (!book || verses.length === 0) return;
+    const el = habitSentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const recorded = tryRecordHabitForDailyChapter(book.apiBookId, chapter);
+          if (recorded) setHabitAck("Chapter complete");
+          io.disconnect();
+        }
+      },
+      { root: null, rootMargin: "0px 0px -10% 0px", threshold: [0, 0.15, 0.35] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [book, chapter, verses.length]);
+
+  useBibleVerseHashScroll({
+    ready: verses.length > 0 && Boolean(book),
+    chapterKey: `${translation}:${urlBook}:${chapter}`,
+  });
+
+  useEffect(() => {
     if (!signedIn) return;
     let cancelled = false;
     const prefix = `verse:${translation}:${urlBook.toLowerCase()}:${chapter}:`;
@@ -159,6 +213,25 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
     const nb = canonical[ix + 1]!;
     return bibleChapterPath(translation, apiSlugToUrlBook(nb.apiSlug), 1);
   }, [book, chapter, translation, urlBook, canonical]);
+
+  const guidanceBook = book ?? getDefaultBibleBook();
+  const chapterGuidance = useChapterGuidanceResolution({
+    translation,
+    urlBook,
+    chapter,
+    bookApiId: guidanceBook.apiBookId,
+    maxChapterInBook: getChapterCountForBookId(guidanceBook.apiBookId),
+  });
+
+  const omitNextChapterForDiscovery = useMemo(() => {
+    if (!nextChapter || chapterGuidance.primary?.type !== "continue_chapter") return false;
+    return chapterGuidance.primary.href === nextChapter;
+  }, [chapterGuidance.primary, nextChapter]);
+
+  const omitTopicSlugsForDiscovery = useMemo(
+    () => topicSlugsFromChapterGuidanceSupporting(chapterGuidance.supporting),
+    [chapterGuidance.supporting],
+  );
 
   const prevChapter = useMemo(() => {
     if (!book) return null;
@@ -264,6 +337,18 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
     [noteByVerse, signedIn, verseKeyFor],
   );
 
+  const verseSharePayload = useMemo(() => {
+    if (!sel || !book) return null;
+    return {
+      verseText: sel.text,
+      bookLabel: book.label,
+      chapter,
+      verse: sel.verse,
+      translation,
+      urlBook,
+    };
+  }, [sel, book, chapter, translation, urlBook]);
+
   const studyPanelProps = {
     activeRef,
     sel: sel ?? null,
@@ -273,6 +358,7 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
     onNoteBlur: () => void persistNote(),
     onHighlight: (c: string) => void applyHighlight(c),
     listenHref,
+    share: verseSharePayload,
   };
 
   const toolbar = book ? (
@@ -290,53 +376,89 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
 
   return (
     <div>
-      <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,300px)] lg:gap-10 lg:items-start">
+      <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,300px)] lg:items-start lg:gap-x-14 lg:gap-y-10">
         <div className="order-1 min-w-0 lg:order-none lg:col-start-2 lg:row-start-1">
-          <div className="rounded-[1.5rem] bg-stone-950/35 p-1 ring-1 ring-stone-900/15 sm:p-1.5">
-            <BibleReaderShell className="px-6 py-8 md:px-8 md:py-10 lg:px-10 lg:py-12">
-              <header className="mb-10 text-center">
-                {book ? (
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-stone-600">{book.label}</p>
+          <BibleReaderShell className="px-6 py-10 md:px-10 md:py-12 lg:px-12 lg:py-14">
+              <div
+                className={`transition-opacity duration-500 ease-out motion-reduce:opacity-100 ${
+                  readerReveal || verses.length === 0 ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <header className="mb-11 text-center md:mb-12">
+                  {book ? (
+                    <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-stone-500">{book.label}</p>
+                  ) : null}
+                  <h1 className="mt-3 font-serif text-[1.75rem] font-normal leading-snug tracking-tight text-stone-800 md:text-[1.95rem]">
+                    {title}
+                  </h1>
+                  <p className="mt-3 text-sm text-stone-500">
+                    {studyTranslationShortLabel(translation)} · Bible reading
+                  </p>
+                </header>
+                <h2 id="bible-chapter-text" className="sr-only">
+                  Chapter text
+                </h2>
+                <BibleVerseList
+                  verses={verses}
+                  selectedVerse={selectedVerse}
+                  hlByVerse={hlByVerse}
+                  hasNote={hasNote}
+                  onSelectVerse={setSelectedVerse}
+                />
+                {verses.length > 0 ? (
+                  <div ref={habitSentinelRef} className="h-px w-full shrink-0" aria-hidden />
                 ) : null}
-                <h2 className="mt-3 font-serif text-[1.85rem] font-normal leading-tight text-stone-950 md:text-[2.05rem]">{title}</h2>
-                <p className="mt-3 text-sm text-stone-600">{studyTranslationShortLabel(translation)}</p>
-              </header>
-              <BibleVerseList
-                verses={verses}
-                selectedVerse={selectedVerse}
-                hlByVerse={hlByVerse}
-                hasNote={hasNote}
-                onSelectVerse={setSelectedVerse}
-              />
+                <div className="mt-10 min-h-[1.25rem] space-y-3">
+                  <BibleHabitCalmAck message={habitAck} variant="chapterEnd" />
+                  {habitAck ? (
+                    <p className="text-center text-xs leading-relaxed text-stone-400/95">
+                      Share a verse from this chapter by selecting it.
+                    </p>
+                  ) : null}
+                </div>
+              </div>
             </BibleReaderShell>
-          </div>
+          {book ? (
+            <>
+              <ChapterGuidanceStripContent resolved={chapterGuidance} className="mt-10" />
+              <BibleChapterDiscovery
+                translation={translation}
+                urlBook={urlBook}
+                chapter={chapter}
+                bookLabel={book.label}
+                prevChapterHref={(prevChapter as Route) ?? null}
+                nextChapterHref={(nextChapter as Route) ?? null}
+                omitNextChapter={omitNextChapterForDiscovery}
+                omitTopicSlugs={omitTopicSlugsForDiscovery}
+              />
+            </>
+          ) : null}
         </div>
 
-        <aside className="order-2 space-y-4 lg:order-none lg:sticky lg:top-28 lg:col-start-1 lg:row-start-1">
+        <aside className="order-2 space-y-5 lg:order-none lg:sticky lg:top-28 lg:col-start-1 lg:row-start-1">
           {toolbar}
           <Link
             href={"/bible" as Route}
-            className="inline-flex text-sm font-medium text-amber-200 underline-offset-2 hover:text-amber-100 hover:underline"
+            className="inline-flex text-sm font-medium text-stone-400 underline-offset-4 transition-colors duration-200 hover:text-stone-200"
           >
             ← Bible home
           </Link>
         </aside>
 
-        <aside className="order-3 hidden lg:order-none lg:col-start-3 lg:row-start-1 lg:block lg:sticky lg:top-28 lg:border-l lg:border-stone-700/50 lg:pl-8">
+        <aside className="order-3 hidden lg:order-none lg:col-start-3 lg:row-start-1 lg:block lg:sticky lg:top-28 lg:border-l lg:border-stone-700/35 lg:pl-8">
           <BibleStudyPanel {...studyPanelProps} />
         </aside>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-700 bg-[#0a0c10] p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-8px_32px_rgba(0,0,0,0.5)] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-800/80 bg-[#0b0a09]/98 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_-6px_rgba(0,0,0,0.35)] backdrop-blur-sm lg:hidden">
         {selectedVerse != null ? (
           <BibleStudyPanel {...studyPanelProps} compact />
         ) : (
-          <p className="text-center text-sm leading-relaxed text-stone-400">
-            Tap a verse number for highlights and notes, or{" "}
-            <Link href={listenHref} className="font-medium text-amber-200 underline-offset-2 hover:text-amber-100 hover:underline">
-              listen to this chapter
+          <p className="text-center text-sm leading-relaxed text-stone-500">
+            Verse · notes & highlights ·{" "}
+            <Link href={listenHref} className="font-medium text-stone-300 underline-offset-4 transition-colors hover:text-stone-100">
+              listen
             </Link>
-            .
           </p>
         )}
       </div>

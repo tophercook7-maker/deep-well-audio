@@ -206,11 +206,11 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
 
       if (j.duplicate) {
         setSaveVerseHint(null);
-        showSaveToast("Already in Bible Study.");
+        showSaveToast("Already saved.");
         dispatchStudyDashboardRefresh();
       } else {
         setSaveVerseHint(null);
-        showSaveToast("Saved to Bible Study.");
+        showSaveToast("Saved.");
         setSaveVerseHighlight(true);
         clearSaveVerseHighlightTimer();
         saveVerseHighlightTimer.current = window.setTimeout(() => {
@@ -303,7 +303,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
 
   return (
     <div className="fixed inset-0 z-[220] flex justify-end">
-      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Close study panel" onClick={closeVerse} />
+      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Close passage" onClick={closeVerse} />
       <aside
         className="relative flex h-full w-full max-w-md flex-col border-l border-line/60 bg-[rgba(8,11,16,0.97)] shadow-[-12px_0_48px_rgba(0,0,0,0.55)] backdrop-blur-md"
         role="dialog"
@@ -313,10 +313,10 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
         <div className="flex items-start justify-between gap-3 border-b border-line/50 px-5 py-4">
           <div>
             <p id={`${baseId}-title`} className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">
-              Open in Study
+              Open in reader
             </p>
             <p className="mt-1.5 text-lg font-semibold text-white">{passage.label}</p>
-            <p className="mt-1 text-xs text-muted">Listen. Read. Understand. Keep what matters.</p>
+            <p className="mt-1 text-xs text-muted">Read slowly. Listen. Keep what matters.</p>
           </div>
           <button
             type="button"
@@ -448,7 +448,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
                 type="button"
                 disabled={saveVerseBusy}
                 aria-busy={saveVerseBusy}
-                aria-label={saveVerseHighlight ? "Saved to Bible Study" : "Save this verse"}
+                aria-label={saveVerseHighlight ? "Saved verse" : "Save verse"}
                 onClick={() => void onSaveVerse()}
                 className={`inline-flex w-full items-center justify-center gap-2 rounded-full border py-2.5 text-sm font-medium transition disabled:cursor-wait disabled:opacity-60 ${
                   saveVerseHighlight
@@ -456,7 +456,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
                     : "border-line/75 text-slate-100 hover:border-accent/40"
                 }`}
               >
-                {saveVerseBusy ? "Saving…" : saveVerseHighlight ? "Saved to Bible Study" : "Save this verse"}
+                {saveVerseBusy ? "Saving…" : saveVerseHighlight ? "Saved" : "Save verse"}
               </button>
               {saveVerseHint ? (
                 <p className="text-center text-xs leading-snug text-amber-200/85" role="status" aria-live="polite">
@@ -515,7 +515,7 @@ function VerseDrawer({ passage, translation }: { passage: ParsedPassage; transla
               }}
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent/15 py-2.5 text-sm font-semibold text-amber-50 transition hover:bg-accent/25"
             >
-              Read wider context
+              Read this passage
               <ChevronRight className="h-4 w-4" aria-hidden />
             </button>
           </div>
@@ -578,7 +578,7 @@ function ReaderDrawer({ state }: { state: StudyReaderState }) {
           <div className="flex min-w-0 items-center gap-2">
             <BookOpen className="h-5 w-5 shrink-0 text-amber-200/80" aria-hidden />
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">Study</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">Read</p>
               <p className="truncate text-base font-semibold text-white">{state.title ?? data?.reference ?? "Reading"}</p>
               {state.readingMode === "chapter" ? (
                 <p className="mt-1.5 text-xs leading-snug text-slate-400/95">
@@ -684,7 +684,7 @@ function VerseLine({
     >
       <span className="mr-2 font-semibold text-amber-200/85">{verse}</span>
       <span>{text.replace(/\s+/g, " ").trim()}</span>
-      <span className="mt-1 block text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">Tap verse · Open in Study</span>
+      <span className="mt-1 block text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">Tap verse · Open in reader</span>
     </button>
   );
 }

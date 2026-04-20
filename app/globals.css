@@ -17,6 +17,9 @@
   --dwa-panel: rgba(12, 16, 22, 0.44);
   --dwa-line: #2c3544;
   --dwa-accent: #c9a44a;
+  /* Shared radii: cards, guidance strips, study panels (Tailwind rounded-2xl ≈ 1rem) */
+  --dwa-radius-card: 1rem;
+  --dwa-radius-control: 0.75rem;
   /* Cinematic background parallax (optional; default 0). Set on .dwa-site-atmosphere or :root via JS. */
   --dwa-atmosphere-parallax-y: 0px;
 }
@@ -168,4 +171,14 @@ textarea {
   line-height: 1rem;
   font-weight: 500;
   color: rgb(253, 230, 138);
+}
+
+/* Deep link from shared verse URLs (#n): brief, calm highlight */
+.dw-bible-verse--hash-flash {
+  transition:
+    background-color 0.45s ease,
+    box-shadow 0.45s ease;
+  border-radius: 0.375rem;
+  box-shadow: inset 3px 0 0 0 rgba(180 83 9 / 0.42);
+  background-color: rgba(254 243 199 / 0.55);
 }

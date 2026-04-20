@@ -19,9 +19,10 @@ type Props = {
 /**
  * Homepage anchor for World Watch: optional YouTube row plus digest preview.
  */
+const HOME_WW_YOUTUBE_CAP = 3;
+
 export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
-  const ytCap = plan === "premium" ? 3 : plan === "free" ? 3 : 2;
-  const ytShow = youtubeItems.slice(0, ytCap);
+  const ytShow = youtubeItems.slice(0, HOME_WW_YOUTUBE_CAP);
 
   return (
     <section className="container-shell section-divider scroll-mt-28 py-10 sm:py-12" aria-labelledby="home-ww-hub-heading">
@@ -52,14 +53,16 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
                   items={ytShow}
                   plan={plan}
                   loginNext="/world-watch"
-                  premiumTeaser={plan !== "premium"}
+                  premiumTeaser={false}
                   thumbnailPriorityFirstN={1}
                   revealDelayMs={50}
                   gridClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
                 />
               </div>
               {plan !== "premium" ? (
-                <p className="mt-5 text-sm leading-relaxed text-slate-400">Members see the full set and written digest.</p>
+                <p className="mt-5 text-sm leading-relaxed text-slate-400">
+                  Premium unlocks the full World Watch written digest and deeper context—clips stay open to everyone.
+                </p>
               ) : null}
             </div>
           ) : (
@@ -73,7 +76,9 @@ export function HomeWorldWatchHub({ youtubeItems, digestItems, plan }: Props) {
                 </div>
               </div>
               {plan !== "premium" ? (
-                <p className="text-sm leading-relaxed text-slate-400">Members see the full set and written digest.</p>
+                <p className="text-sm leading-relaxed text-slate-400">
+                  Premium unlocks the full World Watch written digest—clips stay open to everyone when available.
+                </p>
               ) : null}
             </div>
           )}

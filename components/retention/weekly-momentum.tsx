@@ -61,7 +61,9 @@ export function WeeklyMomentumLine({ plan = "guest" }: { plan?: UserPlan }) {
       <p className="mt-1.5 text-sm leading-relaxed text-slate-200/95">
         {line || "Listen this week and a gentle summary will appear here."}
       </p>
-      {hasActivity ? <p className="mt-1 text-xs text-slate-500">Keep going. Come back when you&apos;re ready.</p> : null}
+      {hasActivity ? (
+        <p className="mt-1 text-xs text-slate-500">A quiet record of what you opened—no score, no pressure.</p>
+      ) : null}
     </div>
   );
 }

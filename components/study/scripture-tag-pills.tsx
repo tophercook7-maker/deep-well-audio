@@ -64,7 +64,7 @@ function ScriptureTagPill({
   }
 
   return (
-    <button type="button" className={pillInteractive} title="Open in Study" onClick={onOpen}>
+    <button type="button" className={pillInteractive} title="Open in reader" onClick={onOpen}>
       {label}
     </button>
   );

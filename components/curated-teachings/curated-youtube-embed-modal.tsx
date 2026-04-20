@@ -12,7 +12,7 @@ type Props = {
 };
 
 /**
- * Accessible in-page YouTube embed (premium feel vs. only sending users away).
+ * Accessible in-page YouTube embed (available to all users; no plan gate here).
  */
 export function CuratedYoutubeEmbedModal({ videoId, title, isOpen, onClose, footer }: Props) {
   const closeRef = useRef<HTMLButtonElement | null>(null);

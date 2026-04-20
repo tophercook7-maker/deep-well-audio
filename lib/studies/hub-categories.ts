@@ -22,13 +22,13 @@ export const STUDIES_HUB_CATEGORY_LABELS: Record<(typeof STUDIES_HUB_CATEGORY_OR
   "gospel-foundations": "Gospel Foundations",
 };
 
-/** Topic slugs per hub category (non-overlapping for browse cards). */
+/** Topic slugs per hub category (topics may appear in more than one bucket when useful for discovery). */
 export const STUDIES_HUB_CATEGORY_TOPICS: Record<(typeof STUDIES_HUB_CATEGORY_ORDER)[number], string[]> = {
-  "spiritual-growth": ["prayer", "forgiveness", "wisdom", "sanctification", "grace"],
-  "emotional-mental-struggles": ["anxiety", "suffering", "suffering-and-loss", "assurance"],
+  "spiritual-growth": ["prayer", "peace", "forgiveness", "wisdom", "sanctification", "grace"],
+  "emotional-mental-struggles": ["anxiety", "fear", "suffering", "grief", "suffering-and-loss", "assurance"],
   relationships: ["marriage", "parenting", "money", "work"],
   "purpose-direction": ["purpose", "identity-in-christ"],
-  "hard-seasons": ["suffering", "suffering-and-loss", "eternal-life"],
-  "freedom-battle": ["repentance", "discernment", "obedience", "holiness"],
-  "gospel-foundations": ["faith", "salvation", "gospel", "identity-in-christ"],
+  "hard-seasons": ["suffering", "grief", "suffering-and-loss", "eternal-life"],
+  "freedom-battle": ["temptation", "repentance", "discernment", "obedience", "holiness"],
+  "gospel-foundations": ["faith", "salvation", "gospel", "peace", "identity-in-christ"],
 };

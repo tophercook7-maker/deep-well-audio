@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { BibleListenPageClient } from "@/components/bible/bible-listen-page-client";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { SectionBackLink } from "@/components/shared/section-back-link";
+import { getSessionUser } from "@/lib/auth";
 
 export const metadata = {
   title: "Read & listen — Bible",
@@ -17,10 +18,13 @@ function ListenFallback() {
   );
 }
 
-export default function BibleListenPage() {
+export default async function BibleListenPage() {
+  const user = await getSessionUser();
+  const signedIn = Boolean(user);
+
   return (
     <main className="container-shell py-12 sm:py-16">
-      <div className="space-y-3 rounded-2xl border border-stone-800/80 bg-stone-950/55 px-4 py-5 sm:px-5">
+      <div className="space-y-3 border-b border-stone-800/45 pb-6">
         <Breadcrumbs
           tone="bible"
           items={[
@@ -31,9 +35,9 @@ export default function BibleListenPage() {
         />
         <SectionBackLink href="/bible" label="Back to Bible" tone="bible" />
       </div>
-      <div className="mt-10">
+      <div className="mt-12 sm:mt-14">
         <Suspense fallback={<ListenFallback />}>
-          <BibleListenPageClient />
+          <BibleListenPageClient signedIn={signedIn} />
         </Suspense>
       </div>
     </main>

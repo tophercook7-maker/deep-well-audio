@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { StudiesHub } from "@/components/studies/studies-hub";
+import { buildStudiesHubMetadata } from "@/lib/studies/topic-seo";
 
-export const metadata: Metadata = {
-  title: "Studies",
-  description:
-    "Browse topical Bible studies by category—life struggles, spiritual growth, relationships, and gospel foundations—with guided lessons and Scripture-first context.",
-};
+export const metadata = buildStudiesHubMetadata();
 
 export default async function StudiesPage({
   searchParams,

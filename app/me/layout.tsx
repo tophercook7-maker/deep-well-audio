@@ -16,7 +16,7 @@ export default function MeLayout({ children }: { children: ReactNode }) {
       <div className="mb-6 space-y-2 border-b border-line/50 pb-5">
         <MeBreadcrumbs />
       </div>
-      <nav className="mb-8 flex flex-wrap gap-2" aria-label="Study workspace">
+      <nav className="mb-8 flex flex-wrap gap-2" aria-label="Notes and saved reading">
         {links.map((l) => (
           <Link
             key={l.href}

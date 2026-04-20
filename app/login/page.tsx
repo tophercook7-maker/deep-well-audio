@@ -4,6 +4,7 @@ import { ConversionPageBeacon } from "@/components/analytics/conversion-page-bea
 import { LoginForm } from "@/components/auth/login-form";
 import { BackButton } from "@/components/buttons/back-button";
 import { hasPublicSupabaseEnv } from "@/lib/env";
+import { CTA } from "@/lib/site-messaging";
 export default async function LoginPage({
   searchParams,
 }: {
@@ -28,13 +29,13 @@ export default async function LoginPage({
           <Link href="/browse" className="font-medium text-amber-200/90 underline-offset-2 hover:underline">
             Browse
           </Link>
-          . Premium unlocks your personal library, Bible Study tools, and synced saves.
+          . Premium unlocks your personal library, Scripture tools, and synced saves.
         </p>
         <LoginForm authAvailable={authAvailable} />
         <p className="mt-8 text-sm text-slate-400">
           No Premium yet?{" "}
           <Link href={"/pricing" as Route} className="font-medium text-amber-200/90 underline-offset-2 transition hover:text-amber-100 hover:underline">
-            See Premium
+            {CTA.SEE_PREMIUM}
           </Link>
         </p>
       </div>

@@ -18,9 +18,9 @@ type Props = {
 };
 
 const btnBase =
-  "inline-flex min-h-[44px] items-center gap-1 rounded-full border px-3.5 py-2 text-sm font-medium transition";
-const btnActive = `${btnBase} border-stone-600 bg-stone-950 text-stone-100 shadow-sm hover:border-stone-500 hover:bg-stone-900`;
-const btnDisabled = `${btnBase} cursor-not-allowed border-stone-800 bg-stone-950/80 text-stone-600`;
+  "inline-flex min-h-[44px] items-center gap-1 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors duration-200 ease-out";
+const btnActive = `${btnBase} border-stone-600/70 bg-stone-950/95 text-stone-200 hover:border-stone-500/80 hover:bg-stone-900`;
+const btnDisabled = `${btnBase} cursor-not-allowed border-stone-800/80 bg-stone-950/70 text-stone-600`;
 
 export function BibleChapterToolbar({
   chapter,
@@ -33,7 +33,7 @@ export function BibleChapterToolbar({
   onOpenChapterPicker,
 }: Props) {
   return (
-    <div className="flex flex-col gap-4 border-b border-stone-700/60 pb-6">
+    <div className="flex flex-col gap-5 border-b border-stone-700/40 pb-6">
       <div className="flex flex-wrap items-center gap-2">
         {prevHref ? (
           <Link href={prevHref} className={btnActive}>
@@ -58,25 +58,25 @@ export function BibleChapterToolbar({
           </span>
         )}
         <button type="button" onClick={onOpenBookPicker} className={`${btnActive} gap-2 px-4`}>
-          <Library className="h-4 w-4 text-amber-300" aria-hidden />
+          <Library className="h-4 w-4 text-stone-400" aria-hidden />
           Book
         </button>
         <button type="button" onClick={onOpenChapterPicker} className={`${btnActive} gap-2 px-4`}>
-          <BookMarked className="h-4 w-4 text-amber-300" aria-hidden />
+          <BookMarked className="h-4 w-4 text-stone-400" aria-hidden />
           Chapter {chapter}
         </button>
         <Link
           href={listenHref}
-          className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-amber-500/50 bg-amber-500/15 px-4 py-2 text-sm font-semibold text-amber-100 shadow-sm transition hover:border-amber-400/60 hover:bg-amber-500/25"
+          className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-stone-600/60 bg-stone-900/90 px-4 py-2 text-sm font-medium text-stone-200 transition-colors duration-200 ease-out hover:border-stone-500/70 hover:bg-stone-900"
         >
-          <Headphones className="h-4 w-4 shrink-0 text-amber-200" aria-hidden />
+          <Headphones className="h-4 w-4 shrink-0 text-stone-400" aria-hidden />
           Listen
         </Link>
       </div>
-      <label className="flex max-w-xs flex-col gap-1.5 text-xs font-medium text-stone-400">
+      <label className="flex max-w-xs flex-col gap-1.5 text-xs font-medium text-stone-500">
         Translation
         <select
-          className="min-h-[44px] rounded-xl border border-stone-600 bg-stone-950 px-3 py-2.5 text-sm text-stone-100 shadow-inner outline-none ring-0 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30"
+          className="min-h-[44px] rounded-xl border border-stone-600/70 bg-stone-950 px-3 py-2.5 text-sm text-stone-200 outline-none transition-colors duration-200 focus:border-stone-500 focus:ring-1 focus:ring-stone-600/40"
           value={translation}
           onChange={(e) => onTranslationChange(e.target.value as StudyTranslationId)}
         >
@@ -87,7 +87,7 @@ export function BibleChapterToolbar({
           ))}
         </select>
         <span className="text-[11px] font-normal text-stone-500">
-          Currently reading · {studyTranslationShortLabel(translation)}
+          Reading · {studyTranslationShortLabel(translation)}
         </span>
       </label>
     </div>

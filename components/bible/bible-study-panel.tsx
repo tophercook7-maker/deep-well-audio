@@ -3,7 +3,9 @@
 import Link from "next/link";
 import type { Route } from "next";
 import type { BibleApiVerse } from "@/lib/study/bible-api";
-import { BookOpen, Headphones, Highlighter, StickyNote } from "lucide-react";
+import { BookOpen, Headphones, Highlighter, Share2, StickyNote } from "lucide-react";
+import { BibleVerseShare } from "@/components/bible/bible-verse-share";
+import type { BibleVerseSharePayload } from "@/lib/bible/verse-share";
 
 const HIGHLIGHTS = ["yellow", "green", "blue", "pink", "purple"] as const;
 
@@ -17,6 +19,10 @@ type Props = {
   onHighlight: (color: string) => void;
   listenHref: Route;
   compact?: boolean;
+  /** Hide “Listen along” when already on the listen experience. */
+  hideListenLink?: boolean;
+  /** When a verse is selected, offer quiet copy/share (Scripture-first). */
+  share?: BibleVerseSharePayload | null;
 };
 
 export function BibleStudyPanel({
@@ -29,6 +35,8 @@ export function BibleStudyPanel({
   onHighlight,
   listenHref,
   compact = false,
+  hideListenLink = false,
+  share = null,
 }: Props) {
   const pad = compact ? "p-3" : "p-4";
 
@@ -57,7 +65,7 @@ export function BibleStudyPanel({
   return (
     <div className={compact ? "space-y-4" : "space-y-5"}>
       {!compact ? (
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">Study</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">Verse</p>
       ) : null}
       <div className={refBox}>
         <p className={refLabel}>Reference</p>
@@ -70,10 +78,23 @@ export function BibleStudyPanel({
           <p className={refHint}>Select a verse for highlights and notes.</p>
         )}
       </div>
-      <Link href={listenHref} className={listenCard}>
-        <Headphones className={`h-4 w-4 shrink-0 ${compact ? "text-amber-300" : "text-amber-200"}`} aria-hidden />
-        Listen along
-      </Link>
+      {!hideListenLink ? (
+        <Link href={listenHref} className={listenCard}>
+          <Headphones className={`h-4 w-4 shrink-0 ${compact ? "text-amber-300" : "text-amber-200"}`} aria-hidden />
+          Listen
+        </Link>
+      ) : null}
+      {sel && share ? (
+        <div className={`rounded-2xl border ${cardBorder} ${pad}`}>
+          <p className={`flex items-center gap-2 ${sectionLabel}`}>
+            <Share2 className="h-3.5 w-3.5" aria-hidden />
+            Share verse
+          </p>
+          <div className="mt-4">
+            <BibleVerseShare {...share} compact={compact} />
+          </div>
+        </div>
+      ) : null}
       <div className={`rounded-2xl border ${cardBorder} ${pad}`}>
         <p className={`flex items-center gap-2 ${sectionLabel}`}>
           <Highlighter className="h-3.5 w-3.5" aria-hidden />
@@ -104,7 +125,7 @@ export function BibleStudyPanel({
       <div className={`rounded-2xl border ${cardBorder} ${pad}`}>
         <p className={`flex items-center gap-2 ${sectionLabel}`}>
           <StickyNote className="h-3.5 w-3.5" aria-hidden />
-          Note
+          Add note
         </p>
         <textarea
           disabled={!sel}
@@ -125,7 +146,7 @@ export function BibleStudyPanel({
       </div>
       <Link href={"/studies" as Route} className={`inline-flex items-center gap-2 text-sm ${linkClass}`}>
         <BookOpen className="h-4 w-4" aria-hidden />
-        Topical studies
+        Studies
       </Link>
     </div>
   );

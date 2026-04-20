@@ -3,6 +3,7 @@ import type { Route } from "next";
 import { InstallHint } from "@/components/pwa/install-hint";
 import { FooterJoinLink } from "@/components/analytics/footer-join-link";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
+import { CTA } from "@/lib/site-messaging";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -17,7 +18,7 @@ export function SiteFooter() {
         <p className="mx-auto mt-2 max-w-lg text-[13px] leading-relaxed text-slate-500">
           Listen freely.{" "}
           <Link href={"/pricing" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-100/90 hover:underline">
-            See Premium
+            {CTA.SEE_PREMIUM}
           </Link>{" "}
           to save teachings, keep notes, and build a library that lasts.
         </p>
@@ -34,14 +35,14 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
-          <Link href={"/study" as Route} className="transition hover:text-amber-100/85">
-            Study
+          <Link href={"/studies" as Route} className="transition hover:text-amber-100/85">
+            Studies
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
           <Link href={"/bible" as Route} className="transition hover:text-amber-100/85">
-            Bible Study
+            Bible
           </Link>
           <span className="select-none text-slate-600" aria-hidden>
             ·

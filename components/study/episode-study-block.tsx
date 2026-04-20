@@ -26,7 +26,7 @@ export function EpisodeStudyBlock({
     <div className="mt-8 rounded-2xl border border-line/55 bg-[rgba(10,14,20,0.35)] p-5 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">Deep Well Study</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">Scripture</p>
           <p className="mt-1 text-sm text-muted">Scripture in this teaching is tappable—stay with the text without leaving the page.</p>
         </div>
         <button
@@ -39,11 +39,11 @@ export function EpisodeStudyBlock({
           className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/[0.1] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-amber-100/95 transition hover:border-accent/55"
         >
           <BookOpen className="h-3.5 w-3.5" aria-hidden />
-          Study
+          Open Bible
         </button>
       </div>
       {description ? (
-        <p className="mt-3 text-xs text-muted">Verse references in the description above open in Study when tapped.</p>
+        <p className="mt-3 text-xs text-muted">Verse references in the description above open in the reader when tapped.</p>
       ) : null}
       <StudyTeachingNoteRow episodeId={episodeId} plan={plan} />
     </div>

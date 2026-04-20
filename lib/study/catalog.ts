@@ -1,6 +1,7 @@
 import { STUDY_TOPICS } from "@/content/study/topics";
 import { buildStudyLessonsMap } from "@/content/study/lessons";
 import { STUDY_CATEGORY_LABELS, type StudyLesson, type StudyTopic } from "@/lib/study/types";
+import { getTopicSearchAliases } from "@/lib/studies/topic-engine";
 
 /** Canonical topic slugs (routes: /study/[slug]) — keep aligned with `content/study/topics.ts`. */
 export const STUDY_TOPIC_SLUGS = [
@@ -8,13 +9,17 @@ export const STUDY_TOPIC_SLUGS = [
   "faith",
   "purpose",
   "prayer",
+  "peace",
+  "fear",
   "suffering",
+  "grief",
   "salvation",
   "grace",
   "identity-in-christ",
   "forgiveness",
   "discernment",
   "holiness",
+  "temptation",
   "repentance",
   "assurance",
   "eternal-life",
@@ -136,6 +141,7 @@ export function searchStudyCatalog(query: string, limit = 20): StudySearchHit[] 
       topic.shortDescription,
       topic.intro,
       topic.bigIdea,
+      ...getTopicSearchAliases(topic),
       ...topic.keyScriptureRefs,
       ...topic.relatedContentTags,
       ...topic.overviewSections.flatMap((o) => [o.title, ...o.paragraphs]),

@@ -7,11 +7,11 @@ export const STUDY_TOPICS: StudyTopic[] = [
     category: "life-struggles",
     seoTitle: "Anxiety — Bible study",
     seoDescription:
-      "Study what Scripture teaches about anxiety, fear, trust, and the steady care of God.",
+      "What Scripture says about worry, overwhelm, and mental weight—and how God meets anxious hearts with prayer, peace, and his care.",
     shortDescription:
-      "Study what Scripture teaches about anxiety, fear, trust, and the steady care of God.",
+      "When your mind won’t quiet down, Scripture speaks to the weight of worry and points you to God’s care, prayer, and peace.",
     intro:
-      "Anxiety can shape the way people think, react, and carry daily burdens. Sometimes it is obvious, and sometimes it quietly lives beneath stress, uncertainty, and the fear of what may come next.\n\nScripture does not dismiss anxiety or pretend that life is simple. Again and again, it calls people back to trust, prayer, perspective, and the faithful presence of God.",
+      "Anxiety is more than a mood. It can feel like a heavy fog in the mind—racing thoughts, tight chest, a constant rehearsal of what might go wrong, or a quiet sense that you must hold everything together or it will fall apart.\n\nThe Bible does not treat that experience as weakness to ignore or shame. It names the pull toward fear, then turns the soul toward God: to pray honestly, to receive daily bread from his hand, and to learn trust where control is not yours to keep.",
     bigIdea:
       "Scripture addresses anxiety by turning the heart away from fearful self-reliance and toward trust in God’s care, wisdom, and presence.",
     keyScriptureRefs: [
@@ -41,7 +41,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
         ],
       },
     ],
-    relatedTopics: ["faith", "prayer", "suffering"],
+    relatedTopics: ["fear", "peace", "prayer", "faith"],
     lessonSlugs: ["anxiety-and-trust", "anxiety-and-prayer"],
     relatedContentTags: ["anxiety", "fear", "trust", "prayer", "peace"],
   },
@@ -49,21 +49,21 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: "faith",
     title: "Faith",
     category: "spiritual-growth",
-    seoTitle: "Faith — Bible study",
+    seoTitle: "What Is Faith in the Bible? Trust, Belief, and Salvation | Deep Well Audio",
     seoDescription:
-      "Study biblical faith as trust in God’s character, promises, and Word.",
+      "Biblical faith explained: trusting God’s Word and Christ for salvation, not self-effort—how faith relates to grace, obedience, and assurance.",
     shortDescription:
-      "Study biblical faith as trust in God’s character, promises, and Word.",
+      "Faith in Scripture is trust in God through Christ—receiving his promises, not inventing your own strength or worthiness.",
     intro:
-      "Faith is often spoken about in broad or vague ways, but Scripture treats it with clarity. Faith is not blind optimism, religious effort, or confidence in ourselves.\n\nBiblical faith is trust rooted in who God is. It leans on His Word, rests in His promises, and continues even when circumstances remain uncertain.",
+      "What is faith? In the Bible, faith is not positive thinking or religious hustle. It is trust—personal reliance on God as he has made himself known, especially in the gospel of Jesus Christ.\n\nWhat does it mean to trust God? It means taking him at his word: that we are sinners who cannot save ourselves, that Christ lived, died, and rose for us, and that his finished work is received by faith, not earned by merit. How does faith relate to salvation? Salvation is God’s gift; faith is the empty hand that receives it—resting in Christ rather than in oneself.",
     bigIdea:
-      "Biblical faith is a steady trust in God that is rooted in His revealed character and expressed through ongoing dependence and obedience.",
+      "Biblical faith is God-centered trust in Christ and his Word—received as a gift, expressed in repentance and obedience, and sustained by grace.",
     keyScriptureRefs: [
       "Hebrews 11:1",
       "Romans 10:17",
-      "Proverbs 3:5–6",
-      "2 Corinthians 5:7",
       "Mark 9:24",
+      "James 2:17",
+      "Galatians 2:20",
     ],
     overviewSections: [
       {
@@ -85,7 +85,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
         ],
       },
     ],
-    relatedTopics: ["anxiety", "prayer", "purpose"],
+    relatedTopics: ["salvation", "grace", "gospel", "identity-in-christ"],
     lessonSlugs: ["what-biblical-faith-is", "faith-in-uncertainty"],
     relatedContentTags: ["faith", "trust", "uncertainty", "word-of-god", "obedience"],
   },
@@ -139,18 +139,18 @@ export const STUDY_TOPICS: StudyTopic[] = [
     category: "spiritual-growth",
     seoTitle: "Prayer — Bible study",
     seoDescription:
-      "Study prayer as dependence on God shaped by Scripture, trust, humility, and persistence.",
+      "Prayer in Scripture: talking with God—dependence, praise, confession, and asking—shaped by Christ and the Spirit.",
     shortDescription:
-      "Study prayer as dependence on God shaped by Scripture, trust, humility, and persistence.",
+      "Prayer is how believers speak with God: dependence in words, not performance—shaped by Jesus’ teaching and the Spirit’s help.",
     intro:
-      "Prayer is one of the clearest expressions of dependence on God, yet it is also one of the easiest parts of the Christian life to neglect, misunderstand, or reduce to routine.\n\nScripture presents prayer as more than asking for help. It includes worship, confession, thanksgiving, dependence, and steady communion with God.",
+      "Prayer is not a technique for self-improvement. It is personal communication with the living God—Father, Son, and Spirit—and the normal voice of a heart that knows it cannot live without him.\n\nScripture shows prayer as worship and lament, thanksgiving and confession, bold asking and quiet listening. It is how dependence sounds: turning from self-reliance to the One who already knows you, rules all things, and draws near to those who call on him in truth.",
     bigIdea:
       "Prayer is a God-given expression of dependence, trust, worship, and fellowship that shapes the believer’s life around God’s presence and will.",
     keyScriptureRefs: [
       "Matthew 6:9–13",
+      "Luke 11:1–4",
       "Philippians 4:6–7",
-      "1 Thessalonians 5:16–18",
-      "Psalm 145:18",
+      "Romans 8:26",
       "Hebrews 4:16",
     ],
     overviewSections: [
@@ -173,9 +173,97 @@ export const STUDY_TOPICS: StudyTopic[] = [
         ],
       },
     ],
-    relatedTopics: ["faith", "anxiety", "suffering"],
+    relatedTopics: ["anxiety", "peace", "faith", "fear"],
     lessonSlugs: ["prayer-and-dependence", "learning-to-pray-from-scripture"],
     relatedContentTags: ["prayer", "dependence", "trust", "worship", "scripture"],
+  },
+  {
+    slug: "peace",
+    title: "Peace",
+    category: "spiritual-growth",
+    seoTitle: "Peace — Bible study",
+    seoDescription:
+      "Biblical peace: calm and steadiness rooted in Christ—reconciliation with God, rest for the conscience, and trust when life is loud.",
+    shortDescription:
+      "Peace in Scripture is trust at rest: reconciliation with God, a guarded heart, and calm that does not depend on easy circumstances.",
+    intro:
+      "The world often sells peace as a feeling you can manufacture—quiet music, an empty calendar, or a version of yourself that finally has it together. Scripture speaks differently.\n\nPeace begins with being put right with God through Christ. It grows as the mind is shaped by his promises. It shows up as a steadiness that can coexist with real trouble, because it is anchored in the Lord who reigns, forgives, and keeps his own.",
+    bigIdea:
+      "Biblical peace is God-given rest rooted in Christ—shaping the mind, conscience, and daily trust in God’s care.",
+    keyScriptureRefs: [
+      "John 14:27",
+      "Philippians 4:6–7",
+      "Colossians 3:15",
+      "Isaiah 26:3",
+      "Romans 5:1",
+    ],
+    overviewSections: [
+      {
+        title: "Peace begins with God, not circumstances",
+        paragraphs: [
+          "Peace begins with God, not circumstances. The world looks for peace mainly by rearranging situations; Scripture points to God’s character, promises, and reconciling work as the foundation.",
+        ],
+      },
+      {
+        title: "Peace guards the heart in trouble",
+        paragraphs: [
+          "Peace guards the heart in trouble. Paul connects prayer and thanksgiving with a peace that surpasses understanding—stability that does not depend on having every answer.",
+        ],
+      },
+      {
+        title: "Peace shapes relationships and community",
+        paragraphs: [
+          "Peace shapes relationships and community. Believers are called to pursue peace where it depends on them, living as people reconciled to God and learning to extend patience and humility.",
+        ],
+      },
+    ],
+    relatedTopics: ["anxiety", "fear", "prayer", "faith"],
+    lessonSlugs: [],
+    relatedContentTags: ["peace", "rest", "trust", "reconciliation", "gospel"],
+  },
+  {
+    slug: "fear",
+    title: "Fear",
+    category: "life-struggles",
+    seoTitle: "Fear — Bible study",
+    seoDescription:
+      "What the Bible says about fear—danger, uncertainty, and the need for control—and how God meets fear with his presence and truth.",
+    shortDescription:
+      "When danger feels near or the future feels unstable, Scripture names fear honestly and points the heart to God’s presence and promises.",
+    intro:
+      "Fear rises when something you love feels threatened—safety, health, reputation, someone you care for, or the simple need to know what happens next. Sometimes it arrives as a surge of panic; sometimes as a slow erosion of joy and sleep.\n\nThe Bible does not pretend danger is imaginary or that control is yours to keep. It distinguishes the fear of the Lord from the fear of everything else—and it calls you to bring fear into the light of who God is: near, strong, faithful, and able to hold you when the ground feels unsteady.",
+    bigIdea:
+      "Biblical courage grows as fear is brought before God and answered with truth—trust in His care, presence, and final victory.",
+    keyScriptureRefs: [
+      "Isaiah 41:10",
+      "Psalm 27:1",
+      "2 Timothy 1:7",
+      "Psalm 56:3",
+      "Joshua 1:9",
+    ],
+    overviewSections: [
+      {
+        title: "Fear reveals what feels threatened",
+        paragraphs: [
+          "Fear reveals what feels threatened—safety, belonging, control, or the future. Naming that honestly is a first step toward bringing fear into the light of God’s Word.",
+        ],
+      },
+      {
+        title: "God’s presence reframes danger",
+        paragraphs: [
+          "God’s presence reframes danger. Many passages do not promise a life without peril, but they do promise that the believer is not alone—and that the fear of the Lord is different from the fear of everything else.",
+        ],
+      },
+      {
+        title: "Love and truth train the heart over time",
+        paragraphs: [
+          "Love and truth train the heart over time. Perfect love casts out fear—not overnight, but as the heart learns to rest in God’s care and to believe what He has said.",
+        ],
+      },
+    ],
+    relatedTopics: ["anxiety", "peace", "prayer", "faith"],
+    lessonSlugs: [],
+    relatedContentTags: ["fear", "courage", "trust", "peace", "comfort"],
   },
   {
     slug: "suffering",
@@ -222,24 +310,68 @@ export const STUDY_TOPICS: StudyTopic[] = [
     relatedContentTags: ["suffering", "trials", "endurance", "hope", "grief"],
   },
   {
+    slug: "grief",
+    title: "Grief",
+    category: "life-struggles",
+    seoTitle: "Grief — Bible study",
+    seoDescription:
+      "Study grief with Scripture—lament, comfort, the nearness of God, and hope that does not rush past sorrow.",
+    shortDescription:
+      "Study grief honestly: lament before God, comfort in His nearness, and hope that honors sorrow without making it the last word.",
+    intro:
+      "Grief is love facing loss. It can arrive as shock, ache, anger, emptiness, or a long season of quiet sadness.\n\nScripture makes room for grief without pretending it is small. It also anchors hope—so sorrow is real, but despair does not have to be the final story.",
+    bigIdea:
+      "Biblical grief is honest sorrow carried before God, sustained by His compassion, and held within the hope of resurrection life.",
+    keyScriptureRefs: [
+      "Psalm 34:18",
+      "Matthew 5:4",
+      "John 11:33–35",
+      "2 Corinthians 1:3–5",
+      "1 Thessalonians 4:13–14",
+    ],
+    overviewSections: [
+      {
+        title: "Lament is a language of faith",
+        paragraphs: [
+          "Lament is a language of faith. The Psalms show believers bringing pain to God with honesty—without editing their sadness to look more tidy than it is.",
+        ],
+      },
+      {
+        title: "Jesus enters sorrow personally",
+        paragraphs: [
+          "Jesus enters sorrow personally. His tears at death remind us that God is not distant from human grief—and that compassion is part of His character.",
+        ],
+      },
+      {
+        title: "Comfort and hope belong together",
+        paragraphs: [
+          "Comfort and hope belong together. The Spirit is called the Comforter, and Christian hope does not erase loss; it places loss in the context of God’s promises and the life to come.",
+        ],
+      },
+    ],
+    relatedTopics: ["suffering", "suffering-and-loss", "faith"],
+    lessonSlugs: [],
+    relatedContentTags: ["grief", "loss", "lament", "comfort", "hope"],
+  },
+  {
     slug: "salvation",
     title: "Salvation",
     category: "doctrine",
-    seoTitle: "Salvation — Bible study",
+    seoTitle: "What Is Salvation? How to Be Saved in the Bible | Deep Well Audio",
     seoDescription:
-      "Study the Bible’s teaching on salvation, sin, grace, faith, Christ, and the hope of the gospel.",
+      "What salvation means in Scripture: rescue from sin by grace through faith in Jesus—why we need it, how it is received, and where assurance rests.",
     shortDescription:
-      "Study the Bible’s teaching on salvation, sin, grace, faith, Christ, and the hope of the gospel.",
+      "Salvation is God’s rescue from sin and death through Jesus Christ—received by grace through faith, not by our own works.",
     intro:
-      "Salvation is central to the Christian faith. To understand it clearly is to understand what Scripture says about sin, mercy, Christ’s work, and the need for redemption.\n\nThe Bible does not present salvation as self-improvement or spiritual effort. It presents salvation as God’s work of rescuing sinners through the person and work of Jesus Christ.",
+      "What does it mean to be saved? In Scripture, to be saved is to be rescued from sin’s guilt and power, reconciled to God, and given eternal life—through Jesus Christ alone.\n\nWhy do we need salvation? Because every person has sinned and cannot make themselves right with a holy God by effort or goodness. How is salvation received? By turning from sin and trusting Christ—by grace through faith—as God’s gift, not wages we earn.",
     bigIdea:
-      "Salvation is God’s gracious work of rescuing sinners through Jesus Christ, received by faith and grounded entirely in His finished work.",
+      "Salvation is God’s work: Christ’s life, death, and resurrection applied to sinners who repent and believe—received by faith alone, by grace alone, in Christ alone.",
     keyScriptureRefs: [
       "Ephesians 2:8–9",
-      "Romans 3:23–24",
-      "Romans 5:8",
-      "Titus 3:4–7",
       "John 3:16–17",
+      "Romans 5:1",
+      "Romans 10:9–10",
+      "Titus 3:4–7",
     ],
     overviewSections: [
       {
@@ -261,7 +393,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
         ],
       },
     ],
-    relatedTopics: ["grace", "faith", "identity-in-christ"],
+    relatedTopics: ["faith", "grace", "identity-in-christ", "gospel", "eternal-life"],
     lessonSlugs: ["what-salvation-means", "salvation-by-grace-through-faith"],
     relatedContentTags: ["salvation", "gospel", "grace", "faith", "christ"],
   },
@@ -269,21 +401,21 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: "grace",
     title: "Grace",
     category: "doctrine",
-    seoTitle: "Grace — Bible study",
+    seoTitle: "What Is Grace in the Bible? God’s Grace and Salvation | Deep Well Audio",
     seoDescription:
-      "Study grace as the undeserved favor of God that saves, sustains, and shapes believers.",
+      "God’s grace in Scripture: undeserved favor that saves sinners, upholds the weak, and trains us for godly living—centered on Christ.",
     shortDescription:
-      "Study grace as the undeserved favor of God that saves, sustains, and shapes believers.",
+      "Grace is God’s undeserved kindness to the undeserving—most clearly shown in Christ, who saves us and keeps shaping us.",
     intro:
-      "Grace is one of the most important words in the Christian faith, but it is often spoken about without enough clarity. Scripture speaks of grace as the undeserved favor of God shown to sinners in Christ.\n\nGrace does not merely begin the Christian life. It also sustains, teaches, and shapes believers over time.",
+      "What is grace? Grace is God’s free favor toward those who deserve judgment—love and help that cannot be earned, only received.\n\nWhy is grace undeserved? Because sin has left us without claim on God; anything good we receive from him in salvation is owing to his mercy, not our performance. How does grace shape salvation? We are saved by grace through faith; even the faith to believe is God’s gift. Grace also continues: teaching, strengthening, and humbling us so we walk in truth.",
     bigIdea:
-      "Grace is God’s undeserved favor shown in Christ, not only for salvation, but for ongoing growth, endurance, and hope.",
+      "Grace is God’s unmerited favor in Christ—saving sinners, securing the helpless, and teaching his people to live for him.",
     keyScriptureRefs: [
       "Ephesians 2:8–9",
+      "Romans 3:23–24",
       "Titus 2:11–12",
-      "2 Corinthians 12:9",
       "Romans 5:20–21",
-      "Hebrews 4:16",
+      "John 1:16",
     ],
     overviewSections: [
       {
@@ -305,7 +437,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
         ],
       },
     ],
-    relatedTopics: ["salvation", "faith", "identity-in-christ"],
+    relatedTopics: ["salvation", "faith", "forgiveness", "identity-in-christ", "gospel"],
     lessonSlugs: ["what-grace-is", "grace-and-growth"],
     relatedContentTags: ["grace", "mercy", "salvation", "growth", "weakness"],
   },
@@ -313,21 +445,21 @@ export const STUDY_TOPICS: StudyTopic[] = [
     slug: "identity-in-christ",
     title: "Identity in Christ",
     category: "identity-calling",
-    seoTitle: "Identity in Christ — Bible study",
+    seoTitle: "Who Am I in Christ? Bible Verses & Identity | Deep Well Audio",
     seoDescription:
-      "Study what Scripture teaches about who believers are in Christ and how that shapes confidence, security, and purpose.",
+      "Who you are in Christ: new creation, child of God, secured by grace—what changes after salvation and what defines a believer in Scripture.",
     shortDescription:
-      "Study what Scripture teaches about who believers are in Christ and how that shapes confidence, security, and purpose.",
+      "In Christ, God gives you a new name: forgiven, adopted, united to Jesus—an identity received, not achieved.",
     intro:
-      "Questions of identity shape how people think, respond to pressure, and interpret their worth. The world offers endless shifting answers, but Scripture roots identity in something steadier.\n\nFor believers, identity is not built on performance, approval, or self-definition. It is grounded in union with Christ and in what God says is true.",
+      "Who am I in Christ? Scripture answers with something sturdier than a mood or a brand: union with Jesus—dead to sin’s ruling power, alive to God, loved, forgiven, and headed toward glory.\n\nWhat changes after salvation? You are made new in principle now, and you are being renewed day by day. What defines a believer is not perfect performance, but Christ’s work credited to you and the Spirit’s presence remaking your loves.",
     bigIdea:
-      "Identity in Christ gives believers stability, security, and direction because it is rooted in God’s truth rather than changing circumstances or personal performance.",
+      "Identity in Christ is God’s verdict over your life: who you are because of Jesus—secure, adopted, and called to walk in step with the truth of the gospel.",
     keyScriptureRefs: [
       "2 Corinthians 5:17",
-      "Galatians 2:20",
-      "Ephesians 1:3–6",
-      "Romans 8:14–17",
+      "Romans 8:16–17",
+      "Ephesians 1:5–6",
       "Colossians 3:1–4",
+      "John 1:12",
     ],
     overviewSections: [
       {
@@ -349,7 +481,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
         ],
       },
     ],
-    relatedTopics: ["purpose", "faith", "grace"],
+    relatedTopics: ["salvation", "grace", "faith", "holiness", "sanctification"],
     lessonSlugs: ["who-believers-are-in-christ", "identity-and-security-in-christ"],
     relatedContentTags: [
       "identity",
@@ -499,6 +631,50 @@ export const STUDY_TOPICS: StudyTopic[] = [
     relatedTopics: ["repentance", "grace", "faith"],
     lessonSlugs: ["holiness-and-being-set-apart", "holiness-and-daily-life"],
     relatedContentTags: ["holiness", "purity", "obedience", "sanctification", "grace"],
+  },
+  {
+    slug: "temptation",
+    title: "Temptation",
+    category: "spiritual-growth",
+    seoTitle: "Temptation — Bible study",
+    seoDescription:
+      "Study temptation, desire, and escape—how Scripture calls believers to watchfulness, repentance, and reliance on Christ.",
+    shortDescription:
+      "Study temptation as a battle of desires—and learn Scripture’s path of watchfulness, repentance, and rescue in Christ.",
+    intro:
+      "Temptation is more than a momentary urge. It often begins with a thought, a hunger, or a shortcut that looks harmless until it grows.\n\nScripture speaks with clarity: believers are not left to willpower alone. God provides a way of escape, the Spirit gives strength, and Christ is a sympathetic high priest who understands weakness.",
+    bigIdea:
+      "Biblical victory over temptation combines honest awareness, fleeing sin, and active reliance on Christ and His Word.",
+    keyScriptureRefs: [
+      "1 Corinthians 10:13",
+      "James 1:13–15",
+      "Hebrews 4:15–16",
+      "Matthew 26:41",
+      "Galatians 5:16–17",
+    ],
+    overviewSections: [
+      {
+        title: "Temptation follows patterns",
+        paragraphs: [
+          "Temptation follows patterns—desire, enticement, and deception. James traces how desire conceives sin, which shows why early honesty matters.",
+        ],
+      },
+      {
+        title: "God is faithful in temptation",
+        paragraphs: [
+          "God is faithful in temptation. He limits trials and provides a way of escape—not always by removing pressure, but by making endurance and obedience possible.",
+        ],
+      },
+      {
+        title: "Jesus understands weakness",
+        paragraphs: [
+          "Jesus understands weakness. He was tempted yet without sin, and invites weary people to draw near for mercy and help.",
+        ],
+      },
+    ],
+    relatedTopics: ["holiness", "repentance", "faith"],
+    lessonSlugs: [],
+    relatedContentTags: ["temptation", "sin", "desire", "watchfulness", "holiness"],
   },
   {
     slug: "repentance",

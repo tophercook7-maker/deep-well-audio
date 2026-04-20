@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { BackButton } from "@/components/buttons/back-button";
 import { StudyTopicBody } from "@/components/study/study-topic-body";
 import { getAllStudyTopics, getStudyTopic } from "@/lib/study";
-import { getSafeAbsoluteSiteUrl } from "@/lib/env";
+import { buildStudiesTopicMetadata } from "@/lib/studies/topic-seo";
 import { STUDY_LEGACY_ROUTES } from "@/lib/studies/study-routes";
 
 type Props = { params: Promise<{ topic: string }> };
@@ -16,16 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { topic: raw } = await params;
   const topic = getStudyTopic(raw);
   if (!topic) return { title: "Study · Deep Well Audio" };
-  const title = topic.seoTitle;
-  const description = topic.seoDescription;
-  const base = getSafeAbsoluteSiteUrl().replace(/\/+$/, "");
-  const url = `${base}/study/${topic.slug}`;
-  return {
-    title,
-    description,
-    alternates: { canonical: url },
-    openGraph: { title, description, url, siteName: "Deep Well Audio", type: "website" },
-  };
+  return buildStudiesTopicMetadata(topic, `/study/${topic.slug}`);
 }
 
 export default async function StudyTopicPage({ params }: Props) {

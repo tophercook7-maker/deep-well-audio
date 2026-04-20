@@ -47,7 +47,7 @@ export function RecentActivityStrip({ plan }: { plan: "guest" | "free" | "premiu
               extra.push({
                 id: `note-${n.id}`,
                 label: n.body.trim().slice(0, 72) + (n.body.length > 72 ? "…" : ""),
-                sub: "Study note",
+                sub: "Verse note",
                 href: "/library#bible-study" as Route,
                 at: Number.isFinite(at) ? at : 0,
                 kind: "note",
@@ -59,7 +59,7 @@ export function RecentActivityStrip({ plan }: { plan: "guest" | "free" | "premiu
               extra.push({
                 id: `sv-${v.id}`,
                 label: title,
-                sub: "Bible Study",
+                sub: "Saved passage",
                 href: "/library#bible-study" as Route,
                 at: Number.isFinite(at) ? at : 0,
                 kind: "passage",

@@ -51,8 +51,8 @@ export default async function WorldWatchPage() {
     console.error("world-watch youtube:", err instanceof Error ? err.message : err);
     return [];
   });
-  const ytCap = premium ? youtubePool.length : TEASER_PREVIEW_COUNT;
-  const youtubeItems = youtubePool.slice(0, ytCap);
+  /** Third-party YouTube clips: same pool for all plans (written digest above/below stays premium/teaser). */
+  const youtubeItems = youtubePool;
 
   return (
     <main className="container-shell max-w-3xl space-y-10 py-10 sm:space-y-14 sm:py-14 lg:max-w-5xl">
@@ -140,7 +140,7 @@ export default async function WorldWatchPage() {
               Video lens
             </p>
             <p className="mt-2 text-sm leading-relaxed text-slate-200/95">
-              A few clips to help you see clearly{!premium ? "—Premium unlocks the full set and written digest." : "."}
+              Clips from trusted channels—available to everyone. Premium below adds the full written digest and deeper context.
             </p>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default async function WorldWatchPage() {
               items={youtubeItems}
               plan={plan}
               loginNext="/world-watch"
-              premiumTeaser={!premium}
+              premiumTeaser={false}
               thumbnailPriorityFirstN={1}
             />
           </WorldWatchVideoLensShell>

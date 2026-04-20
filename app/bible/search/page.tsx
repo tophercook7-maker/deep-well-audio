@@ -18,7 +18,7 @@ export default async function BibleSearchPage({
 
   return (
     <main className="container-shell py-12 sm:py-14">
-      <div className="mb-8 space-y-3 rounded-2xl border border-stone-800/80 bg-stone-950/55 px-4 py-5 sm:px-5">
+      <div className="mb-10 space-y-3 border-b border-stone-800/45 pb-6">
         <Breadcrumbs
           tone="bible"
           items={[

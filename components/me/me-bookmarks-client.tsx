@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import type { Route } from "next";
 import { useCallback, useEffect, useState } from "react";
 
 type Row = {
@@ -37,7 +39,26 @@ export function MeBookmarksClient() {
 
   if (items === null) return <p className="mt-8 text-sm text-slate-500">Loading…</p>;
   if (items.length === 0) {
-    return <p className="mt-8 text-sm text-slate-500">No bookmarks yet.</p>;
+    return (
+      <div className="mt-8 rounded-2xl border border-line/40 bg-soft/10 px-5 py-8 sm:px-6">
+        <p className="text-sm leading-relaxed text-slate-300">Bookmarks you save from Scripture and studies will show up here.</p>
+        <p className="mt-2 text-sm leading-relaxed text-slate-500">Save a verse, chapter, or lesson when you want an easy way back.</p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <Link
+            href={"/bible" as Route}
+            className="inline-flex min-h-[44px] items-center rounded-full border border-line/60 bg-soft/20 px-4 py-2 text-sm font-medium text-amber-100/90 transition hover:border-accent/35"
+          >
+            Open Bible
+          </Link>
+          <Link
+            href={"/studies" as Route}
+            className="inline-flex min-h-[44px] items-center rounded-full border border-line/50 bg-soft/15 px-4 py-2 text-sm font-medium text-slate-300/95 transition hover:border-accent/30"
+          >
+            Studies
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

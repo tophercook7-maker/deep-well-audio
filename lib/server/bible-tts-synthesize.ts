@@ -1,3 +1,7 @@
+/**
+ * Low-level TTS helpers (ElevenLabs / OpenAI). Account / plan gating lives in API routes only—never call this
+ * from unauthenticated or non-premium Bible audio paths.
+ */
 import { chunkTextForTts } from "@/lib/bible/tts-chunk-text";
 import { getBibleTtsPreset } from "@/lib/bible/bible-tts-voices";
 
@@ -26,14 +30,45 @@ export function normalizeElevenLabsPlayback(input: unknown): ElevenLabsPlaybackS
   };
 }
 
-function resolveElevenPlayback(settings: ElevenLabsPlaybackSettings) {
+export function resolveElevenPlayback(settings: ElevenLabsPlaybackSettings) {
   return {
     stability: settings.stability ?? DEFAULT_STABILITY,
     similarity_boost: settings.similarity_boost ?? DEFAULT_SIMILARITY,
   };
 }
 
+/** Compact suffix when ElevenLabs playback differs from defaults (cache key segment). */
+export function elevenPlaybackCacheSegment(playback: unknown): string {
+  const p = normalizeElevenLabsPlayback(playback);
+  const resolved = resolveElevenPlayback(p);
+  const def = resolveElevenPlayback({});
+  if (resolved.stability === def.stability && resolved.similarity_boost === def.similarity_boost) return "";
+  return `_s${Math.round(resolved.stability * 100)}b${Math.round(resolved.similarity_boost * 100)}`;
+}
+
+/**
+ * Which backend will synthesize this preset (matches `synthesizeChapterMp3` routing).
+ * Used so ElevenLabs and OpenAI never share the same cache object.
+ */
+export function predictedChapterTtsProvider(voicePresetId: string): TtsProvider | "none" {
+  const preset = getBibleTtsPreset(voicePresetId);
+  if (!preset) return "none";
+  const elevenKey = process.env.ELEVENLABS_API_KEY?.trim();
+  if (elevenKey) {
+    const voiceId = elevenVoiceIdForPreset(preset.id);
+    if (voiceId) return "elevenlabs";
+  }
+  if (process.env.OPENAI_API_KEY?.trim()) return "openai";
+  return "none";
+}
+
 function elevenVoiceIdForPreset(presetId: string): string | null {
+  if (presetId === "deep-narrator") {
+    const a = process.env.ELEVENLABS_VOICE_DEEP_NARRATOR?.trim();
+    const b = process.env.ELEVENLABS_VOICE_DEEP_VOICE?.trim();
+    if (a) return a;
+    if (b) return b;
+  }
   const envKey = `ELEVENLABS_VOICE_${presetId.toUpperCase().replace(/-/g, "_")}`;
   const specific = process.env[envKey]?.trim();
   if (specific) return specific;
@@ -100,6 +135,25 @@ function concatUint8Arrays(parts: Uint8Array[]): Uint8Array {
     o += p.length;
   }
   return out;
+}
+
+/** Full chapter as MP3 using a concrete ElevenLabs voice id (premium Bible audio path; no OpenAI fallback). */
+export async function synthesizeChapterMp3WithElevenLabsVoice(opts: {
+  text: string;
+  elevenLabsVoiceId: string;
+  elevenPlayback?: ElevenLabsPlaybackSettings;
+}): Promise<Uint8Array> {
+  const elevenKey = process.env.ELEVENLABS_API_KEY?.trim();
+  if (!elevenKey) {
+    throw new Error("ELEVENLABS_API_KEY is required for Bible audio generation.");
+  }
+  const chunks = chunkTextForTts(opts.text);
+  const elevenPlayback = opts.elevenPlayback ?? {};
+  const buffers: Uint8Array[] = [];
+  for (const part of chunks) {
+    buffers.push(await fetchElevenLabsMp3(elevenKey, opts.elevenLabsVoiceId, part, elevenPlayback));
+  }
+  return concatUint8Arrays(buffers);
 }
 
 export async function synthesizeChapterMp3(opts: {

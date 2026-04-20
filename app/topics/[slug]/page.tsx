@@ -218,7 +218,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
             <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-amber-200/90">
               <li>
                 <Link href={"/bible" as Route} className="underline-offset-4 hover:underline">
-                  Bible Study
+                  Open Bible
                 </Link>
               </li>
               <li>
@@ -292,7 +292,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-amber-200/90">
             <li>
               <Link href={"/bible" as Route} className="underline-offset-4 hover:underline">
-                Bible Study
+                Open Bible
               </Link>
             </li>
             <li>

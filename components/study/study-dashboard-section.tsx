@@ -156,7 +156,7 @@ export function StudyDashboardSection() {
           if (!prev) return prev;
           return { ...prev, savedVerses: prev.savedVerses.filter((x) => x.id !== row.id) };
         });
-        setStudyListHint({ text: "Removed from Bible Study.", tone: "success" });
+        setStudyListHint({ text: "Removed from saved passages.", tone: "success" });
         dispatchStudyDashboardRefresh();
       } catch {
         setStudyListHint({ text: "Something went wrong. Try again.", tone: "caution" });
@@ -277,14 +277,14 @@ export function StudyDashboardSection() {
         return {
           phase: "ready" as const,
           label: savedRowTitle(t1.row),
-          hint: "Continue with a passage you saved in Bible Study",
+          hint: "Continue here — from a passage you saved",
           onOpen: () => study?.openFromSavedVerse(t1.row),
         };
       }
       return {
         phase: "ready" as const,
-        label: `Continue studying ${t1.row.passage_ref}`,
-        hint: "Recently opened in Study on your account",
+        label: `Continue reading ${t1.row.passage_ref}`,
+        hint: "Recently opened in the reader on your account",
         onOpen: () => study?.openFromScriptureTag(t1.row.passage_ref, { translation: t1.row.translation_id }),
       };
     }
@@ -294,14 +294,14 @@ export function StudyDashboardSection() {
       return {
         phase: "ready" as const,
         label: `Continue your note on ${parsedVerseNote.passage.label}`,
-        hint: "From your Bible study",
+        hint: "From your notes",
         onOpen: () => study?.openFromVerseContentKey(verseNote.content_key),
       };
     }
     if (lastLocal) {
       return {
         phase: "ready" as const,
-        label: `Continue studying ${lastLocal.label || lastLocal.q}`,
+        label: `Continue here — ${lastLocal.label || lastLocal.q}`,
         hint: "Last opened on this device",
         onOpen: () => study?.openReaderQuery(lastLocal.q, { translation: lastLocal.t, title: lastLocal.label }),
       };
@@ -317,8 +317,8 @@ export function StudyDashboardSection() {
         </div>
         <div className="min-w-0 flex-1 space-y-6">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-200/65">Bible Study</p>
-            <h2 className="mt-2 text-xl font-semibold text-white">Saved passages &amp; study notes</h2>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-200/65">Scripture</p>
+            <h2 className="mt-2 text-xl font-semibold text-white">Saved passages &amp; notes</h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
               Scripture you save and notes you write in the reader—private to this account, synced with Your Library.
             </p>
@@ -328,7 +328,7 @@ export function StudyDashboardSection() {
 
           <div className="rounded-[20px] border border-line/45 bg-[rgba(8,11,16,0.35)] p-1 sm:p-2">
             <div className="rounded-2xl border border-line/35 bg-soft/[0.07] px-4 py-4 sm:px-5 sm:py-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Continue studying</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Continue here</p>
               {continueTarget.phase === "loading" ? (
                 <p className="mt-3 text-sm text-muted">Loading…</p>
               ) : continueTarget.phase === "ready" && continueTarget.onOpen ? (
@@ -377,7 +377,7 @@ export function StudyDashboardSection() {
                 ) : data.savedVerses.length === 0 ? (
                   <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
                     <p>You haven&apos;t saved any passages yet.</p>
-                    <p>Open Bible Study from a teaching, tap a verse, and choose save—passages you care about will collect here.</p>
+                    <p>Open the Bible from a teaching, tap a verse, and choose save—passages you care about will collect here.</p>
                   </div>
                 ) : (
                   <>
@@ -479,7 +479,7 @@ export function StudyDashboardSection() {
                             disabled={busy}
                             onClick={() => void removeSavedPassage(v)}
                             className="mt-1 shrink-0 self-start rounded-lg px-2 py-1.5 text-[11px] font-medium text-slate-500 transition hover:bg-white/[0.04] hover:text-slate-300 disabled:opacity-40"
-                            aria-label={`Remove ${savedRowTitle(v)} from Bible Study`}
+                            aria-label={`Remove ${savedRowTitle(v)} from saved passages`}
                           >
                             {busy ? "…" : "Remove"}
                           </button>
@@ -498,7 +498,7 @@ export function StudyDashboardSection() {
                   <p className="mt-3 text-sm text-muted">Loading…</p>
                 ) : data.recentNotes.length === 0 ? (
                   <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted">
-                    <p>You haven&apos;t added verse notes in Bible Study yet.</p>
+                    <p>You haven&apos;t added verse notes in the reader yet.</p>
                     <p>When you jot something next to a passage, a short preview will appear here so you can jump back in.</p>
                   </div>
                 ) : (
@@ -567,7 +567,7 @@ export function StudyDashboardSection() {
                   <p className="mt-3 text-sm text-muted">Loading…</p>
                 ) : data.recentHistory.length === 0 ? (
                   <p className="mt-3 text-sm leading-relaxed text-muted">
-                    Passages you open in Bible Study will list here—handy when you want to pick up a chapter or reference again.
+                    Passages you open in the reader will list here—handy when you want to pick up a chapter or reference again.
                   </p>
                 ) : (
                   <ul className="mt-4 space-y-1">

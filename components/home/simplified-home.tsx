@@ -1,13 +1,13 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { BookOpen, Bookmark, Check, FileText, Search, ScrollText } from "lucide-react";
+import { Bookmark, BookOpen, Check, FileText, Headphones, Library, Search, ScrollText } from "lucide-react";
 import type { EpisodeWithShow } from "@/lib/types";
 import type { UserPlan } from "@/lib/permissions";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { HomeStartListeningCard } from "@/components/home/home-start-listening-card";
+import { HomeDailyScriptureRitual } from "@/components/home/home-daily-scripture-ritual";
 import { CTA, SITE_POSITIONING } from "@/lib/site-messaging";
 import { SignedInHabitBand } from "@/components/retention/signed-in-habit-band";
-import { StartHereToday } from "@/components/retention/start-here-today";
 
 const START_LISTENING_MAX = 8;
 
@@ -39,142 +39,119 @@ export function SimplifiedHome({
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-line/60" aria-labelledby="home-hero-heading">
+      {/* Daily ritual — Scripture first */}
+      <section
+        className="relative overflow-hidden border-b border-line/45 bg-[rgba(5,8,14,0.42)]"
+        aria-labelledby="home-ritual-heading"
+      >
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-10%,rgba(212,175,55,0.09),transparent_55%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_95%_75%_at_50%_-15%,rgba(212,175,55,0.08),transparent_58%)]"
           aria-hidden
         />
-        <div className="container-shell relative py-16 sm:py-20 lg:py-24">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/85">Deep Well Audio</p>
+        <div className="container-shell relative py-12 sm:py-16 lg:py-20">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">Deep Well Audio</p>
           <h1
-            id="home-hero-heading"
-            className="mt-5 max-w-[22ch] text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]"
+            id="home-ritual-heading"
+            className="mt-4 max-w-[26ch] font-serif text-[1.85rem] font-normal leading-[1.15] tracking-tight text-white sm:text-[2.15rem]"
           >
-            {SITE_POSITIONING.headline}
+            {sessionUser ? "Welcome back" : "Return to Scripture"}
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-200/95 sm:text-xl">{SITE_POSITIONING.subhead}</p>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-400/95">{SITE_POSITIONING.problem}</p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link
-              href={"/browse" as Route}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_32px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
-            >
-              {CTA.LISTEN_FREE}
-            </Link>
-            <FunnelLink
-              href={"/pricing" as Route}
-              funnelEvent="view_plans_click"
-              funnelData={{ placement: "home_hero" }}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
-            >
-              {CTA.SEE_PREMIUM}
-            </FunnelLink>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-400/95">
+            {sessionUser
+              ? "Ready to continue? Pick up where you left off—or open Scripture whenever it feels right."
+              : "Listen, read, and study in one calm place. Stay grounded in the Word at your pace."}
+          </p>
+          <div className="mt-10 max-w-2xl">
+            <HomeDailyScriptureRitual />
           </div>
-          <p className="mt-6 text-sm text-slate-500">{statsLine}</p>
         </div>
       </section>
 
-      <section className="border-b border-line/60 bg-[rgba(8,11,17,0.42)] py-12 sm:py-14" aria-labelledby="home-pillars-heading">
+      {/* Secondary links — support the habit, don’t compete */}
+      <section className="border-b border-line/40 bg-[rgba(7,10,16,0.32)] py-10 sm:py-12" aria-labelledby="home-more-heading">
         <div className="container-shell">
-          <h2 id="home-pillars-heading" className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-            Scripture, studies, and your saved work
+          <h2 id="home-more-heading" className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            More
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
-            The Bible reader and topical studies are always one tap away—plus search, bookmarks, and notes when you&apos;re signed in.
-          </p>
-          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 flex flex-wrap gap-2.5">
             <li>
               <Link
-                href={"/bible" as Route}
-                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+                href={"/studies" as Route}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/50 bg-[rgba(9,12,18,0.35)] px-4 py-2.5 text-sm font-medium text-amber-100/90 transition hover:border-accent/28"
               >
-                <BookOpen className="h-7 w-7 text-amber-200/85" aria-hidden />
-                <div>
-                  <span className="block text-base font-semibold text-white">Open Bible</span>
-                  <span className="mt-1 block text-sm text-slate-400">Read, listen, and search Scripture</span>
-                </div>
+                <ScrollText className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Studies
               </Link>
             </li>
             <li>
               <Link
-                href={"/studies" as Route}
-                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+                href={"/bible" as Route}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/50 bg-[rgba(9,12,18,0.35)] px-4 py-2.5 text-sm font-medium text-amber-100/90 transition hover:border-accent/28"
               >
-                <ScrollText className="h-7 w-7 text-amber-200/85" aria-hidden />
-                <div>
-                  <span className="block text-base font-semibold text-white">Study topics</span>
-                  <span className="mt-1 block text-sm text-slate-400">Guided lessons with Scripture-first context</span>
-                </div>
+                <BookOpen className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Open Bible
               </Link>
             </li>
             <li>
               <Link
                 href={"/search" as Route}
-                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/45 bg-[rgba(9,12,18,0.28)] px-4 py-2.5 text-sm font-medium text-slate-300/95 transition hover:border-accent/22"
               >
-                <Search className="h-7 w-7 text-amber-200/85" aria-hidden />
-                <div>
-                  <span className="block text-base font-semibold text-white">Search</span>
-                  <span className="mt-1 block text-sm text-slate-400">Bible verses or topical studies</span>
-                </div>
+                <Search className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Search
               </Link>
             </li>
             <li>
               <Link
-                href={"/bible#bible-continue-heading" as Route}
-                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
+                href={"/browse" as Route}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/45 bg-[rgba(9,12,18,0.28)] px-4 py-2.5 text-sm font-medium text-slate-300/95 transition hover:border-accent/22"
               >
-                <BookOpen className="h-7 w-7 text-slate-400" aria-hidden />
-                <div>
-                  <span className="block text-base font-semibold text-white">Continue reading</span>
-                  <span className="mt-1 block text-sm text-slate-400">Pick up your last passage on the Bible hub</span>
-                </div>
+                Browse teachings
               </Link>
             </li>
-            <li>
-              <Link
-                href={(sessionUser ? "/me/bookmarks" : "/signup") as Route}
-                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
-              >
-                <Bookmark className="h-7 w-7 text-amber-200/85" aria-hidden />
-                <div>
-                  <span className="block text-base font-semibold text-white">Bookmarks</span>
-                  <span className="mt-1 block text-sm text-slate-400">
-                    {sessionUser ? "Saved verses and teachings" : "Create a free account to save passages"}
-                  </span>
-                </div>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={(sessionUser ? "/me/notes" : "/signup") as Route}
-                className="flex h-full min-h-[112px] flex-col justify-between rounded-2xl border border-line/55 bg-[rgba(12,16,24,0.5)] p-5 transition hover:border-accent/35 hover:bg-soft/20"
-              >
-                <FileText className="h-7 w-7 text-amber-200/85" aria-hidden />
-                <div>
-                  <span className="block text-base font-semibold text-white">Notes</span>
-                  <span className="mt-1 block text-sm text-slate-400">
-                    {sessionUser ? "Your study notes in one place" : "Sign in to keep notes alongside Scripture"}
-                  </span>
-                </div>
-              </Link>
-            </li>
+            {sessionUser ? (
+              <>
+                <li>
+                  <Link
+                    href={"/me/bookmarks" as Route}
+                    className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/45 bg-[rgba(9,12,18,0.28)] px-4 py-2.5 text-sm font-medium text-slate-300/95 transition hover:border-accent/22"
+                  >
+                    <Bookmark className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                    Bookmarks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={"/me/notes" as Route}
+                    className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/45 bg-[rgba(9,12,18,0.28)] px-4 py-2.5 text-sm font-medium text-slate-300/95 transition hover:border-accent/22"
+                  >
+                    <FileText className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                    Notes
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={"/library" as Route}
+                    className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/45 bg-[rgba(9,12,18,0.28)] px-4 py-2.5 text-sm font-medium text-slate-300/95 transition hover:border-accent/22"
+                  >
+                    <Library className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                    Library
+                  </Link>
+                </li>
+              </>
+            ) : null}
           </ul>
+          <p className="mt-8 text-sm text-slate-500">{statsLine}</p>
         </div>
       </section>
 
       {sessionUser ? (
-        <section
-          className="border-b border-line/50 bg-[rgba(7,10,16,0.42)] py-10 sm:py-12"
-          aria-label="Your listening rhythm"
-        >
-          <div className="container-shell space-y-8">
-            <StartHereToday />
+        <section className="border-b border-line/40 bg-[rgba(6,9,15,0.38)] py-10 sm:py-12" aria-label="Teaching and library">
+          <div className="container-shell space-y-6">
             <SignedInHabitBand
               plan={plan}
               worldWatchLatest={worldWatchLatest}
-              showContinueModule
+              showContinueModule={false}
               hidePickUpContinueRow
             />
           </div>
@@ -207,6 +184,33 @@ export function SimplifiedHome({
           <p className="mt-10 max-w-2xl text-base leading-relaxed text-slate-400/95">
             Deep Well helps you return to what mattered.
           </p>
+        </div>
+      </section>
+
+      {/* Brand line — below ritual */}
+      <section className="border-b border-line/40 py-14 sm:py-16" aria-labelledby="home-brand-heading">
+        <div className="container-shell max-w-3xl">
+          <h2 id="home-brand-heading" className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            {SITE_POSITIONING.headline}
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-slate-400/95 sm:text-lg">{SITE_POSITIONING.subhead}</p>
+          <p className="mt-4 text-sm leading-relaxed text-slate-500">{SITE_POSITIONING.problem}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href={"/browse" as Route}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_32px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
+            >
+              {CTA.LISTEN_FREE}
+            </Link>
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              funnelData={{ placement: "home_hero" }}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
+            >
+              {CTA.SEE_PREMIUM}
+            </FunnelLink>
+          </div>
         </div>
       </section>
 

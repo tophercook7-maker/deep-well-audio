@@ -21,7 +21,8 @@ import { ReturnToThisModule } from "@/components/retention/return-to-this-module
 
 export const metadata = {
   title: "Your Home",
-  description: "Your listening rhythm—continue where you left off, return to saved teaching, Bible Study, notes, and World Watch.",
+  description:
+    "Your listening rhythm—continue where you left off, return to saved teaching, Scripture in the reader, notes, and World Watch.",
 };
 
 export default async function DashboardPage() {
@@ -63,7 +64,7 @@ export default async function DashboardPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/85">Premium</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Your Home</h1>
         <p className="mt-4 text-base leading-relaxed text-slate-300/95">
-          Where you return—listening, Bible Study, notes, and World Watch in one calm rhythm.
+          Where you return—listening, Scripture in the reader, notes, and World Watch in one calm rhythm.
         </p>
       </header>
 
@@ -78,7 +79,7 @@ export default async function DashboardPage() {
           Your Library
         </a>
         <a href="#bible-study" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
-          Bible Study
+          Saved Scripture
         </a>
         <a href="#notes" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
           Bookmarks &amp; notes

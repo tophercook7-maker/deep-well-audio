@@ -23,7 +23,7 @@ export function PremiumActiveState({ className = "", align = "center" }: Props) 
       <h2 className={`text-xl font-semibold text-white sm:text-2xl ${blockAlign} max-w-lg`}>You&apos;re Premium</h2>
       <p className={`mt-2 text-sm font-medium text-slate-200 ${blockAlign} max-w-lg`}>Premium is active on this account.</p>
       <p className={`mt-2 text-sm leading-relaxed text-muted ${blockAlign} max-w-prose`}>
-        World Watch and study tools are already unlocked.
+        World Watch and Scripture tools are already unlocked.
       </p>
 
       <div className={`mt-6 flex flex-col gap-3.5 sm:flex-row sm:flex-wrap ${justify}`}>

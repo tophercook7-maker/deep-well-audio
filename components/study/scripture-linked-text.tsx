@@ -67,7 +67,7 @@ export function ScriptureLinkedText({
             type="button"
             onClick={() => study.openVerse(s.passage, { teachingKey: teachingKey ?? null })}
             className="rounded-sm font-medium text-amber-200/90 underline decoration-amber-200/35 underline-offset-2 transition hover:text-amber-50 hover:decoration-amber-100/60"
-            title="Open in Study"
+            title="Open in reader"
           >
             {s.text}
           </button>

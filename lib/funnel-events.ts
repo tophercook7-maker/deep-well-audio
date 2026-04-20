@@ -10,4 +10,7 @@ export type FunnelEventName =
   | "guided_path_click"
   | "conversion_page_view"
   | "auth_login_complete"
-  | "auth_signup_complete";
+  | "auth_signup_complete"
+  | "premium_audio_locked_view"
+  | "premium_audio_upgrade_click"
+  | "premium_audio_sign_in_click";

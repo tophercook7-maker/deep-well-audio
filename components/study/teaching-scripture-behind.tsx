@@ -69,7 +69,7 @@ export function TeachingScriptureBehind({
   return (
     <div className={shell}>
       <h2 className={titleCls}>Scripture behind this teaching</h2>
-      <p className={hintCls}>Tap a reference to open it in Study.</p>
+      <p className={hintCls}>Tap a reference to open it in the reader.</p>
       <ul className={variant === "compact" ? "mt-2 flex flex-wrap gap-1.5" : "mt-4 flex flex-wrap gap-2"}>
         {rows.map((r) => (
           <li key={r.kind === "tag" ? `tag:${r.ref}` : `p:${r.passage.verseKey}`}>

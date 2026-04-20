@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import type { Route } from "next";
 import { useCallback, useEffect, useState } from "react";
 
 type Row = {
@@ -37,7 +39,20 @@ export function MeHistoryClient() {
 
   if (items === null) return <p className="mt-8 text-sm text-slate-500">Loading…</p>;
   if (items.length === 0) {
-    return <p className="mt-8 text-sm text-slate-500">No history yet. Open chapters or lessons while signed in.</p>;
+    return (
+      <div className="mt-8 rounded-2xl border border-line/40 bg-soft/10 px-5 py-8 sm:px-6">
+        <p className="text-sm leading-relaxed text-slate-300">Pick up where you left off when you&apos;re ready.</p>
+        <p className="mt-2 text-sm leading-relaxed text-slate-500">
+          Chapters and lessons you open while signed in will appear here—most recent first.
+        </p>
+        <Link
+          href={"/bible" as Route}
+          className="mt-5 inline-flex min-h-[44px] items-center rounded-full border border-line/60 bg-soft/20 px-4 py-2 text-sm font-medium text-amber-100/90 transition hover:border-accent/35"
+        >
+          Open Bible
+        </Link>
+      </div>
+    );
   }
 
   return (

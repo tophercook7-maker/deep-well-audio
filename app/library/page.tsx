@@ -116,7 +116,7 @@ export default async function LibraryPage() {
           <PremiumLibraryPreviewStrip />
           <div className="rounded-[22px] border border-line/40 bg-[rgba(8,11,16,0.3)] p-6">
             <p className="text-sm text-muted">
-              <span className="font-medium text-slate-300/95">Bible Study</span> and basic reading stay open to everyone; your saved passages
+              <span className="font-medium text-slate-300/95">The Bible reader</span> and basic reading stay open to everyone; your saved passages
               and synced notes unlock with Premium alongside this hub.
             </p>
           </div>
@@ -156,9 +156,9 @@ export default async function LibraryPage() {
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-sky-400/30 bg-sky-500/[0.1] text-sky-100">
               <BookOpen className="h-6 w-6" aria-hidden />
             </div>
-            <h2 className="mt-5 text-xl font-semibold text-white">Bible Study</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">Saved Scripture and verse-linked notes from the reader.</p>
-            <span className="mt-5 text-sm font-medium text-sky-200/85 group-hover:underline">Jump to Bible Study</span>
+            <h2 className="mt-5 text-xl font-semibold text-white">Saved Scripture</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">Verse saves and notes from the reader.</p>
+            <span className="mt-5 text-sm font-medium text-sky-200/85 group-hover:underline">Continue here</span>
           </Link>
 
           <Link
@@ -172,7 +172,7 @@ export default async function LibraryPage() {
 
           <div className="md:col-span-2">
             <p className="mb-4 text-sm leading-relaxed text-muted">
-              Passages you save from Study appear below—the same private list as on{" "}
+              Passages you save from the reader appear below—the same private list as on{" "}
               <Link href={"/dashboard#saved-passages" as Route} className="text-amber-200/85 underline-offset-2 hover:underline">
                 Your Home
               </Link>

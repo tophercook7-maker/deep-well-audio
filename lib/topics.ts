@@ -464,7 +464,7 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
       "Anxiety is something many people carry quietly. It shows up in everyday life through stress, uncertainty, and the feeling of being overwhelmed.",
       "Scripture does not ignore anxiety. It speaks directly to it, calling us back to trust, perspective, and the steady presence of God.",
       "These teachings are here to help you slow down, refocus, and return to what is true.",
-      "Many people search for quick relief from worry; the Bible speaks to fear with honesty and invites you to bring it into the light. These episodes pair well with [Bible Study](/bible) when you want Scripture beside you, with topics like [faith](/topics/faith) and [prayer](/topics/prayer) when trust feels thin, and with [World Watch](/world-watch) when headlines add weight.",
+      "Many people search for quick relief from worry; the Bible speaks to fear with honesty and invites you to bring it into the light. These episodes pair well with [Open Bible](/bible) when you want Scripture beside you, with topics like [faith](/topics/faith) and [prayer](/topics/prayer) when trust feels thin, and with [World Watch](/world-watch) when headlines add weight.",
     ],
     whyItMatters: [
       "Worry rarely stays in the background. It touches sleep, relationships, decisions, and prayer—often before you have words for what you feel.",
@@ -499,7 +499,7 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
       "Faith is not just a concept. It is something you live out daily. It is tested in uncertainty, stretched in difficulty, and strengthened over time.",
       "The Bible presents faith not as blind belief, but as trust rooted in who God is.",
       "These teachings are meant to help you grow in that trust and stay grounded, even when life feels unclear.",
-      "Many people search for stronger faith as if it were willpower alone; Scripture ties trust to hearing God’s Word, remembering his promises, and resting on Christ. Use [Bible Study](/bible) to read alongside audio, explore [anxiety](/topics/anxiety) or [purpose](/topics/purpose) when life feels unclear, and browse [spiritual growth](/topics/spiritual-growth) for steady formation. [World Watch](/world-watch) can add calm perspective when the news tests what you believe.",
+      "Many people search for stronger faith as if it were willpower alone; Scripture ties trust to hearing God’s Word, remembering his promises, and resting on Christ. Use [Open Bible](/bible) to read alongside audio, explore [anxiety](/topics/anxiety) or [purpose](/topics/purpose) when life feels unclear, and browse [spiritual growth](/topics/spiritual-growth) for steady formation. [World Watch](/world-watch) can add calm perspective when the news tests what you believe.",
     ],
     whyItMatters: [
       "Faith is not only a Sunday word. It is tested in hospital rooms, ordinary workweeks, and the quiet moments when God feels distant.",
@@ -556,7 +556,7 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
       "Questions about purpose often come quietly but persistently. What am I meant to do? Does my life have direction? Where am I going?",
       "Scripture answers these questions differently than the world does. It points not just to what you do, but to who you are and who you belong to.",
       "These teachings are here to help you think clearly about purpose and live with greater intention.",
-      "Many people search for meaning in achievement, comparison, or constant motion; the Bible sets calling in the frame of grace, service, and faithfulness over time. Pair listening with [Bible Study](/bible), explore [calling](/topics/calling) and [identity](/topics/identity) for the next step, and use [World Watch](/world-watch) when cultural noise pressures you to measure your life by trends.",
+      "Many people search for meaning in achievement, comparison, or constant motion; the Bible sets calling in the frame of grace, service, and faithfulness over time. Pair listening with [Open Bible](/bible), explore [calling](/topics/calling) and [identity](/topics/identity) for the next step, and use [World Watch](/world-watch) when cultural noise pressures you to measure your life by trends.",
     ],
     whyItMatters: [
       "Purpose questions rarely arrive as debates—they often arrive as exhaustion, transition, or the sense that you are drifting.",
@@ -1076,7 +1076,7 @@ export function getTopicWhyItMatters(def: TopicDefinition): string[] {
   return [
     `${def.label} names something many believers carry into Scripture and prayer—not a trend, but a lived need. The episodes below are tagged from real teaching in this directory so you can start somewhere calm.`,
     `Audio lets you move at the speed of real life: pause, replay, and return without performance pressure. The aim is nourishment, not noise.`,
-    `When you want Scripture, notes, and saves in one place, Bible Study and Premium are there as companions—not requirements to listen.`,
+    `When you want Scripture, notes, and saves in one place, the Bible reader and Premium are there as companions—not requirements to listen.`,
   ];
 }
 

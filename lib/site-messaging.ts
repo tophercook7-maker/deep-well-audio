@@ -12,14 +12,15 @@ export const SITE_POSITIONING = {
 /** Standard primary/secondary CTAs—use these labels consistently. */
 export const CTA = {
   LISTEN_FREE: "Listen Free",
-  SEE_PREMIUM: "See Premium",
+  /** Calm pricing entry — use instead of “See Premium” / hard upsell language */
+  SEE_PREMIUM: "View plans",
   CREATE_FREE_ACCOUNT: "Create Free Account",
   UPGRADE_TO_PREMIUM: "Upgrade to Premium",
 } as const;
 
 export const PRODUCT_MODEL = {
   browse: "Browse helps you find trusted teaching.",
-  bible: "Bible Study helps you connect it to Scripture.",
+  bible: "Reading and listening help you keep Scripture beside the rest of life.",
   library: "Library helps you keep what mattered.",
   worldWatch: "World Watch helps you stay grounded in current events.",
   premium: "Premium makes the experience persistent and meaningful over time.",

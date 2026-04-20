@@ -10,7 +10,7 @@ export const metadata = {
 export default function BiblePage() {
   return (
     <main className="container-shell py-12 sm:py-16">
-      <div className="rounded-2xl border border-stone-800/80 bg-stone-950/55 px-4 py-5 sm:px-5">
+      <div className="border-b border-stone-800/45 pb-6">
         <Breadcrumbs
           tone="bible"
           items={[
@@ -19,7 +19,7 @@ export default function BiblePage() {
           ]}
         />
       </div>
-      <div className="mt-10">
+      <div className="mt-10 sm:mt-12">
         <BiblePageClient />
       </div>
     </main>

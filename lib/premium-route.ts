@@ -27,7 +27,9 @@ export async function requirePremiumSupabase(): Promise<PremiumRouteOk | { error
 
   const plan = await getUserPlan();
   if (plan !== "premium") {
-    return { error: NextResponse.json({ error: "Premium required" }, { status: 403 }) };
+    return {
+      error: NextResponse.json({ error: "Premium required", code: "premium_required" }, { status: 403 }),
+    };
   }
 
   return { supabase, user };
@@ -71,12 +73,17 @@ export function isSignedInRouteError(x: SignedInRouteOk | { error: NextResponse 
   return "error" in x;
 }
 
-/** Signed-in free or premium with curated study tools. */
+/** Signed-in premium only: curated saves, notes, and progress APIs (playback/embeds stay open to everyone). */
 export async function requireCuratedLibraryRoute(): Promise<SignedInRouteOk | { error: NextResponse }> {
   const gate = await requireSignedInSupabase();
   if (isSignedInRouteError(gate)) return gate;
   if (!canUseFeature("curated_library", gate.plan)) {
-    return { error: NextResponse.json({ error: "Sign in to use curated study tools." }, { status: 403 }) };
+    return {
+      error: NextResponse.json(
+        { error: "Curated saves and notes are part of Deep Well Premium.", code: "premium_required" },
+        { status: 403 },
+      ),
+    };
   }
   return gate;
 }
