@@ -43,6 +43,28 @@ export type CuratedYoutubeSource = {
 export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
   // --- Tier 1 — foundational / safe ---
   {
+    id: "grace-church-hot-springs",
+    title: "Grace Church",
+    channelTitle: "Grace Church Hot Springs",
+    /**
+     * Verified 2026-04: https://www.youtube.com/@gracechurchhotsprings → UChKe0huM96aCY8EsZfomx4w.
+     * The direct channel Atom URL needs `hl=en`, so keep `rssUrl` set explicitly.
+     */
+    channelId: "UChKe0huM96aCY8EsZfomx4w",
+    sourceType: "youtube_rss",
+    categoryDefaults: ["sermons-preaching", "christian-living"],
+    tier: 1,
+    active: true,
+    priority: 8,
+    isFeatured: true,
+    isWorldWatchSource: false,
+    membersOnlyDefault: false,
+    thumbnailFallback: null,
+    notes: "A local church in Hot Springs, Arkansas where the Word is preached clearly and simply.",
+    rssUrl: "https://www.youtube.com/feeds/videos.xml?channel_id=UChKe0huM96aCY8EsZfomx4w&hl=en",
+    websiteUrl: "https://gracechurchhs.com/",
+  },
+  {
     id: "bibleproject",
     title: "BibleProject",
     channelTitle: "BibleProject",

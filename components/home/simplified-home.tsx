@@ -8,6 +8,7 @@ import { HomeStartListeningCard } from "@/components/home/home-start-listening-c
 import { HomeDailyScriptureRitual } from "@/components/home/home-daily-scripture-ritual";
 import { CTA, SITE_POSITIONING } from "@/lib/site-messaging";
 import { SignedInHabitBand } from "@/components/retention/signed-in-habit-band";
+import { LocalChurchInvite } from "@/components/church/local-church-invite";
 
 const START_LISTENING_MAX = 8;
 
@@ -278,6 +279,8 @@ export function SimplifiedHome({
           </div>
         </div>
       </section>
+
+      <LocalChurchInvite />
 
       {/* Differentiation */}
       <section className="py-16 sm:py-20" aria-labelledby="home-diff-heading">
