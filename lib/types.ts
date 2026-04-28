@@ -73,7 +73,7 @@ export type ShowWithMeta = ShowRow & {
 };
 
 export type EpisodeWithShow = EpisodeRow & {
-  show?: Pick<ShowRow, "slug" | "title" | "host" | "artwork_url" | "category" | "official_url">;
+  show?: Pick<ShowRow, "slug" | "title" | "host" | "summary" | "description" | "artwork_url" | "category" | "official_url" | "tags">;
 };
 
 export const CATEGORY_OPTIONS = [

@@ -69,6 +69,22 @@ export const sourceFeeds: SourceFeedSeed[] = [
     meatyScore: 9,
     active: true,
   },
+  {
+    showSlug: "grace-church-hot-springs",
+    title: "Grace Church Hot Springs",
+    host: "Grace Church Hot Springs",
+    summary:
+      "Sermons and Bible teaching from Grace Church Hot Springs, a local church in Hot Springs, Arkansas where the Word is preached clearly and simply.",
+    category: "sermons",
+    sourceType: "youtube",
+    rssUrl: null,
+    youtubeChannelId: "UChKe0huM96aCY8EsZfomx4w",
+    officialUrl: "https://gracechurchhs.com/",
+    tags: ["Grace Church", "Hot Springs", "Sermons", "Teaching", "Bible", "Church", "Expository"],
+    featured: true,
+    meatyScore: 8,
+    active: true,
+  },
 
   /* ─── Bible teaching ─── */
   {

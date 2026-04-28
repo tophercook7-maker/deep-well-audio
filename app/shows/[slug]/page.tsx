@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
@@ -14,8 +15,44 @@ import { getShowDisplayLabel } from "@/lib/display";
 import { clampSummary, stripHtmlToPlain } from "@/lib/present";
 import { RemoteArtwork } from "@/components/artwork/remote-artwork";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { FALLBACK_ARTWORK_PATH, normalizeArtworkSrc } from "@/lib/artwork";
 
-export default async function ShowDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+type ShowRouteParams = { params: Promise<{ slug: string }> };
+
+export async function generateMetadata({ params }: ShowRouteParams): Promise<Metadata> {
+  const { slug } = await params;
+  const { show } = await getShowBySlug(typeof slug === "string" ? slug : "");
+
+  if (!show) {
+    return {
+      title: "Show not found",
+      description: "This Deep Well Audio show could not be found.",
+    };
+  }
+
+  const title = getShowDisplayLabel(show.title, show.slug);
+  const description = clampSummary(show.summary || show.description || `${title} on Deep Well Audio.`, 160);
+  const image = normalizeArtworkSrc(show.artwork_url) ?? FALLBACK_ARTWORK_PATH;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: [{ url: image, alt: `${title} artwork` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
+
+export default async function ShowDetailPage({ params }: ShowRouteParams) {
   const { slug } = await params;
   const safeSlug = typeof slug === "string" ? slug : "";
 

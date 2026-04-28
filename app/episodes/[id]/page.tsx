@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
@@ -14,8 +15,49 @@ import { episodeListDescription } from "@/lib/present";
 import { EpisodeStudyBlock } from "@/components/study/episode-study-block";
 import { TeachingScriptureBehind } from "@/components/study/teaching-scripture-behind";
 import { EpisodeRevisitNudge } from "@/components/retention/episode-revisit-nudge";
+import { FALLBACK_ARTWORK_PATH, normalizeArtworkSrc } from "@/lib/artwork";
+import { getEpisodeDisplayTitle, getShowDisplayLabel } from "@/lib/display";
 
-export default async function EpisodePage({ params }: { params: Promise<{ id: string }> }) {
+type EpisodeRouteParams = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: EpisodeRouteParams): Promise<Metadata> {
+  const { id } = await params;
+  const { episode } = await getEpisodeById(typeof id === "string" ? id : "");
+
+  if (!episode) {
+    return {
+      title: "Episode not found",
+      description: "This Deep Well Audio episode could not be found.",
+    };
+  }
+
+  const showTitle = episode.show ? getShowDisplayLabel(episode.show.title, episode.show.slug) : "Deep Well Audio";
+  const title = getEpisodeDisplayTitle(episode, showTitle);
+  const description =
+    episodeListDescription(episode.description, 160) ??
+    episodeListDescription(episode.show?.summary || episode.show?.description, 160) ??
+    `Listen to ${title} from ${showTitle} on Deep Well Audio.`;
+  const image = normalizeArtworkSrc(episode.artwork_url) ?? normalizeArtworkSrc(episode.show?.artwork_url) ?? FALLBACK_ARTWORK_PATH;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      images: [{ url: image, alt: `${title} artwork` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
+
+export default async function EpisodePage({ params }: EpisodeRouteParams) {
   const { id } = await params;
   const safeId = typeof id === "string" ? id : "";
 

@@ -49,6 +49,8 @@ export const CURATED_YOUTUBE_SOURCES: CuratedYoutubeSource[] = [
     /**
      * Verified 2026-04: https://www.youtube.com/@gracechurchhotsprings → UChKe0huM96aCY8EsZfomx4w.
      * The direct channel Atom URL needs `hl=en`, so keep `rssUrl` set explicitly.
+     * Catalog ingestion lives in `data/source-feeds.ts`; this source is for curated-teachings discovery only,
+     * never the World Watch current-events pool.
      */
     channelId: "UChKe0huM96aCY8EsZfomx4w",
     sourceType: "youtube_rss",

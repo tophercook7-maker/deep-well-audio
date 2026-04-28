@@ -120,7 +120,7 @@ export async function getHomeRecentEpisodes(limit = 8): Promise<EpisodeWithShow[
     const pool = Math.min(120, Math.max(limit * 12, 48));
     const { data, error } = await supabase
       .from("episodes")
-      .select("*, show:shows!inner(slug,title,host,artwork_url,category,official_url)")
+      .select("*, show:shows!inner(slug,title,host,summary,description,artwork_url,category,official_url,tags)")
       .neq("lifecycle_status", "retired")
       .order("published_at", { ascending: false, nullsFirst: false })
       .limit(pool);
@@ -641,7 +641,7 @@ export async function getEpisodeById(id: string): Promise<{
   try {
     const { data, error } = await supabase
       .from("episodes")
-      .select("*, show:shows(slug,title,host,artwork_url,category,official_url)")
+      .select("*, show:shows(slug,title,host,summary,description,artwork_url,category,official_url,tags)")
       .eq("id", clean)
       .maybeSingle();
 
