@@ -57,7 +57,7 @@ export function CuratedVideoCard({
       ? primaryCat.shortLabel
       : `${CURATED_CATEGORY_META[item.categories[0]]?.shortLabel ?? primaryCat.shortLabel} · +${item.categories.length - 1}`;
   const guestGated = plan === "guest" && item.membersOnly;
-  /** Guests hitting a Premium World Watch strip see sign-in / upgrade first; signed-in free users keep one-click Watch. */
+  /** Optional premium teaser gates are for private library features; regular watching stays public. */
   const premiumGated = premiumTeaser && plan === "guest";
   const premiumUpsell = premiumTeaser && plan === "free";
   const compact = density === "compact";
@@ -205,14 +205,14 @@ export function CuratedVideoCard({
           ) : premiumGated ? (
             <>
               <Link
-                href={"/login?next=/world-watch" as Route}
+                href={`/login?next=${encodeURIComponent(loginNext)}` as Route}
                 className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full border border-accent/45 bg-accent/[0.12] px-4 py-2.5 text-sm font-medium text-amber-100/95 transition hover:border-accent/60 sm:min-h-0"
               >
                 <Lock className="h-4 w-4 opacity-90" aria-hidden />
-                Sign in for World Watch
+                Sign in to continue
               </Link>
               <Link
-                href={"/signup?next=/world-watch" as Route}
+                href={`/signup?next=${encodeURIComponent(loginNext)}` as Route}
                 className="inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-line/80 px-4 py-2 text-xs font-medium text-slate-300 transition hover:border-accent/35 hover:text-white sm:min-h-0"
               >
                 Create account

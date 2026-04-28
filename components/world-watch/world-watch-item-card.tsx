@@ -358,7 +358,7 @@ export function WorldWatchItemCard({
                       <Sparkles className="h-4 w-4" strokeWidth={1.75} aria-hidden />
                     </div>
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-200/75">Member study</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-200/75">Premium study</p>
                       <p className="mt-0.5 text-xs leading-snug text-slate-500">Written for prayer and conversation—not another hot take.</p>
                     </div>
                   </div>

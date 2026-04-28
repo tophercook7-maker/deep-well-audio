@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/signup`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/login`, lastModified: now, changeFrequency: "monthly", priority: 0.65 },
-    { url: `${base}/world-watch`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/world-watch`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
   ];
 
   const topicRoutes: MetadataRoute.Sitemap = getAllTopicSlugs().map((slug) => ({

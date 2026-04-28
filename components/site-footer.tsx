@@ -47,12 +47,6 @@ export function SiteFooter() {
           <span className="select-none text-slate-600" aria-hidden>
             ·
           </span>
-          <Link href={"/world-watch" as Route} className="transition hover:text-amber-100/85">
-            World Watch
-          </Link>
-          <span className="select-none text-slate-600" aria-hidden>
-            ·
-          </span>
           <Link href={"/library" as Route} className="transition hover:text-amber-100/85">
             Library
           </Link>

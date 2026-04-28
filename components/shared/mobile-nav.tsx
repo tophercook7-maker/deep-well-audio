@@ -62,7 +62,6 @@ export function MobileNav({
       <button
         type="button"
         className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-line/80 bg-soft/30 text-slate-100 md:hidden"
-        aria-expanded={open}
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
       >

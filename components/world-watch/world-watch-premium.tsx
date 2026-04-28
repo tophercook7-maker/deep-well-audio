@@ -46,14 +46,14 @@ export function WorldWatchPremium({ items }: { items: WorldWatchItemPublic[] }) 
           <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-accent/35 bg-accent/[0.14] text-amber-100/90">
             <Sparkles className="h-3.5 w-3.5" aria-hidden />
           </span>
-          <p className="text-xs font-medium tracking-wide text-slate-200">This week · member edition</p>
+          <p className="text-xs font-medium tracking-wide text-slate-200">This week · Premium digest</p>
         </div>
         <p className="mt-3 max-w-prose text-sm leading-[1.65] text-slate-400">
           Week of <span className="tabular-nums text-slate-300">{weekKey}</span> (Monday, UTC). Each item links out to primary sources—paced for
           reading and prayer, not breaking-news urgency.
         </p>
         <p className="mt-3 max-w-prose border-t border-line/35 pt-3 text-xs leading-[1.65] text-slate-500">
-          Stories below may include a <span className="text-slate-400">Member study</span> panel—pastoral commentary, Scripture lines, discernment
+          Stories below may include a <span className="text-slate-400">Premium study</span> panel—pastoral commentary, Scripture lines, discernment
           prompts, and takeaways you can carry into the week. They appear when we&apos;ve written them for that headline; the summary and reflection
           are always the spine of the piece.
         </p>

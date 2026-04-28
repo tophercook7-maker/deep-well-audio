@@ -348,7 +348,7 @@ export function WorldWatchAdminEditor(props: Props) {
         <div className="rounded-2xl border border-line/55 bg-soft/10 p-4 sm:p-5">
           <p className={fieldLabel}>Premium depth (optional)</p>
           <p className="mt-2 text-xs leading-relaxed text-slate-500">
-            Shown only on the <span className="text-slate-400">member World Watch</span> page in the “Member study” panel. Fill any subset; leave
+            Shown on the Premium World Watch page in the “Premium study” panel. Fill any subset; leave
             whole section empty for lightweight items. Scripture: one reference per line. Discernment &amp; takeaways: start lines with{" "}
             <code className="rounded bg-bg/80 px-1 text-[11px] text-slate-300">- </code> for bullets in the app.
           </p>

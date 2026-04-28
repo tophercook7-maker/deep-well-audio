@@ -1,5 +1,4 @@
 import type { Route } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { BackButton } from "@/components/buttons/back-button";
@@ -14,15 +13,6 @@ export const metadata = {
   description:
     "Free to listen. Premium to keep teachings, notes, and Scripture in one place—and return to what shaped you.",
 };
-
-function Bullet({ children }: { children: ReactNode }) {
-  return (
-    <li className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
-      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-      <span>{children}</span>
-    </li>
-  );
-}
 
 export default async function PricingPage() {
   const stripeReady = hasStripeBillingConfigured();
@@ -53,10 +43,12 @@ export default async function PricingPage() {
           Most people don&apos;t need more sermons. They need to stop losing the ones that mattered.
         </h2>
         <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-400/95">
-          <Bullet>Keep teachings that shaped you</Bullet>
-          <Bullet>Store your notes in one place</Bullet>
-          <Bullet>Return to what helped you grow</Bullet>
-          <Bullet>Build a steady rhythm of listening and study</Bullet>
+          {["Keep teachings that shaped you", "Store your notes in one place", "Return to what helped you grow", "Build a steady rhythm of listening and study"].map((text) => (
+            <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+              <span>{text}</span>
+            </li>
+          ))}
         </ul>
       </section>
 
@@ -68,10 +60,12 @@ export default async function PricingPage() {
           <div className="flex flex-col rounded-[26px] border border-line/50 bg-[rgba(10,14,20,0.55)] p-8 shadow-[0_24px_56px_-36px_rgba(0,0,0,0.55)] backdrop-blur-md sm:p-9">
             <h3 className="text-xl font-semibold text-white sm:text-2xl">Free</h3>
             <ul className="mt-8 flex-1 space-y-3">
-              <Bullet>Browse teaching</Bullet>
-              <Bullet>Listen anytime</Bullet>
-              <Bullet>Explore topics</Bullet>
-              <Bullet>Preview World Watch</Bullet>
+              {["Browse teaching", "Listen anytime", "Explore topics", "Preview World Watch"].map((text) => (
+                <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
             <div className="mt-10">
               <Link
@@ -92,11 +86,18 @@ export default async function PricingPage() {
               <h3 className="text-xl font-semibold text-white sm:text-2xl">Deep Well Premium</h3>
               <p className="mt-2 text-sm text-slate-500">$9/month or save with annual billing</p>
               <ul className="mt-8 flex-1 space-y-3">
-                <Bullet>Save teachings and build your library</Bullet>
-                <Bullet>Take and revisit notes</Bullet>
-                <Bullet>Resume where you left off</Bullet>
-                <Bullet>Follow topics that matter to you</Bullet>
-                <Bullet>Full access to World Watch</Bullet>
+                {[
+                  "Save teachings and build your library",
+                  "Take and revisit notes",
+                  "Resume where you left off",
+                  "Follow topics that matter to you",
+                  "Full World Watch digest",
+                ].map((text) => (
+                  <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                    <span>{text}</span>
+                  </li>
+                ))}
               </ul>
               <p className="mt-6 text-sm leading-relaxed text-slate-400/95">
                 Annual is for people who want a steadier rhythm, not another month of starting over.
@@ -121,7 +122,7 @@ export default async function PricingPage() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/65">Foundation (exploring)</p>
             <p className="mt-3 text-sm font-medium text-white">A lighter way to save teaching</p>
             <p className="mt-2 text-sm leading-relaxed text-slate-400/95">
-              We&apos;re considering a lower entry (around $5/mo) focused on saving and library basics—without full notes or World Watch.
+              We&apos;re considering a lower entry (around $5/mo) focused on saving and library basics—without full notes or the full World Watch digest.
               Not in checkout yet; we&apos;ll ship it when billing stays as calm as the product.
             </p>
             <Link

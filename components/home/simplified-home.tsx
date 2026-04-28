@@ -8,7 +8,6 @@ import { HomeStartListeningCard } from "@/components/home/home-start-listening-c
 import { HomeDailyScriptureRitual } from "@/components/home/home-daily-scripture-ritual";
 import { CTA, SITE_POSITIONING } from "@/lib/site-messaging";
 import { SignedInHabitBand } from "@/components/retention/signed-in-habit-band";
-import { LocalChurchInvite } from "@/components/church/local-church-invite";
 
 const START_LISTENING_MAX = 8;
 
@@ -280,8 +279,6 @@ export function SimplifiedHome({
         </div>
       </section>
 
-      <LocalChurchInvite />
-
       {/* Differentiation */}
       <section className="py-16 sm:py-20" aria-labelledby="home-diff-heading">
         <div className="container-shell">
@@ -355,7 +352,7 @@ export function SimplifiedHome({
                 </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Unlock full World Watch
+                  Full World Watch digest
                 </li>
               </ul>
               <p className="mt-6 text-sm leading-relaxed text-slate-400/95">

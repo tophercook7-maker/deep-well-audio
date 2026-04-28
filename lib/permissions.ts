@@ -2,7 +2,7 @@
  * Feature gating by account tier.
  *
  * Listening, browse, explore, podcast playback, and in-page YouTube embeds stay available to all users.
- * `world_watch` gates the full World Watch *written* digest and related premium surfaces—not third-party YouTube clips on `/world-watch`.
+ * `world_watch` gates the full World Watch written digest and related premium surfaces—not the public `/world-watch` page.
  * `curated_library` gates saves/notes/progress APIs only; watching curated YouTube does not use this flag.
  */
 

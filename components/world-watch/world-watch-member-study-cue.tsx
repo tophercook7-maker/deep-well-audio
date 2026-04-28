@@ -1,9 +1,7 @@
-import type { Route } from "next";
 import { BookMarked } from "lucide-react";
-import { FunnelLink } from "@/components/analytics/funnel-link";
 
 /**
- * Quiet invitation for guests / free users: written digest + study depth without hard sell.
+ * Quiet Premium invitation: written digest + study depth without hard sell.
  */
 export function WorldWatchMemberStudyCue({ compact = false }: { compact?: boolean }) {
   return (
@@ -12,7 +10,7 @@ export function WorldWatchMemberStudyCue({ compact = false }: { compact?: boolea
         "rounded-2xl border border-line/50 bg-[rgba(12,16,22,0.55)] backdrop-blur-md",
         compact ? "px-4 py-3 sm:px-6 sm:py-5" : "px-5 py-4 sm:px-6 sm:py-5",
       ].join(" ")}
-      aria-label="Member study"
+      aria-label="Premium World Watch study notes"
     >
       <div className={["flex flex-wrap items-start", compact ? "gap-2.5 sm:gap-4" : "gap-3 sm:gap-4"].join(" ")}>
         <div
@@ -26,18 +24,8 @@ export function WorldWatchMemberStudyCue({ compact = false }: { compact?: boolea
         </div>
         <div className="min-w-0 flex-1">
           <p className={compact ? "text-xs leading-[1.6] text-slate-400 sm:text-sm sm:leading-[1.65]" : "text-sm leading-[1.65] text-slate-400"}>
-            Members also receive the{" "}
-            <span className="text-slate-300">written digest</span>—curated links with reflection—plus optional study blocks (commentary, Scripture
-            lines, and takeaways) when we&apos;ve prepared them for a story. No pressure;{" "}
-            <FunnelLink
-              href={"/pricing" as Route}
-              funnelEvent="view_plans_click"
-              funnelData={{ placement: "world_watch_member_cue" }}
-              className="font-medium text-amber-200/80 underline-offset-2 transition hover:text-amber-100 hover:underline"
-            >
-              see plans
-            </FunnelLink>{" "}
-            whenever you want to read that layer.
+            Premium includes the <span className="text-slate-300">written digest</span>—curated links with reflection—plus optional study blocks
+            (commentary, Scripture lines, and takeaways) when we&apos;ve prepared them for a story.
           </p>
         </div>
       </div>
