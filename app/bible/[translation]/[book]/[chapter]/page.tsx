@@ -98,7 +98,7 @@ export default async function BibleChapterPage({ params }: Props) {
   };
 
   return (
-    <main className="container-shell py-12 sm:py-16">
+    <main className="mx-auto w-full max-w-[1800px] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="mb-10 space-y-3 border-b border-stone-800/45 pb-6">
         <Breadcrumbs
@@ -112,7 +112,7 @@ export default async function BibleChapterPage({ params }: Props) {
         />
         <SectionBackLink href="/bible" label="Back to Bible" tone="bible" />
       </div>
-      <div className="max-w-6xl">
+      <div className="w-full">
         <BibleChapterClient
           passage={passage}
           translation={translation}

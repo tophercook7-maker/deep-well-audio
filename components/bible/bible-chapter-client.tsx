@@ -376,7 +376,7 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
 
   return (
     <div>
-      <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)_minmax(0,300px)] lg:items-start lg:gap-x-14 lg:gap-y-10">
+      <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,200px)_minmax(0,1fr)_minmax(0,240px)] lg:items-start lg:gap-x-8 lg:gap-y-10 xl:grid-cols-[minmax(0,220px)_minmax(0,1fr)_minmax(0,280px)] xl:gap-x-10">
         <div className="order-1 min-w-0 lg:order-none lg:col-start-2 lg:row-start-1">
           <BibleReaderShell className="px-6 py-10 md:px-10 md:py-12 lg:px-12 lg:py-14">
               <div
@@ -445,7 +445,7 @@ export function BibleChapterClient({ passage, translation, urlBook, chapter, sig
           </Link>
         </aside>
 
-        <aside className="order-3 hidden lg:order-none lg:col-start-3 lg:row-start-1 lg:block lg:sticky lg:top-28 lg:border-l lg:border-stone-700/35 lg:pl-8">
+        <aside className="order-3 hidden lg:order-none lg:col-start-3 lg:row-start-1 lg:block lg:sticky lg:top-28 lg:border-l lg:border-stone-700/35 lg:pl-6">
           <BibleStudyPanel {...studyPanelProps} />
         </aside>
       </div>

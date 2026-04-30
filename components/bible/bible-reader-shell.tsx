@@ -14,7 +14,7 @@ type Props = {
 export function BibleReaderShell({ children, className = "", variant = "reading" }: Props) {
   /** Opaque warm paper — minimal chrome so Scripture stays the focus. */
   const reading =
-    "relative isolate z-10 mx-auto w-full max-w-[47rem] rounded-2xl border border-stone-300/50 bg-[#f5f2eb] text-stone-800 shadow-[0_1px_3px_rgba(0,0,0,0.05)]";
+    "relative isolate z-10 w-full rounded-2xl border border-stone-300/50 bg-[#f5f2eb] text-stone-800 shadow-[0_1px_3px_rgba(0,0,0,0.05)]";
 
   const full =
     "relative isolate z-10 rounded-2xl border border-stone-300/45 bg-[#f3efe6] text-stone-800 shadow-[0_1px_3px_rgba(0,0,0,0.05)]";
