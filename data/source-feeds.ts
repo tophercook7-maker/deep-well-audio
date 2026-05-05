@@ -288,6 +288,22 @@ export const sourceFeeds: SourceFeedSeed[] = [
     meatyScore: 8,
     active: true,
   },
+  {
+    showSlug: "upwords-with-max-lucado",
+    title: "UpWords with Max Lucado",
+    host: "Max Lucado · Oneplace.com",
+    summary: "One-minute daily devotionals from Max Lucado, offering biblical encouragement and practical hope for everyday life.",
+    category: "spiritual-growth",
+    sourceType: "rss",
+    rssUrl: "https://www.oneplace.com/ministries/upwords/subscribe/podcast.xml",
+    youtubeChannelId: null,
+    officialUrl: "https://www.oneplace.com/ministries/upwords/",
+    appleUrl: "https://podcasts.apple.com/us/podcast/upwords-with-max-lucado-on-oneplace-com/id1631073704",
+    tags: ["Devotional", "Daily", "Max Lucado", "Oneplace"],
+    featured: false,
+    meatyScore: 6,
+    active: true,
+  },
 
   /* ─── Discernment / apologetics / worldview (curated additions) ─── */
   {
