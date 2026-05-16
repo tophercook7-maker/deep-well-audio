@@ -14,7 +14,7 @@ import type { UserPlan } from "@/lib/permissions";
 import { CTA } from "@/lib/site-messaging";
 
 const ctaSignupClass =
-  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-12px_rgba(212,175,55,0.4)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 max-md:min-h-[40px] max-md:px-3 max-md:text-[13px]";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-12px_rgba(212,175,55,0.4)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 max-md:min-h-[40px] max-md:gap-1.5 max-md:py-1 max-md:px-3 max-md:text-[13px]";
 
 const MOBILE_HEADER_MQ = "(max-width: 767px)";
 
@@ -88,8 +88,8 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
         ].join(" ")}
         style={{ backgroundColor: "rgba(11, 18, 32, 0.38)" }}
       >
-        <div className="container-shell py-2 md:py-[1.125rem]">
-          <div className="flex w-full min-w-0 flex-nowrap items-center gap-3">
+        <div className="container-shell max-md:py-1 md:py-[1.125rem]">
+          <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 md:gap-3">
             <Link
               href="/"
               aria-label="Deep Well Audio — Home"
@@ -99,9 +99,9 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
                 variant="header"
                 priority
                 showWordmark
-                className="max-md:!max-h-10"
-                brandClassName="max-md:w-[min(92vw,15.5rem)] max-md:gap-0.5"
-                wordmarkClassName="max-md:!text-base max-md:!leading-tight"
+                className="max-md:!max-h-6 max-md:!w-auto"
+                brandClassName="max-md:w-[min(88vw,13rem)] max-md:!gap-0"
+                wordmarkClassName="max-md:!text-[13px] max-md:!leading-snug max-md:!tracking-tight"
               />
             </Link>
             <SiteNavDesktop pathname={pathname} signedIn={signedIn} />

@@ -61,11 +61,11 @@ export function MobileNav({
     <>
       <button
         type="button"
-        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-line/80 bg-soft/30 text-slate-100 md:hidden"
+        className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-line/80 bg-soft/30 text-slate-100 md:hidden"
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
       >
-        {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
+        {open ? <X className="h-[18px] w-[18px]" aria-hidden /> : <Menu className="h-[18px] w-[18px]" aria-hidden />}
         <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
       </button>
 
