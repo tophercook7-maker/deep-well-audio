@@ -20,7 +20,7 @@ const MOBILE_HEADER_MQ = "(max-width: 767px)";
 
 export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }) {
   const pathname = usePathname() ?? "/";
-  const headerRef = useRef<HTMLElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const [spacerHeight, setSpacerHeight] = useState(0);
@@ -42,7 +42,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
   }, []);
 
   useLayoutEffect(() => {
-    const el = headerRef.current;
+    const el = toolbarRef.current;
     if (!el) return;
     const ro = new ResizeObserver(() => {
       setSpacerHeight(el.offsetHeight);
@@ -78,51 +78,57 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
   return (
     <>
       <header
-        ref={headerRef}
         className={[
-          "z-50 border-b border-line/70 bg-transparent shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-md backdrop-saturate-125 max-md:border-line/50 max-md:shadow-[0_4px_22px_rgba(0,0,0,0.12)]",
-          "md:sticky md:top-0 md:translate-y-0",
+          "z-50",
+          "md:sticky md:top-0",
           "max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:w-full",
-          "max-md:transition-transform max-md:duration-300 max-md:ease-in-out",
-          scrollHiddenMobile ? "max-md:-translate-y-full" : "max-md:translate-y-0",
         ].join(" ")}
-        style={{ backgroundColor: "rgba(11, 18, 32, 0.38)" }}
       >
-        <div className="container-shell max-md:py-1 md:py-[1.125rem]">
-          <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 md:gap-3">
-            <Link
-              href="/"
-              aria-label="Deep Well Audio — Home"
-              className="flex shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
-            >
-              <DeepWellLogo
-                variant="header"
-                priority
-                showWordmark
-                className="max-md:!max-h-6 max-md:!w-auto"
-                brandClassName="max-md:w-[min(88vw,13rem)] max-md:!gap-0"
-                wordmarkClassName="max-md:!text-[13px] max-md:!leading-snug max-md:!tracking-tight"
-              />
-            </Link>
-            <SiteNavDesktop pathname={pathname} signedIn={signedIn} />
-            <div className="ml-auto flex shrink-0 items-center gap-2">
-              <MobileNav pathname={pathname} signedIn={signedIn} />
-              {!user ? (
-                <>
-                  <Link
-                    href={"/login" as Route}
-                    className="hidden min-h-[40px] items-center rounded-full border border-line/80 px-3 py-2 text-sm text-muted transition hover:border-accent/35 hover:text-text sm:inline-flex"
-                  >
-                    <LogIn className="mr-1.5 h-4 w-4" aria-hidden />
-                    Sign In
-                  </Link>
-                  <Link href={"/signup" as Route} className={ctaSignupClass}>
-                    {CTA.CREATE_FREE_ACCOUNT}
-                  </Link>
-                </>
-              ) : null}
-              <div className="border-l border-line/80 pl-2 md:pl-4">
-                <AuthMenu user={user} plan={plan} />
+        <div
+          ref={toolbarRef}
+          style={{ backgroundColor: "rgba(11, 18, 32, 0.38)" }}
+          className={[
+            "border-b border-line/70 bg-transparent shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-md backdrop-saturate-125 max-md:border-line/50 max-md:shadow-[0_4px_22px_rgba(0,0,0,0.12)]",
+            "max-md:transition-transform max-md:duration-300 max-md:ease-in-out",
+            scrollHiddenMobile ? "max-md:-translate-y-full" : "max-md:translate-y-0",
+          ].join(" ")}
+        >
+          <div className="container-shell max-md:py-1 md:py-[1.125rem]">
+            <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 md:gap-3">
+              <Link
+                href="/"
+                aria-label="Deep Well Audio — Home"
+                className="flex shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
+              >
+                <DeepWellLogo
+                  variant="header"
+                  priority
+                  showWordmark
+                  className="max-md:!max-h-6 max-md:!w-auto"
+                  brandClassName="max-md:w-[min(88vw,13rem)] max-md:!gap-0"
+                  wordmarkClassName="max-md:!text-[13px] max-md:!leading-snug max-md:!tracking-tight"
+                />
+              </Link>
+              <SiteNavDesktop pathname={pathname} signedIn={signedIn} />
+              <div className="ml-auto flex shrink-0 items-center gap-2">
+                <MobileNav pathname={pathname} signedIn={signedIn} />
+                {!user ? (
+                  <>
+                    <Link
+                      href={"/login" as Route}
+                      className="hidden min-h-[40px] items-center rounded-full border border-line/80 px-3 py-2 text-sm text-muted transition hover:border-accent/35 hover:text-text sm:inline-flex"
+                    >
+                      <LogIn className="mr-1.5 h-4 w-4" aria-hidden />
+                      Sign In
+                    </Link>
+                    <Link href={"/signup" as Route} className={ctaSignupClass}>
+                      {CTA.CREATE_FREE_ACCOUNT}
+                    </Link>
+                  </>
+                ) : null}
+                <div className="border-l border-line/80 pl-2 md:pl-4">
+                  <AuthMenu user={user} plan={plan} />
+                </div>
               </div>
             </div>
           </div>
