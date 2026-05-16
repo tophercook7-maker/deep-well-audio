@@ -31,7 +31,7 @@ export function SiteNavMobileRail({ pathname }: { pathname: string }) {
   return (
     <nav
       className={[
-        "max-md:flex md:hidden",
+        "max-lg:flex lg:hidden",
         "h-10 max-h-10 min-h-0 w-full max-w-full flex-row flex-nowrap items-center gap-1 overflow-y-hidden overflow-x-auto overscroll-x-contain whitespace-nowrap [-webkit-overflow-scrolling:touch]",
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
       ].join(" ")}
@@ -69,8 +69,8 @@ export function SiteNavDesktop({
   signedIn: boolean;
 }) {
   return (
-    <div className="max-md:hidden min-w-0 flex-1 flex-col gap-2 md:flex">
-      <div className="flex flex-wrap items-center justify-end gap-1.5 md:gap-2">
+    <div className="hidden min-w-0 flex-1 flex-col gap-2 lg:flex">
+      <div className="flex flex-wrap items-center justify-end gap-1.5 lg:gap-2">
         <span className="sr-only">Primary</span>
         {PRIMARY_NAV.map((item) => {
           const Icon = primaryIcon[item.href] ?? BookOpen;
@@ -113,7 +113,7 @@ export function SiteNavDesktop({
             })
           : null}
       </div>
-      <div className="flex flex-wrap items-center justify-end gap-1.5 border-t border-line/40 pt-2 md:gap-2">
+      <div className="flex flex-wrap items-center justify-end gap-1.5 border-t border-line/40 pt-2 lg:gap-2">
         <span className="sr-only">More</span>
         {SECONDARY_NAV.map((item) => {
           const Icon = secondaryIcon[item.href] ?? Headphones;

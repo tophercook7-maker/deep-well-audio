@@ -63,7 +63,7 @@ export function MobileNav({
     <>
       <button
         type="button"
-        className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-line/80 bg-soft/30 text-slate-100 md:hidden"
+        className="flex min-h-10 min-w-10 items-center justify-center rounded-full border border-line/80 bg-soft/30 text-slate-100 lg:hidden"
         aria-controls="mobile-nav-panel"
         onClick={() => setOpen((o) => !o)}
       >
@@ -73,7 +73,7 @@ export function MobileNav({
 
       {open
         ? createPortal(
-            <div className="fixed inset-0 z-[100] md:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
+            <div className="fixed inset-0 z-[100] lg:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
               <button
                 type="button"
                 className="absolute inset-0 bg-black/55 backdrop-blur-sm"

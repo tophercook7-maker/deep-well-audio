@@ -14,9 +14,10 @@ import type { UserPlan } from "@/lib/permissions";
 import { CTA } from "@/lib/site-messaging";
 
 const ctaSignupClass =
-  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-12px_rgba(212,175,55,0.4)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 max-md:min-h-[40px] max-md:gap-1.5 max-md:py-1 max-md:px-3 max-md:text-[13px]";
+  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-12px_rgba(212,175,55,0.4)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 max-lg:min-h-[40px] max-lg:gap-1.5 max-lg:py-1 max-lg:px-3 max-lg:text-[13px]";
 
-const MOBILE_HEADER_MQ = "(max-width: 767px)";
+/** Matches Tailwind `lg` — below this the header stays compact (drawer + rail); full wrap nav stacks badly on tablets. */
+const MOBILE_HEADER_MQ = "(max-width: 1023px)";
 
 export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }) {
   const pathname = usePathname() ?? "/";
@@ -80,34 +81,34 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
       <header
         className={[
           "z-50",
-          "md:sticky md:top-0",
-          "max-md:fixed max-md:left-0 max-md:right-0 max-md:top-0 max-md:w-full",
+          "lg:sticky lg:top-0",
+          "max-lg:fixed max-lg:left-0 max-lg:right-0 max-lg:top-0 max-lg:w-full",
         ].join(" ")}
       >
         <div
           ref={toolbarRef}
           style={{ backgroundColor: "rgba(11, 18, 32, 0.38)" }}
           className={[
-            "border-b border-line/70 bg-transparent shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-md backdrop-saturate-125 max-md:border-line/50 max-md:shadow-[0_4px_22px_rgba(0,0,0,0.12)]",
-            "max-md:transition-transform max-md:duration-300 max-md:ease-in-out",
-            scrollHiddenMobile ? "max-md:-translate-y-full" : "max-md:translate-y-0",
+            "border-b border-line/70 bg-transparent shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-md backdrop-saturate-125 max-lg:border-line/50 max-lg:shadow-[0_4px_22px_rgba(0,0,0,0.12)]",
+            "max-lg:transition-transform max-lg:duration-300 max-lg:ease-in-out",
+            scrollHiddenMobile ? "max-lg:-translate-y-full" : "max-lg:translate-y-0",
           ].join(" ")}
         >
-          <div className="container-shell max-md:py-1 md:py-[1.125rem]">
-            <div className="flex w-full min-w-0 flex-col gap-1 md:flex-row md:items-center md:gap-3">
-              <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 md:flex-1">
+          <div className="container-shell max-lg:py-1 lg:py-[1.125rem]">
+            <div className="flex w-full min-w-0 flex-col gap-0.5 lg:flex-row lg:items-center lg:gap-3">
+              <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 lg:flex-1">
                 <Link
                   href="/"
                   aria-label="Deep Well Audio — Home"
-                  className="flex min-w-0 max-md:min-w-0 max-md:shrink md:shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
+                  className="flex min-w-0 max-lg:min-w-0 max-lg:shrink lg:shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
                 >
                   <DeepWellLogo
                     variant="header"
                     priority
                     showWordmark
-                    className="max-md:!max-h-6 max-md:!w-auto"
-                    brandClassName="max-md:w-[min(92vw,16rem)] max-md:!gap-0 md:w-auto"
-                    wordmarkClassName="max-md:!text-[13px] max-md:!leading-snug max-md:!tracking-tight"
+                    className="max-lg:!max-h-6 max-lg:!w-auto"
+                    brandClassName="max-lg:w-[min(92vw,16rem)] max-lg:!gap-0 lg:w-auto"
+                    wordmarkClassName="max-lg:!text-[13px] max-lg:!leading-snug max-lg:!tracking-tight"
                   />
                 </Link>
                 <SiteNavDesktop pathname={pathname} signedIn={signedIn} />
@@ -117,17 +118,17 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
                     <>
                       <Link
                         href={"/login" as Route}
-                        className="hidden min-h-[40px] items-center rounded-full border border-line/80 px-3 py-2 text-sm text-muted transition hover:border-accent/35 hover:text-text sm:inline-flex"
+                        className="hidden min-h-[40px] items-center rounded-full border border-line/80 px-3 py-2 text-sm text-muted transition hover:border-accent/35 hover:text-text lg:inline-flex"
                       >
                         <LogIn className="mr-1.5 h-4 w-4" aria-hidden />
                         Sign In
                       </Link>
-                      <Link href={"/signup" as Route} className={[ctaSignupClass, "max-sm:hidden"].join(" ")}>
+                      <Link href={"/signup" as Route} className={[ctaSignupClass, "max-lg:hidden"].join(" ")}>
                         {CTA.JOIN_MEMBERSHIP}
                       </Link>
                     </>
                   ) : null}
-                  <div className="border-l border-line/80 pl-2 md:pl-4">
+                  <div className="border-l border-line/80 pl-2 lg:pl-4">
                     <AuthMenu user={user} plan={plan} />
                   </div>
                 </div>
@@ -137,7 +138,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
           </div>
         </div>
       </header>
-      <div aria-hidden className="shrink-0 md:hidden" style={{ height: isMobileLayout ? spacerHeight : 0 }} />
+      <div aria-hidden className="shrink-0 lg:hidden" style={{ height: isMobileLayout ? spacerHeight : 0 }} />
     </>
   );
 }
