@@ -35,7 +35,7 @@ export function SimplifiedHome({
   const statsLine =
     showCount > 0 && episodeCount > 0
       ? `${showCount} trusted sources · ${episodeCount.toLocaleString()}+ teachings`
-      : "Curated sources · Trusted voices · No account required";
+      : "Curated sources · Listen & watch free · No account needed";
 
   return (
     <>
@@ -58,8 +58,8 @@ export function SimplifiedHome({
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-400/95">
             {sessionUser
-              ? "Ready to continue? Pick up where you left off—or open Scripture whenever it feels right."
-              : "Listen, read, and study in one calm place. Stay grounded in the Word at your pace."}
+              ? "Your listening, reads, and saved work stay in one thread—pick up where you left off or dive back into Scripture anytime."
+              : "Listen, watch, read, and study in one calm rhythm. Explore free as a guest—or become a member so everything you do while signed in stays threaded together for study."}
           </p>
           <div className="mt-10 max-w-2xl">
             <HomeDailyScriptureRitual />
@@ -182,7 +182,7 @@ export function SimplifiedHome({
             ))}
           </ul>
           <p className="mt-10 max-w-2xl text-base leading-relaxed text-slate-400/95">
-            Deep Well helps you return to what mattered.
+            Deep Well gathers what mattered so nothing scatters.
           </p>
         </div>
       </section>
@@ -227,9 +227,9 @@ export function SimplifiedHome({
                 title: "Discover",
                 text: "Browse trusted teachers and topics—curated, not chaotic.",
               },
-              { step: "2", title: "Listen", text: "Stream high-quality teaching for free." },
-              { step: "3", title: "Save", text: "Keep sermons, notes, and passages in one place." },
-              { step: "4", title: "Return", text: "Pick up where you left off and go deeper over time." },
+              { step: "2", title: "Listen & watch", text: "Stream audio and curated video teaching for free." },
+              { step: "3", title: "Keep it together", text: "Become a member—saves, Scripture, notes, and progress land in one ongoing library." },
+              { step: "4", title: "Return", text: "Reopen the same threads—sermons, video, notes, and Scripture in one path." },
             ].map((s) => (
               <li
                 key={s.step}
@@ -251,7 +251,7 @@ export function SimplifiedHome({
             <h2 id="home-featured-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
               Start with what others keep coming back to
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted">Teaching worth saving—open a card to listen.</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">Teaching worth saving—open a card to listen or watch.</p>
           </div>
           {row.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -311,19 +311,19 @@ export function SimplifiedHome({
       >
         <div className="container-shell">
           <h2 id="home-plans-heading" className="max-w-3xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Free gets you listening. Premium helps you keep growing.
+            Free to listen & watch—membership keeps it all unified.
           </h2>
           <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="rounded-[22px] border border-line/55 bg-[rgba(10,14,20,0.5)] p-8 backdrop-blur-md sm:p-9">
-              <h3 className="text-xl font-semibold text-white">Free</h3>
+              <h3 className="text-xl font-semibold text-white">Listen & watch free</h3>
               <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-300/95">
                 <li className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Browse teaching
+                  Browse teachings (audio &amp; curated video)
                 </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Listen anytime
+                  Listen anytime, watch freely
                 </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
@@ -334,6 +334,10 @@ export function SimplifiedHome({
             <div className="rounded-[22px] border border-accent/25 bg-gradient-to-br from-[rgba(24,32,48,0.75)] to-[rgba(8,11,18,0.88)] p-8 shadow-[0_24px_56px_-36px_rgba(212,175,55,0.15)] backdrop-blur-md sm:p-9">
               <h3 className="text-xl font-semibold text-white">Premium — $9/month</h3>
               <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-200/95">
+                <li className="flex gap-2">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                  One library for everything you do while signed in
+                </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
                   Save teachings
@@ -356,7 +360,7 @@ export function SimplifiedHome({
                 </li>
               </ul>
               <p className="mt-6 text-sm leading-relaxed text-slate-400/95">
-                Transformation over time—not a checklist of features.
+                Stay study-ready—audio, video, notes, and Scripture stay linked as you go.
               </p>
             </div>
           </div>
@@ -367,7 +371,7 @@ export function SimplifiedHome({
       <section className="border-t border-line/55 bg-[rgba(7,10,16,0.55)] py-16 sm:py-20" aria-labelledby="home-final-heading">
         <div className="container-shell text-center">
           <h2 id="home-final-heading" className="mx-auto max-w-2xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Start listening for free. Keep what matters when you&apos;re ready.
+            Listen & watch free—join to keep your whole walk in one study-ready place.
           </h2>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link

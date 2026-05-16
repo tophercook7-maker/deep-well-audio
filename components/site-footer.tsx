@@ -16,11 +16,11 @@ export function SiteFooter() {
           <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
         </div>
         <p className="mx-auto mt-2 max-w-lg text-[13px] leading-relaxed text-slate-500">
-          Listen freely.{" "}
+          Listen and watch freely.{" "}
           <Link href={"/pricing" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-100/90 hover:underline">
             {CTA.SEE_PREMIUM}
           </Link>{" "}
-          to save teachings, keep notes, and build a library that lasts.
+          to keep teaching, Scripture, notes, listening, and video stitched into one calm library—everything you do while signed in stays together for study.
         </p>
         <p className="mt-5 text-[13px] leading-relaxed text-slate-600">
           © {year}

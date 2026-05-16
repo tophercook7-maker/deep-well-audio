@@ -26,7 +26,7 @@ export type TopicDefinition = {
   /** Bottom CTA (see `TopicSeoCta`). */
   ctaHeading?: string;
   ctaSupportLine?: string;
-  /** When false, only Listen Free + Create account buttons are emphasized. */
+  /** When false, only Listen Free + Become a member buttons are emphasized. */
   ctaShowPremiumLink?: boolean;
   /** Optional extra copy for flagship topics (e.g. End times). */
   spotlight?: string;
@@ -46,6 +46,15 @@ export type TopicDefinition = {
   /** Soft save CTA between scripture and featured teachings. */
   showMidPageSaveCta?: boolean;
 };
+
+/**
+ * Default topic hub footer body for `TopicSeoCta` — free listening/watching vs Premium keeping work unified and study-ready.
+ */
+export const DEFAULT_TOPIC_HUB_CTA_SUPPORT =
+  "Listening and curated teaching video are free without an account. Become a member to keep sermon audio, rewatches, Scripture highlights, notes, and listening progress threaded together in one study-ready library.";
+
+/** Default heading above the topic hub `TopicSeoCta` strip. */
+export const DEFAULT_TOPIC_HUB_CTA_HEADING = "Start listening & watching free";
 
 /** All topic routes we support under /topics/[slug]. */
 export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
@@ -69,8 +78,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     episodeTagSlugs: ["end-times", "prophecy", "eschatology", "revelation"],
     relatedSlugs: ["discernment", "faith"],
     relatedExtraLinks: [{ href: "/world-watch", label: "World Watch" }],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep important teachings in one place.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   prophecy: {
@@ -110,8 +119,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Episodes tagged for discernment and testing teaching in the directory.",
     episodeTagSlugs: ["discernment", "false-teaching", "theology"],
     relatedSlugs: ["doubt", "false-teaching", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save what is worth returning to.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "false-teaching": {
@@ -154,8 +163,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Marriage- and family-tagged teaching in the directory.",
     episodeTagSlugs: ["marriage", "theology", "worldview"],
     relatedSlugs: ["forgiveness", "love", "obedience"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth returning to.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   parenting: {
@@ -176,8 +185,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Family, home, and formation tags surface parenting-shaped teaching.",
     episodeTagSlugs: ["marriage", "spiritual-growth", "theology", "worldview"],
     relatedSlugs: ["wisdom", "obedience", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   work: {
@@ -198,8 +207,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Worldview, purpose, and doctrine tags surface work- and vocation-shaped teaching.",
     episodeTagSlugs: ["worldview", "spiritual-growth", "theology"],
     relatedSlugs: ["purpose", "calling", "obedience"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   money: {
@@ -220,8 +229,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Worldview, faith, and wisdom tags surface stewardship- and money-shaped teaching.",
     episodeTagSlugs: ["worldview", "theology", "spiritual-growth"],
     relatedSlugs: ["contentment", "faith", "wisdom"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth revisiting.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   trials: {
@@ -242,8 +251,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Suffering, growth, and faith-shaped teaching in the directory.",
     episodeTagSlugs: ["suffering", "spiritual-growth", "theology"],
     relatedSlugs: ["suffering", "faith", "perseverance"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what is shaping you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   wisdom: {
@@ -264,8 +273,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Discernment, theology, and spiritual-growth tags surface wisdom-shaped teaching.",
     episodeTagSlugs: ["discernment", "theology", "spiritual-growth"],
     relatedSlugs: ["discernment", "obedience", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   love: {
@@ -286,8 +295,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Marriage, theology, and growth tags surface love-shaped teaching.",
     episodeTagSlugs: ["marriage", "theology", "spiritual-growth"],
     relatedSlugs: ["marriage", "grace", "forgiveness"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   contentment: {
@@ -308,8 +317,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Faith, worldview, and wisdom tags surface contentment-shaped teaching.",
     episodeTagSlugs: ["spiritual-growth", "theology", "worldview"],
     relatedSlugs: ["money", "faith", "wisdom"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth revisiting.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   perseverance: {
@@ -330,8 +339,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Suffering and spiritual-growth tags surface endurance-shaped teaching.",
     episodeTagSlugs: ["suffering", "spiritual-growth", "theology"],
     relatedSlugs: ["trials", "faith", "suffering"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what is shaping you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "forgiveness-in-life": {
@@ -352,8 +361,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Forgiveness, grace, and reconciliation-shaped teaching in the directory.",
     episodeTagSlugs: ["forgiveness", "marriage", "spiritual-growth", "theology"],
     relatedSlugs: ["forgiveness", "grace", "repentance"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "suffering-and-loss": {
@@ -374,8 +383,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Suffering, lament, and hope-shaped teaching in the directory.",
     episodeTagSlugs: ["suffering", "spiritual-growth", "theology"],
     relatedSlugs: ["suffering", "eternal-life", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   suffering: {
@@ -396,8 +405,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Episodes tagged around suffering, lament, and hope in the directory.",
     episodeTagSlugs: ["suffering"],
     relatedSlugs: ["anxiety", "faith", "prayer"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth returning to.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   worldview: {
@@ -425,8 +434,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Episodes tagged for church history and historical theology in the catalog.",
     episodeTagSlugs: ["church-history", "theology"],
     relatedSlugs: ["discernment", "faith", "spiritual-growth"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth revisiting.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "spiritual-growth": {
@@ -447,8 +456,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Tagged episodes on formation, holiness, and following Jesus—drawn from the catalog.",
     episodeTagSlugs: ["spiritual-growth", "knowing-god"],
     relatedSlugs: ["faith", "prayer", "obedience"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep track of what is shaping you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   anxiety: {
@@ -483,8 +492,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Recent episodes tagged for this topic—listen freely, no account required.",
     episodeTagSlugs: ["anxiety-and-trust"],
     relatedSlugs: ["faith", "suffering", "prayer"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Save what matters and come back to it anytime. Build a library of teaching that shaped you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   faith: {
@@ -518,8 +527,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Episodes drawn from growth, knowing God, and core doctrine tags in the directory.",
     episodeTagSlugs: ["spiritual-growth", "knowing-god", "theology"],
     relatedSlugs: ["anxiety", "purpose", "spiritual-growth"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Save what matters and come back to it anytime. Build a library of teaching that shaped you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "trusting-god": {
@@ -540,8 +549,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Growth, knowing God, and doctrine tags surface trust-shaped teaching in the directory.",
     episodeTagSlugs: ["spiritual-growth", "knowing-god", "theology"],
     relatedSlugs: ["faith", "fear", "suffering"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters over time.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   purpose: {
@@ -575,8 +584,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Tagged episodes on meaning, identity, and faithful living in the catalog.",
     episodeTagSlugs: ["worldview", "spiritual-growth", "identity-in-christ", "theology"],
     relatedSlugs: ["faith", "identity", "obedience"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Save what matters and come back to it anytime. Build a library of teaching that shaped you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   calling: {
@@ -597,8 +606,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Meaning, identity, and worldview tags surface vocation and calling-shaped teaching.",
     episodeTagSlugs: ["worldview", "spiritual-growth", "identity-in-christ", "theology"],
     relatedSlugs: ["purpose", "obedience", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings you want to return to.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   prayer: {
@@ -619,8 +628,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     ],
     featuredSectionHeading: "Teaching on Prayer",
     featuredSectionSubline: "Growth and knowing-God tags surface prayer-shaped teaching in the directory.",
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   repentance: {
@@ -641,8 +650,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Doctrine, growth, and forgiveness-tagged episodes in the directory.",
     episodeTagSlugs: ["theology", "spiritual-growth", "forgiveness"],
     relatedSlugs: ["obedience", "spiritual-growth", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what is shaping you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   doubt: {
@@ -663,8 +672,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Discernment, doctrine, and growth tags help surface honest, grounded teaching.",
     episodeTagSlugs: ["discernment", "theology", "spiritual-growth"],
     relatedSlugs: ["faith", "discernment", "suffering"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters over time.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   fear: {
@@ -685,8 +694,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Anxiety-and-trust and suffering tags surface episodes that speak to fear and peace.",
     episodeTagSlugs: ["anxiety-and-trust", "suffering"],
     relatedSlugs: ["anxiety", "faith", "trusting-god"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth returning to.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   identity: {
@@ -707,8 +716,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Episodes tagged identity-in-Christ and related themes in the catalog.",
     episodeTagSlugs: ["identity-in-christ", "worldview", "theology"],
     relatedSlugs: ["purpose", "faith", "spiritual-growth"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save what matters and come back to it later.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   obedience: {
@@ -729,8 +738,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     ],
     featuredSectionHeading: "Teaching on Obedience",
     featuredSectionSubline: "Doctrine, growth, and worldview tags surface obedience-shaped teaching in the catalog.",
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   forgiveness: {
@@ -751,8 +760,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Forgiveness, growth, and doctrine tags surface teaching on mercy and reconciliation in the catalog.",
     episodeTagSlugs: ["forgiveness", "spiritual-growth", "theology"],
     relatedSlugs: ["grace", "repentance", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   grace: {
@@ -773,8 +782,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Doctrine and spiritual-growth tags surface teaching on grace, mercy, and the gospel.",
     episodeTagSlugs: ["theology", "spiritual-growth"],
     relatedSlugs: ["gospel", "forgiveness", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   salvation: {
@@ -795,8 +804,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Theology, growth, and knowing-God tags surface teaching on redemption and new life.",
     episodeTagSlugs: ["theology", "spiritual-growth", "knowing-god"],
     relatedSlugs: ["gospel", "faith", "assurance"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   sanctification: {
@@ -817,8 +826,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Growth, doctrine, and holiness-shaped teaching in the directory.",
     episodeTagSlugs: ["spiritual-growth", "theology", "knowing-god"],
     relatedSlugs: ["spiritual-growth", "obedience", "grace"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what is shaping you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   holiness: {
@@ -839,8 +848,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Doctrine and growth tags surface teaching on holy living and devotion.",
     episodeTagSlugs: ["theology", "spiritual-growth", "worldview"],
     relatedSlugs: ["sanctification", "obedience", "repentance"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to save teachings worth revisiting.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   worship: {
@@ -861,8 +870,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Knowing God and spiritual-growth tags surface worship-shaped teaching.",
     episodeTagSlugs: ["knowing-god", "spiritual-growth", "theology"],
     relatedSlugs: ["faith", "discipleship", "holiness"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   discipleship: {
@@ -883,8 +892,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Growth, obedience, and doctrine tags surface discipleship-shaped teaching.",
     episodeTagSlugs: ["spiritual-growth", "theology", "worldview"],
     relatedSlugs: ["spiritual-growth", "obedience", "faith"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   gospel: {
@@ -905,8 +914,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Doctrine and growth tags surface gospel-centered teaching.",
     episodeTagSlugs: ["theology", "spiritual-growth", "knowing-god"],
     relatedSlugs: ["salvation", "grace", "repentance"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what is shaping you.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "eternal-life": {
@@ -927,8 +936,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Theology, last things, and hope-shaped teaching in the directory.",
     episodeTagSlugs: ["theology", "spiritual-growth", "eschatology", "end-times"],
     relatedSlugs: ["salvation", "faith", "suffering"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to return to what matters.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   assurance: {
@@ -949,8 +958,8 @@ export const TOPIC_DEFINITIONS: Record<string, TopicDefinition> = {
     featuredSectionSubline: "Doctrine, growth, and knowing-God tags surface teaching on confidence and rest.",
     episodeTagSlugs: ["theology", "spiritual-growth", "knowing-god"],
     relatedSlugs: ["salvation", "faith", "doubt"],
-    ctaHeading: "Start listening for free",
-    ctaSupportLine: "Create a free account to keep what matters close.",
+    ctaHeading: DEFAULT_TOPIC_HUB_CTA_HEADING,
+    ctaSupportLine: DEFAULT_TOPIC_HUB_CTA_SUPPORT,
     ctaShowPremiumLink: false,
   },
   "knowing-god": {

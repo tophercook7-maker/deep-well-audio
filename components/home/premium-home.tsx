@@ -481,12 +481,12 @@ function LibrarySaveSection({ plan }: { plan: UserPlan }) {
               Save what mattered. Come back to it.
             </h2>
             <p className="mt-5 text-base leading-relaxed text-slate-300/95 sm:text-[1.0625rem]">
-              Create a free account to keep sermons, teaching, and notes in one quiet place.
+              Browse stays free for audio and curated video—as a member, everything you accumulate while logged in threads into one library you can revisit and study together.
             </p>
             <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-300/95">
               <li className="flex gap-2">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                Save teachings worth revisiting
+                Tie audio saves to curated teaching video when it&apos;s in the catalog
               </li>
               <li className="flex gap-2">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
@@ -494,7 +494,7 @@ function LibrarySaveSection({ plan }: { plan: UserPlan }) {
               </li>
               <li className="flex gap-2">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                Keep your listening from getting lost
+                Keep listens and rewatches from getting lost across devices
               </li>
             </ul>
             <div className="mt-8">
@@ -503,7 +503,7 @@ function LibrarySaveSection({ plan }: { plan: UserPlan }) {
                   href={"/signup?next=/library" as Route}
                   className="inline-flex min-h-[48px] items-center justify-center rounded-[22px] bg-accent px-7 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_28px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
                 >
-                  Create Free Account
+                  {CTA.JOIN_MEMBERSHIP}
                 </Link>
               ) : (
                 <FunnelLink
@@ -585,10 +585,10 @@ function PricingTeaser() {
       <div className="container-shell">
         <div className="mx-auto max-w-3xl rounded-[26px] border border-line/50 bg-[rgba(10,14,20,0.45)] p-8 text-center shadow-[0_24px_56px_-36px_rgba(0,0,0,0.55)] backdrop-blur-md sm:p-10">
           <h2 id="premium-price-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Free to start. Helpful when you are ready for more.
+            Free to hear and watch. Join to keep everything in one rhythm.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-400 sm:text-base">
-            Listen freely. Upgrade when you want a more permanent place to save, return, and stay with what matters.
+            No membership required to hear or watch curated teaching. Become a member when you want sermon audio, curated video where available, Scripture, notes, and listening progress braided into one study-ready shelf.
           </p>
           <div className="mt-8">
             <FunnelLink
@@ -614,14 +614,14 @@ function FinalCta() {
           Build a library that helps you grow.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base text-slate-300/95">
-          A calmer place to return to teaching, notes, and Scripture—without the scroll.
+          Bring audio, curated video where it appears, Scripture, notes, and listening resumes into one place that stays approachable when life gets noisy.
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3">
           <Link
             href={"/signup?next=/library" as Route}
             className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[22px] bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_12px_32px_-12px_rgba(212,175,55,0.5)] transition hover:opacity-95"
           >
-            {CTA.CREATE_FREE_ACCOUNT}
+            {CTA.JOIN_MEMBERSHIP}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>

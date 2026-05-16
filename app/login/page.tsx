@@ -25,11 +25,11 @@ export default async function LoginPage({
           Sign in with the email you used for Premium. You&apos;ll pick up saved teaching, notes, and full World Watch where you left off.
         </p>
         <p className="mt-4 text-sm leading-relaxed text-muted">
-          Listen freely without an account on{" "}
+          On{" "}
           <Link href="/browse" className="font-medium text-amber-200/90 underline-offset-2 hover:underline">
             Browse
           </Link>
-          . Premium unlocks your personal library, Scripture tools, and synced saves.
+          , listening and curated video are free with no account needed. Sign in with Premium to keep saves, notes, Scripture, listening progress, and what you watch stitched into one study-ready library across devices.
         </p>
         <LoginForm authAvailable={authAvailable} />
         <p className="mt-8 text-sm text-slate-400">

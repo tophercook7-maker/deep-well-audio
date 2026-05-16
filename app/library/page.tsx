@@ -15,7 +15,8 @@ import { LibraryGrowingModule } from "@/components/retention/library-growing-mod
 
 export const metadata = {
   title: "Library",
-  description: "Your library of saved teaching, notes, and study—everything worth returning to in one place.",
+  description:
+    "Your library of saved teaching, notes, and study—audio, video where available, and Scripture woven together so you can return and keep learning.",
 };
 
 export default async function LibraryPage() {
@@ -37,7 +38,7 @@ export default async function LibraryPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/85">Library</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Your library of what mattered</h1>
         <p className="mt-4 text-base leading-relaxed text-slate-300/95">
-          Everything you&apos;ve saved, studied, and returned to—listening progress, bookmarks, notes, and Scripture in one calm hub.
+          Everything you&apos;ve saved, studied, and returned to—audio, curated video where available, bookmarks, notes, listening progress, and Scripture in one calm hub.
         </p>
       </header>
 
@@ -84,9 +85,9 @@ export default async function LibraryPage() {
             <p className="text-sm leading-relaxed text-muted">
               New here?{" "}
               <Link href={"/signup?next=/library" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
-                {CTA.CREATE_FREE_ACCOUNT}
+                {CTA.JOIN_MEMBERSHIP}
               </Link>{" "}
-              to sync saves when you&apos;re ready—or stay signed out and keep listening from Browse.
+              when you want a synced hub—or stay signed out and listen & watch free from Browse.
             </p>
           </div>
         </div>

@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { ME_NAV, PRIMARY_NAV, SECONDARY_NAV, isNavActive } from "@/components/shared/nav-config";
+import { CTA } from "@/lib/site-messaging";
 
 const primaryIcon: Record<string, LucideIcon> = {
   "/": Home,
@@ -158,6 +159,26 @@ export function MobileNav({
                       );
                     })}
                   </ul>
+                  {!signedIn ? (
+                    <>
+                      <p className="mb-2 mt-6 px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Membership</p>
+                      <ul className="space-y-1">
+                        <li>
+                          <Link
+                            href={"/signup" as Route}
+                            className={[rowClass, "border-accent/25 bg-accent/[0.08] font-medium text-amber-50/95"].join(" ")}
+                          >
+                            {CTA.JOIN_MEMBERSHIP}
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href={"/login" as Route} className={rowClass}>
+                            Sign in
+                          </Link>
+                        </li>
+                      </ul>
+                    </>
+                  ) : null}
                 </nav>
               </div>
             </div>,

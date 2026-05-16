@@ -2,9 +2,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { CTA } from "@/lib/site-messaging";
-
-const DEFAULT_SUPPORT =
-  "Start listening without an account. When you want sync across devices and a library that lasts, create a free account—or keep Premium in mind for saving teachings and returning anytime.";
+import { DEFAULT_TOPIC_HUB_CTA_HEADING, DEFAULT_TOPIC_HUB_CTA_SUPPORT } from "@/lib/topics";
 
 type Props = {
   heading?: string;
@@ -13,11 +11,11 @@ type Props = {
 };
 
 export function TopicSeoCta({
-  heading = "Start listening for free",
+  heading = DEFAULT_TOPIC_HUB_CTA_HEADING,
   supportLine,
   showPremiumLink = true,
 }: Props) {
-  const body = supportLine?.trim() || DEFAULT_SUPPORT;
+  const body = supportLine?.trim() || DEFAULT_TOPIC_HUB_CTA_SUPPORT;
 
   return (
     <section
@@ -39,7 +37,7 @@ export function TopicSeoCta({
           href={"/signup" as Route}
           className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-6 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
         >
-          {CTA.CREATE_FREE_ACCOUNT}
+          {CTA.JOIN_MEMBERSHIP}
         </Link>
         {showPremiumLink ? (
           <FunnelLink
@@ -54,7 +52,7 @@ export function TopicSeoCta({
       </div>
       {showPremiumLink ? (
         <p className="mt-4 text-xs text-slate-500">
-          Premium helps you keep favorites, notes, and study in one calm library—optional, not required to listen.
+          Premium helps you keep favorites, notes, Scripture, listens, rewatches, and study in one calm library—optional, not required for free Browse.
         </p>
       ) : null}
     </section>

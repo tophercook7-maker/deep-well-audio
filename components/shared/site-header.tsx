@@ -9,7 +9,7 @@ import { DeepWellLogo } from "@/components/brand/deep-well-logo";
 import { LogIn } from "lucide-react";
 import { AuthMenu } from "@/components/auth/auth-menu";
 import { MobileNav } from "@/components/shared/mobile-nav";
-import { SiteNavDesktop } from "@/components/shared/site-nav";
+import { SiteNavDesktop, SiteNavMobileRail } from "@/components/shared/site-nav";
 import type { UserPlan } from "@/lib/permissions";
 import { CTA } from "@/lib/site-messaging";
 
@@ -94,42 +94,45 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
           ].join(" ")}
         >
           <div className="container-shell max-md:py-1 md:py-[1.125rem]">
-            <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 md:gap-3">
-              <Link
-                href="/"
-                aria-label="Deep Well Audio — Home"
-                className="flex shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
-              >
-                <DeepWellLogo
-                  variant="header"
-                  priority
-                  showWordmark
-                  className="max-md:!max-h-6 max-md:!w-auto"
-                  brandClassName="max-md:w-[min(88vw,13rem)] max-md:!gap-0"
-                  wordmarkClassName="max-md:!text-[13px] max-md:!leading-snug max-md:!tracking-tight"
-                />
-              </Link>
-              <SiteNavDesktop pathname={pathname} signedIn={signedIn} />
-              <div className="ml-auto flex shrink-0 items-center gap-2">
-                <MobileNav pathname={pathname} signedIn={signedIn} />
-                {!user ? (
-                  <>
-                    <Link
-                      href={"/login" as Route}
-                      className="hidden min-h-[40px] items-center rounded-full border border-line/80 px-3 py-2 text-sm text-muted transition hover:border-accent/35 hover:text-text sm:inline-flex"
-                    >
-                      <LogIn className="mr-1.5 h-4 w-4" aria-hidden />
-                      Sign In
-                    </Link>
-                    <Link href={"/signup" as Route} className={ctaSignupClass}>
-                      {CTA.CREATE_FREE_ACCOUNT}
-                    </Link>
-                  </>
-                ) : null}
-                <div className="border-l border-line/80 pl-2 md:pl-4">
-                  <AuthMenu user={user} plan={plan} />
+            <div className="flex w-full min-w-0 flex-col gap-1 md:flex-row md:items-center md:gap-3">
+              <div className="flex w-full min-w-0 flex-nowrap items-center gap-2 md:flex-1">
+                <Link
+                  href="/"
+                  aria-label="Deep Well Audio — Home"
+                  className="flex min-w-0 max-md:min-w-0 max-md:shrink md:shrink-0 flex-col items-start gap-0 rounded-lg pr-1 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b1220] sm:pr-2"
+                >
+                  <DeepWellLogo
+                    variant="header"
+                    priority
+                    showWordmark
+                    className="max-md:!max-h-6 max-md:!w-auto"
+                    brandClassName="max-md:w-[min(92vw,16rem)] max-md:!gap-0 md:w-auto"
+                    wordmarkClassName="max-md:!text-[13px] max-md:!leading-snug max-md:!tracking-tight"
+                  />
+                </Link>
+                <SiteNavDesktop pathname={pathname} signedIn={signedIn} />
+                <div className="ml-auto flex shrink-0 items-center gap-2">
+                  <MobileNav pathname={pathname} signedIn={signedIn} />
+                  {!user ? (
+                    <>
+                      <Link
+                        href={"/login" as Route}
+                        className="hidden min-h-[40px] items-center rounded-full border border-line/80 px-3 py-2 text-sm text-muted transition hover:border-accent/35 hover:text-text sm:inline-flex"
+                      >
+                        <LogIn className="mr-1.5 h-4 w-4" aria-hidden />
+                        Sign In
+                      </Link>
+                      <Link href={"/signup" as Route} className={[ctaSignupClass, "max-sm:hidden"].join(" ")}>
+                        {CTA.JOIN_MEMBERSHIP}
+                      </Link>
+                    </>
+                  ) : null}
+                  <div className="border-l border-line/80 pl-2 md:pl-4">
+                    <AuthMenu user={user} plan={plan} />
+                  </div>
                 </div>
               </div>
+              <SiteNavMobileRail pathname={pathname} />
             </div>
           </div>
         </div>

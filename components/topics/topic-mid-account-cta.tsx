@@ -12,14 +12,14 @@ export function TopicMidAccountCta() {
       aria-labelledby="topic-mid-account-cta-heading"
     >
       <p id="topic-mid-account-cta-heading" className="max-w-2xl text-sm leading-relaxed text-slate-300/95">
-        Create a free account to save teachings and return to them anytime.
+        Become a member to unify what you hear, watch, highlight, and write—organized so you can keep studying—not required for free listening and watching on Browse.
       </p>
       <div className="mt-5">
         <Link
           href={"/signup" as Route}
           className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 bg-soft/30 px-6 py-2.5 text-sm font-semibold text-amber-50 transition hover:border-accent/40 hover:bg-accent/[0.08] hover:text-white"
         >
-          {CTA.CREATE_FREE_ACCOUNT}
+          {CTA.JOIN_MEMBERSHIP}
         </Link>
       </div>
     </section>

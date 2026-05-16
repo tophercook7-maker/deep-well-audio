@@ -32,7 +32,7 @@ const metadataBase: URL = (() => {
 })();
 
 const defaultDescription =
-  "Deep Well helps Christians keep the teaching that shapes them—listen freely, save what matters, connect it to Scripture, and return to it over time.";
+  "Deep Well helps Christians listen and watch trusted teaching free—or become a member to keep sermon audio, curated video, Scripture, notes, and progress together in one study-ready library.";
 
 export const metadata: Metadata = {
   metadataBase,

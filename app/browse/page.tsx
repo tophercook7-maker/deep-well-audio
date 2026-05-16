@@ -30,7 +30,7 @@ import { BrowseTopicContextStrip } from "@/components/retention/browse-topic-con
 
 export const metadata = {
   title: "Browse",
-  description: "Find teaching worth keeping—trusted sources, topics, and episodes. Listen freely.",
+  description: "Find teaching worth keeping—trusted sources, topics, episodes, and video. Listen and watch freely; join to unify saves and notes.",
 };
 
 function toInt(v: string | undefined, fallback?: number) {
@@ -180,7 +180,7 @@ export default async function BrowsePage({
         <span className="tag">Browse</span>
         <h1 className="mt-4 text-4xl font-semibold text-white">Find teaching worth keeping</h1>
         <p className="mt-4 max-w-2xl leading-relaxed text-slate-100/95">
-          Search, browse topics, or start with a trusted voice. Listen freely—no account needed.
+          Search, browse topics, or start with a trusted voice. Listen and watch freely—no account needed to explore.
         </p>
         {hasPublicSupabaseEnv() && catalogProbe === "ok" && showCount > 0 ? (
           <div className="mt-6 rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/[0.12] via-transparent to-transparent px-6 py-5 shadow-glow">

@@ -22,11 +22,13 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
           <div className="max-w-xl">
             <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/80">Library</p>
             <h2 id="home-join-cta-heading" className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">
-              Saved teaching, in one place
+              One library for what you listen to, watch, and write
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-[0.9375rem]">
               {plan === "guest" ? (
-                <>Create a free account to save favorites and programs.</>
+                <>
+                  Browse is free to hear and watch. Become a member so saves, notes, Scripture, and playback land in one steady place you can study.
+                </>
               ) : (
                 <>Premium adds tools to stay with what you hear.</>
               )}
@@ -39,7 +41,7 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
                   href={"/signup?next=/library" as Route}
                   className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)] transition hover:opacity-90"
                 >
-                  {CTA.CREATE_FREE_ACCOUNT}
+                  {CTA.JOIN_MEMBERSHIP}
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
                 <Link

@@ -11,7 +11,7 @@ import { CTA } from "@/lib/site-messaging";
 export const metadata = {
   title: "Pricing · Deep Well Audio",
   description:
-    "Free to listen. Premium to keep teachings, notes, and Scripture in one place—and return to what shaped you.",
+    "Listen and watch curated teaching free. Premium weaves sermon audio, video where available, notes, Scripture, and listening progress together so you never lose traction.",
 };
 
 export default async function PricingPage() {
@@ -29,10 +29,10 @@ export default async function PricingPage() {
           </div>
           <header className="mx-auto max-w-3xl pt-8 text-center sm:pt-10">
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.35rem]">
-              Free to listen. Premium to keep what matters.
+              Free to listen & watch together. Premium to keep everything in one study-ready library.
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300/95 sm:text-[1.0625rem]">
-              Deep Well is free to explore. Premium is for people who don&apos;t want to lose what helped them grow.
+              Exploring stays open on us. Become a Premium member when you&apos;re tired of scattering verses, listens, rewatches, and notes across tabs and notebooks.
             </p>
           </header>
         </div>
@@ -58,9 +58,14 @@ export default async function PricingPage() {
         </h2>
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="flex flex-col rounded-[26px] border border-line/50 bg-[rgba(10,14,20,0.55)] p-8 shadow-[0_24px_56px_-36px_rgba(0,0,0,0.55)] backdrop-blur-md sm:p-9">
-            <h3 className="text-xl font-semibold text-white sm:text-2xl">Free</h3>
+            <h3 className="text-xl font-semibold text-white sm:text-2xl">Listen & watch free</h3>
             <ul className="mt-8 flex-1 space-y-3">
-              {["Browse teaching", "Listen anytime", "Explore topics", "Preview World Watch"].map((text) => (
+              {[
+                "Browse audio & curated video teaching",
+                "Stream without signing in",
+                "Explore topical pathways",
+                "Preview World Watch",
+              ].map((text) => (
                 <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
                   <span>{text}</span>
@@ -87,10 +92,11 @@ export default async function PricingPage() {
               <p className="mt-2 text-sm text-slate-500">$9/month or save with annual billing</p>
               <ul className="mt-8 flex-1 space-y-3">
                 {[
-                  "Save teachings and build your library",
-                  "Take and revisit notes",
-                  "Resume where you left off",
-                  "Follow topics that matter to you",
+                  "Unified library for Scripture, listens, rewatches, notes, and bookmarks",
+                  "Save teachings across audio & curated video",
+                  "Study notes that stay tethered to the teaching that sparked them",
+                  "Resume sermons exactly where life interrupted",
+                  "Follow topics worth returning to",
                   "Full World Watch digest",
                 ].map((text) => (
                   <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
