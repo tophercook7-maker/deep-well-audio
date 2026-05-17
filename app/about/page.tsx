@@ -102,10 +102,10 @@ export default function AboutPage() {
               {CTA.LISTEN_FREE}
             </Link>
             <Link
-              href={"/signup?next=/library" as Route}
+              href={"/pricing" as Route}
               className="inline-flex min-h-[48px] items-center justify-center rounded-[22px] bg-accent px-7 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_28px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
             >
-              {CTA.JOIN_MEMBERSHIP}
+              {CTA.SEE_PREMIUM}
             </Link>
           </div>
         </div>
