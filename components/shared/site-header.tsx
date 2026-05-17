@@ -123,7 +123,7 @@ export function SiteHeader({ user, plan }: { user: User | null; plan: UserPlan }
                         <LogIn className="mr-1.5 h-4 w-4" aria-hidden />
                         Sign In
                       </Link>
-                      <Link href={"/signup" as Route} className={[ctaSignupClass, "max-lg:hidden"].join(" ")}>
+                      <Link href={"/pricing" as Route} className={[ctaSignupClass, "max-lg:hidden"].join(" ")}>
                         {CTA.JOIN_MEMBERSHIP}
                       </Link>
                     </>
