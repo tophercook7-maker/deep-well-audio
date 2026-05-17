@@ -2,11 +2,22 @@ import { NextResponse } from "next/server";
 import { requirePremiumSupabase, isPremiumRouteError } from "@/lib/premium-route";
 import { createEpisodeBookmark, deleteEpisodeBookmark } from "@/lib/bookmarks";
 
+type BookmarkPostBody = {
+  episode_id?: string;
+  seconds?: number | string;
+  label?: string | null;
+  quote?: string | null;
+  note?: string | null;
+  scripture_ref?: string | null;
+  scriptureRef?: string | null;
+  topic?: string | null;
+};
+
 export async function POST(request: Request) {
   const gate = await requirePremiumSupabase();
   if (isPremiumRouteError(gate)) return gate.error;
 
-  let body: { episode_id?: string; seconds?: number; label?: string | null };
+  let body: BookmarkPostBody;
   try {
     body = await request.json();
   } catch {
@@ -27,6 +38,10 @@ export async function POST(request: Request) {
     episodeId,
     seconds: sec,
     label: body.label ?? null,
+    quote: body.quote ?? null,
+    note: body.note ?? null,
+    scriptureRef: body.scriptureRef ?? body.scripture_ref ?? null,
+    topic: body.topic ?? null,
   });
 
   if (error || !bookmark) {
