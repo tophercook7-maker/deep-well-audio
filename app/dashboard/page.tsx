@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
-import { Globe, Headphones, Library, NotebookPen, Radar } from "lucide-react";
+import { BookOpen, CalendarDays, Globe, Headphones, Library, NotebookPen, Radar, Sparkles } from "lucide-react";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { BackButton } from "@/components/buttons/back-button";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
@@ -24,6 +24,17 @@ export const metadata = {
   description:
     "Your listening rhythm—continue where you left off, return to saved teaching, Scripture in the reader, notes, and World Watch.",
 };
+
+function firstNameFromEmail(email: string | undefined | null) {
+  if (!email) return "friend";
+  const name = email.split("@")[0]?.replace(/[._-]+/g, " ").trim();
+  if (!name) return "friend";
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
 
 export default async function DashboardPage() {
   const user = await getSessionUser();
@@ -54,19 +65,69 @@ export default async function DashboardPage() {
     console.error("dashboard world watch:", e instanceof Error ? e.message : e);
   }
 
+  const displayName = firstNameFromEmail(user.email);
+  const latestWorldWatch = wwItems[0] ?? null;
+
   return (
     <main className="container-shell space-y-10 py-10 sm:space-y-14 sm:py-16">
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>
 
-      <header className="max-w-2xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/85">Premium</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Your Home</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate-300/95">
-          Where you return—listening, Scripture in the reader, notes, and World Watch in one calm rhythm.
-        </p>
-      </header>
+      <section className="relative overflow-hidden rounded-[30px] border border-accent/20 bg-gradient-to-br from-[rgba(24,32,48,0.72)] via-[rgba(10,14,22,0.58)] to-[rgba(7,10,16,0.82)] p-6 shadow-[0_30px_78px_-48px_rgba(212,175,55,0.32)] backdrop-blur-md sm:p-8 lg:p-10" aria-labelledby="dashboard-welcome-heading">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-accent/[0.08] blur-3xl" aria-hidden />
+        <div className="relative grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
+          <div>
+            <p className="inline-flex rounded-full border border-amber-200/20 bg-amber-200/[0.07] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-100/85">
+              Welcome back
+            </p>
+            <h1 id="dashboard-welcome-heading" className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              {displayName}, your Deep Well is ready.
+            </h1>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-300/95">
+              Pick up where life interrupted, return to what you saved, and keep this week&apos;s study rhythm from scattering.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <a
+                href="#continue"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-95"
+              >
+                Continue listening
+              </a>
+              <a
+                href="#library"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-5 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
+              >
+                Open your library
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-[24px] border border-line/55 bg-[rgba(7,10,16,0.46)] p-5">
+            <div className="flex items-center gap-2 text-sm font-semibold text-white">
+              <CalendarDays className="h-4 w-4 text-amber-200/85" aria-hidden />
+              This week in your Deep Well
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              <div className="rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Saved</p>
+                <p className="mt-1 text-sm font-semibold text-white">{favCount.toLocaleString()} teachings</p>
+              </div>
+              <div className="rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Next</p>
+                <p className="mt-1 text-sm font-semibold text-white">Resume study</p>
+              </div>
+              <div className="rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">World Watch</p>
+                <p className="mt-1 text-sm font-semibold text-white">{latestWorldWatch ? "New digest" : "Quiet for now"}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+              This is the beginning of your weekly recap: listening, saved teaching, Scripture, notes, and current events in one calm rhythm.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <nav className="flex flex-wrap gap-2 text-sm" aria-label="Your Home sections">
         <a href="#continue" className="rounded-full border border-line/80 px-4 py-2 text-muted transition hover:border-accent/35 hover:text-white">
@@ -102,7 +163,9 @@ export default async function DashboardPage() {
       <div id="continue" className="scroll-mt-28">
         <ContinueListeningSection enabled={showSessionListening} />
       </div>
-      <RecentlyPlayedSection enabled={showSessionListening} />
+      <div id="recent" className="scroll-mt-28">
+        <RecentlyPlayedSection enabled={showSessionListening} />
+      </div>
 
       <SignedInHabitBand
         plan={plan}
