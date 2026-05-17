@@ -83,11 +83,11 @@ export default async function LibraryPage() {
           </div>
           <div className="rounded-[22px] border border-dashed border-line/45 bg-[rgba(8,11,16,0.35)] p-8 md:col-span-2">
             <p className="text-sm leading-relaxed text-muted">
-              New here?{" "}
-              <Link href={"/signup?next=/library" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
-                {CTA.JOIN_MEMBERSHIP}
+              New here? Stay signed out and listen &amp; watch free from Browse, or{" "}
+              <Link href={"/pricing" as Route} className="font-medium text-amber-200/85 underline-offset-2 hover:underline">
+                view Premium
               </Link>{" "}
-              when you want a synced hub—or stay signed out and listen & watch free from Browse.
+              when you want a synced study hub.
             </p>
           </div>
         </div>
