@@ -12,14 +12,14 @@ export function TopicMidAccountCta() {
       aria-labelledby="topic-mid-account-cta-heading"
     >
       <p id="topic-mid-account-cta-heading" className="max-w-2xl text-sm leading-relaxed text-slate-300/95">
-        Become a member to unify what you hear, watch, highlight, and write—organized so you can keep studying—not required for free listening and watching on Browse.
+        Premium unifies what you hear, watch, highlight, and write—organized so you can keep studying. Free listening and watching stay open on Browse.
       </p>
       <div className="mt-5">
         <Link
-          href={"/signup" as Route}
+          href={"/pricing" as Route}
           className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 bg-soft/30 px-6 py-2.5 text-sm font-semibold text-amber-50 transition hover:border-accent/40 hover:bg-accent/[0.08] hover:text-white"
         >
-          {CTA.JOIN_MEMBERSHIP}
+          {CTA.SEE_PREMIUM}
         </Link>
       </div>
     </section>
