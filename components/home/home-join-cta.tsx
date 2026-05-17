@@ -8,6 +8,8 @@ import { ArrowRight, Library } from "lucide-react";
 export function HomeJoinCta({ plan }: { plan: UserPlan }) {
   if (plan === "premium") return null;
 
+  const isGuest = plan === "guest";
+
   return (
     <section
       className="container-shell section-divider py-9 sm:py-10"
@@ -25,42 +27,32 @@ export function HomeJoinCta({ plan }: { plan: UserPlan }) {
               One library for what you listen to, watch, and write
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-[0.9375rem]">
-              {plan === "guest" ? (
+              {isGuest ? (
                 <>
-                  Browse is free to hear and watch. Become a member so saves, notes, Scripture, and playback land in one steady place you can study.
+                  Browse is free to hear and watch. Sign in when you want continuity—or view Premium when you want saves, notes, Scripture, and playback in one steady place.
                 </>
               ) : (
-                <>Premium adds tools to stay with what you hear.</>
+                <>You&apos;re signed in. Premium adds the tools that keep what you hear from scattering.</>
               )}
             </p>
           </div>
           <div className="flex flex-shrink-0 flex-col gap-3 sm:flex-row sm:items-center">
-            {plan === "guest" ? (
-              <>
-                <Link
-                  href={"/signup?next=/library" as Route}
-                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.45)] transition hover:opacity-90"
-                >
-                  {CTA.JOIN_MEMBERSHIP}
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
-                <Link
-                  href={"/login?next=/library" as Route}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-5 py-2.5 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
-                >
-                  Sign in
-                </Link>
-              </>
-            ) : (
-              <FunnelLink
-                href={"/pricing" as Route}
-                funnelEvent="view_plans_click"
-                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+            >
+              {CTA.SEE_PREMIUM}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </FunnelLink>
+            {isGuest ? (
+              <Link
+                href={"/login?next=/library" as Route}
+                className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-5 py-2.5 text-sm font-medium text-slate-200 transition hover:border-accent/35 hover:text-white"
               >
-                {CTA.SEE_PREMIUM}
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </FunnelLink>
-            )}
+                Sign in
+              </Link>
+            ) : null}
             <Link
               href={"/library" as Route}
               className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-line/80 px-4 py-2.5 text-sm text-muted transition hover:border-accent/30 hover:text-white"
