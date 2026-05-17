@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { redirect } from "next/navigation";
-import { BookOpen, CalendarDays, Globe, Headphones, Library, NotebookPen, Radar, Sparkles } from "lucide-react";
+import { BookOpen, CalendarDays, Compass, Globe, Headphones, Library, NotebookPen, Radar, Sparkles } from "lucide-react";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { BackButton } from "@/components/buttons/back-button";
 import { ContinueListeningSection } from "@/components/listening/continue-listening";
@@ -18,6 +18,7 @@ import { LibraryBuildingMilestone } from "@/components/monetization/library-buil
 import { countUserFavoriteEpisodes, getUserLibraryGrowthStats } from "@/lib/queries";
 import { LibraryGrowingModule } from "@/components/retention/library-growing-module";
 import { ReturnToThisModule } from "@/components/retention/return-to-this-module";
+import { getRecentSavedMoments } from "@/lib/bookmarks";
 
 export const metadata = {
   title: "Your Home",
@@ -36,6 +37,53 @@ function firstNameFromEmail(email: string | undefined | null) {
     .join(" ");
 }
 
+function formatMomentTime(seconds: number) {
+  const safe = Number.isFinite(seconds) && seconds > 0 ? Math.floor(seconds) : 0;
+  const mins = Math.floor(safe / 60);
+  const secs = safe % 60;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function normalizeTheme(value: string | null | undefined) {
+  const text = value?.trim();
+  if (!text) return null;
+  return text
+    .split(/\s+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function deriveThemes(moments: Awaited<ReturnType<typeof getRecentSavedMoments>>) {
+  const counts = new Map<string, number>();
+  for (const moment of moments) {
+    const direct = normalizeTheme(moment.topic);
+    if (direct) {
+      counts.set(direct, (counts.get(direct) ?? 0) + 2);
+      continue;
+    }
+
+    const haystack = `${moment.label ?? ""} ${moment.quote ?? ""} ${moment.note ?? ""} ${moment.episode.title ?? ""}`.toLowerCase();
+    const inferred = [
+      ["Peace", /peace|anx|fear|worry|rest/],
+      ["Prayer", /pray|prayer|intercede|ask/],
+      ["Faith", /faith|trust|believe|doubt/],
+      ["Purpose", /purpose|calling|mission|work/],
+      ["Grace", /grace|mercy|forgive|forgiveness/],
+      ["Waiting", /wait|waiting|patience|delay/],
+      ["Courage", /courage|bold|strength|stand/],
+    ] as const;
+
+    for (const [theme, pattern] of inferred) {
+      if (pattern.test(haystack)) counts.set(theme, (counts.get(theme) ?? 0) + 1);
+    }
+  }
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 5)
+    .map(([theme, count]) => ({ theme, count }));
+}
+
 export default async function DashboardPage() {
   const user = await getSessionUser();
   if (!user) {
@@ -49,9 +97,10 @@ export default async function DashboardPage() {
 
   const showSessionListening = canUseFeature("continue_listening", plan);
 
-  const [favCount, growthStats] = await Promise.all([
+  const [favCount, growthStats, savedMoments] = await Promise.all([
     countUserFavoriteEpisodes(user.id),
     getUserLibraryGrowthStats(user.id),
+    getRecentSavedMoments(user.id, 8),
   ]);
 
   let wwItems: Awaited<ReturnType<typeof fetchPublishedWorldWatchItems>> = [];
@@ -67,6 +116,8 @@ export default async function DashboardPage() {
 
   const displayName = firstNameFromEmail(user.email);
   const latestWorldWatch = wwItems[0] ?? null;
+  const themes = deriveThemes(savedMoments);
+  const featuredMoment = savedMoments[0] ?? null;
 
   return (
     <main className="container-shell space-y-10 py-10 sm:space-y-14 sm:py-16">
@@ -114,8 +165,8 @@ export default async function DashboardPage() {
                 <p className="mt-1 text-sm font-semibold text-white">{favCount.toLocaleString()} teachings</p>
               </div>
               <div className="rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Next</p>
-                <p className="mt-1 text-sm font-semibold text-white">Resume study</p>
+                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Moments</p>
+                <p className="mt-1 text-sm font-semibold text-white">{savedMoments.length ? `${savedMoments.length} recent` : "Ready"}</p>
               </div>
               <div className="rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
                 <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">World Watch</p>
@@ -126,6 +177,69 @@ export default async function DashboardPage() {
               This is the beginning of your weekly recap: listening, saved teaching, Scripture, notes, and current events in one calm rhythm.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]" aria-labelledby="themes-heading">
+        <div className="rounded-[24px] border border-accent/20 bg-[rgba(10,14,20,0.5)] p-6 shadow-[0_24px_58px_-40px_rgba(212,175,55,0.3)] backdrop-blur-md sm:p-7">
+          <div className="flex items-center gap-2 text-sm font-semibold text-white">
+            <Compass className="h-4 w-4 text-amber-200/85" aria-hidden />
+            <span id="themes-heading">Themes you&apos;re returning to</span>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-slate-400/95">
+            Deep Well is beginning to notice what you keep saving, revisiting, and carrying forward.
+          </p>
+          {themes.length ? (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {themes.map((item) => (
+                <span key={item.theme} className="rounded-full border border-amber-200/15 bg-amber-200/[0.06] px-3 py-1.5 text-xs font-medium text-amber-100/85">
+                  {item.theme} · {item.count}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-5 rounded-2xl border border-dashed border-line/45 bg-[rgba(8,11,16,0.35)] p-4 text-sm leading-relaxed text-muted">
+              Save moments while listening and this space will start surfacing the themes that keep showing up.
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-[24px] border border-line/55 bg-[rgba(9,12,18,0.45)] p-6 shadow-[0_20px_48px_-34px_rgba(0,0,0,0.45)] backdrop-blur-md sm:p-7">
+          <div className="flex items-center gap-2 text-sm font-semibold text-white">
+            <Sparkles className="h-4 w-4 text-amber-200/85" aria-hidden />
+            Moment worth revisiting
+          </div>
+          {featuredMoment ? (
+            <div className="mt-4">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                {formatMomentTime(featuredMoment.seconds)} · {featuredMoment.episode.show?.title ?? "Saved teaching"}
+              </p>
+              <h3 className="mt-2 text-base font-semibold text-white">{featuredMoment.episode.title}</h3>
+              {featuredMoment.quote || featuredMoment.label ? (
+                <p className="mt-3 text-sm leading-relaxed text-slate-300/95">“{featuredMoment.quote ?? featuredMoment.label}”</p>
+              ) : (
+                <p className="mt-3 text-sm leading-relaxed text-slate-400/95">
+                  You saved this timestamp. Add a note later to remember why it mattered.
+                </p>
+              )}
+              {featuredMoment.scripture_ref || featuredMoment.topic ? (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {featuredMoment.scripture_ref ? <span className="rounded-full border border-line/55 px-3 py-1 text-xs text-slate-300">{featuredMoment.scripture_ref}</span> : null}
+                  {featuredMoment.topic ? <span className="rounded-full border border-line/55 px-3 py-1 text-xs text-slate-300">{featuredMoment.topic}</span> : null}
+                </div>
+              ) : null}
+              <Link
+                href={`/episodes/${featuredMoment.episode.id}` as Route}
+                className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-5 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
+              >
+                Return to this moment
+              </Link>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              When you save a timestamp from the player, Deep Well will bring one back here so it doesn&apos;t disappear.
+            </p>
+          )}
         </div>
       </section>
 
