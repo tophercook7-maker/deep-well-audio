@@ -165,7 +165,7 @@ export function MobileNav({
                       <ul className="space-y-1">
                         <li>
                           <Link
-                            href={"/signup" as Route}
+                            href={"/pricing" as Route}
                             className={[rowClass, "border-accent/25 bg-accent/[0.08] font-medium text-amber-50/95"].join(" ")}
                           >
                             {CTA.JOIN_MEMBERSHIP}
