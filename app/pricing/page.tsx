@@ -8,6 +8,27 @@ import { hasStripeBillingConfigured } from "@/lib/env";
 import { Check } from "lucide-react";
 import { CTA } from "@/lib/site-messaging";
 
+const PREMIUM_MEMORY_HOOKS = [
+  {
+    title: "Your Study Path",
+    body: "A calm place to continue what you started, revisit what helped, and see the next teaching worth returning to.",
+  },
+  {
+    title: "Saved Moments",
+    body: "Mark the exact part of a teaching that hit home so it does not disappear into another tab or forgotten notebook.",
+  },
+  {
+    title: "Weekly Deep Well Recap",
+    body: "See what you listened to, what you saved, and the themes God kept bringing back across your week.",
+  },
+  {
+    title: "Private study journal",
+    body: "Keep notes, Scripture, questions, and quiet reflections beside the teaching that sparked them.",
+  },
+];
+
+const PREMIUM_PATHWAYS = ["Anxiety & Peace", "Hearing God", "Purpose & Calling", "When Life Falls Apart", "Prayer", "Spiritual Warfare"];
+
 export const metadata = {
   title: "Pricing · Deep Well Audio",
   description:
@@ -28,11 +49,15 @@ export default async function PricingPage() {
             <BackButton fallbackHref="/" label="Back" />
           </div>
           <header className="mx-auto max-w-3xl pt-8 text-center sm:pt-10">
+            <p className="mx-auto mb-4 inline-flex rounded-full border border-accent/25 bg-accent/[0.08] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-100/85">
+              Your personal faith library
+            </p>
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.35rem]">
-              Free to listen & watch together. Premium to keep everything in one study-ready library.
+              Free to listen & watch together. Premium remembers what moved you.
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300/95 sm:text-[1.0625rem]">
-              Exploring stays open on us. Become a Premium member when you&apos;re tired of scattering verses, listens, rewatches, and notes across tabs and notebooks.
+              Exploring stays open on us. Become a Premium member when you want one quiet place for teachings, Scripture,
+              notes, saved moments, and the spiritual trail you do not want to lose.
             </p>
           </header>
         </div>
@@ -88,6 +113,9 @@ export default async function PricingPage() {
           >
             <div className="pointer-events-none absolute -right-12 top-0 h-40 w-40 rounded-full bg-accent/[0.06] blur-3xl" aria-hidden />
             <div className="relative">
+              <p className="mb-3 inline-flex rounded-full border border-amber-200/20 bg-amber-200/[0.07] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-100/85">
+                Built for return visits
+              </p>
               <h3 className="text-xl font-semibold text-white sm:text-2xl">Deep Well Premium</h3>
               <p className="mt-2 text-sm text-slate-500">$9/month or save with annual billing</p>
               <ul className="mt-8 flex-1 space-y-3">
@@ -111,6 +139,53 @@ export default async function PricingPage() {
               <div className="mt-8">
                 <PricingPremiumCheckout stripeReady={stripeReady} plan={plan} />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-shell max-w-5xl py-12 sm:py-14" aria-labelledby="premium-hooks-heading">
+        <div className="rounded-[28px] border border-accent/20 bg-[rgba(12,16,24,0.55)] p-6 shadow-[0_28px_70px_-42px_rgba(212,175,55,0.28)] backdrop-blur-md sm:p-8 lg:p-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/70">Why people come back</p>
+            <h2 id="premium-hooks-heading" className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              Premium is not just access. It is memory for your spiritual life.
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-slate-400/95 sm:text-base">
+              Deep Well should feel like the place that remembers the teaching, verse, note, and moment you needed when life got loud.
+            </p>
+          </div>
+
+          <div className="mt-9 grid gap-4 md:grid-cols-2">
+            {PREMIUM_MEMORY_HOOKS.map((item) => (
+              <article key={item.title} className="rounded-[22px] border border-line/55 bg-[rgba(8,11,18,0.44)] p-5 sm:p-6">
+                <h3 className="text-sm font-semibold text-white">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400/95">{item.body}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-9 rounded-[22px] border border-line/55 bg-[rgba(8,11,18,0.38)] p-5 sm:p-6">
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-white">Premium topic packs</p>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400/95">
+                  Curated pathways give people a reason to upgrade for the season they are actually walking through.
+                </p>
+              </div>
+              <Link
+                href={"/pricing#premium" as Route}
+                className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+              >
+                Unlock your library
+              </Link>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {PREMIUM_PATHWAYS.map((pathway) => (
+                <span key={pathway} className="rounded-full border border-amber-200/15 bg-amber-200/[0.06] px-3 py-1.5 text-xs text-amber-100/85">
+                  {pathway}
+                </span>
+              ))}
             </div>
           </div>
         </div>
