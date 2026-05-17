@@ -29,6 +29,18 @@ const PREMIUM_MEMORY_HOOKS = [
 
 const PREMIUM_PATHWAYS = ["Anxiety & Peace", "Hearing God", "Purpose & Calling", "When Life Falls Apart", "Prayer", "Spiritual Warfare"];
 
+const PREMIUM_WEEKLY_RECAP = [
+  { label: "Listened", value: "42 min" },
+  { label: "Saved", value: "3 moments" },
+  { label: "Returned to", value: "Prayer" },
+];
+
+const PREMIUM_PROOF_NOTES = [
+  "I finally have one place for the teachings I keep wanting to revisit.",
+  "The value is not more noise. It is remembering what actually helped me.",
+  "This feels less like another subscription and more like a quiet study rhythm.",
+];
+
 export const metadata = {
   title: "Pricing · Deep Well Audio",
   description:
@@ -186,6 +198,67 @@ export default async function PricingPage() {
                   {pathway}
                 </span>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-shell max-w-5xl pb-12 pt-2 sm:pb-14" aria-labelledby="premium-preview-heading">
+        <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-stretch">
+          <div className="rounded-[28px] border border-line/55 bg-[rgba(9,12,18,0.58)] p-6 backdrop-blur-md sm:p-8">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/70">Member preview</p>
+            <h2 id="premium-preview-heading" className="mt-3 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              Give people a glimpse of what Premium feels like after they join.
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-slate-400/95">
+              The paid side should show the emotional payoff: not just a button, but a quiet dashboard that keeps their growth from slipping away.
+            </p>
+
+            <div className="mt-7 rounded-[24px] border border-accent/20 bg-gradient-to-br from-[rgba(24,32,48,0.72)] to-[rgba(7,10,16,0.88)] p-5 shadow-[0_22px_54px_-34px_rgba(212,175,55,0.32)]">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-100/70">This week in your Deep Well</p>
+                  <p className="mt-2 text-lg font-semibold text-white">You kept returning to peace, prayer, and courage.</p>
+                </div>
+                <span className="inline-flex w-fit rounded-full border border-amber-200/20 bg-amber-200/[0.07] px-3 py-1 text-xs font-medium text-amber-100/85">
+                  Founding Supporter
+                </span>
+              </div>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {PREMIUM_WEEKLY_RECAP.map((item) => (
+                  <div key={item.label} className="rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">{item.label}</p>
+                    <p className="mt-1 text-sm font-semibold text-white">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-line/45 bg-[rgba(5,8,14,0.42)] p-4">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Saved moment</p>
+                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-200">
+                  18:42 — “Come back to the truth before you come back to the fear.”
+                </p>
+                <p className="mt-2 text-xs text-slate-500">Saved under Anxiety & Peace · Add reflection note</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-5 rounded-[28px] border border-accent/20 bg-[rgba(12,16,24,0.52)] p-6 backdrop-blur-md sm:p-8">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/70">Quiet proof</p>
+            <h3 className="text-xl font-semibold tracking-tight text-white">The kind of reaction we want Premium to earn.</h3>
+            <div className="space-y-3">
+              {PREMIUM_PROOF_NOTES.map((note) => (
+                <blockquote key={note} className="rounded-[20px] border border-line/55 bg-[rgba(8,11,18,0.44)] p-4 text-sm leading-relaxed text-slate-300/95">
+                  “{note}”
+                </blockquote>
+              ))}
+            </div>
+            <div className="rounded-[20px] border border-amber-200/15 bg-amber-200/[0.06] p-4">
+              <p className="text-sm font-semibold text-white">Early supporter hook</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400/95">
+                Invite early members to become Founding Supporters. It gives them identity, belonging, and a reason to join while Deep Well is still being built in public.
+              </p>
             </div>
           </div>
         </div>
