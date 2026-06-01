@@ -1,31 +1,31 @@
 /**
- * Core positioning and CTA labels—keep sitewide copy coherent and conversion-focused.
+ * Core positioning and CTA labels--keep sitewide copy coherent and conversion-focused.
  */
 
 export const SITE_POSITIONING = {
-  headline: "Keep the teaching that shapes you.",
+  headline: "Stop losing the teaching that shaped you.",
   subhead:
-    "Listen and watch for free anytime. Become a member to keep sermons, video, Scripture, notes, and progress together—organized so nothing that shaped you scatters.",
+    "Deep Well is a personal faith library for the sermons, Scripture, notes, and World Watch reflections you actually want to return to.",
   problem:
-    "Most teaching dissipates unless it lives in one home. When you're logged in as a member, whatever you hear, watch, highlight, or write stays threaded together—a study-ready library you can revisit.",
+    "Most people do not need another pile of Christian content. They need one quiet place that remembers what helped, keeps it tied to Scripture, and makes it easy to come back when life gets loud.",
 } as const;
 
-/** Standard primary/secondary CTAs—use these labels consistently. */
+/** Standard primary/secondary CTAs--use these labels consistently. */
 export const CTA = {
-  /** Exploration entry — Browse is free audio + video teaching (account not required). */
-  LISTEN_FREE: "Listen & watch free",
-  /** Calm pricing entry — use instead of “See Premium” / hard upsell language */
-  SEE_PREMIUM: "View plans",
-  /** Paid membership checkout — `/signup` forwards to `/pricing`. Listening and watching stay free without it; membership pulls saves into one study-ready library. */
-  JOIN_MEMBERSHIP: "Become a member",
+  /** Exploration entry -- Browse is free audio + video teaching (account not required). */
+  LISTEN_FREE: "Start listening free",
+  /** Calm pricing entry -- use instead of vague plan language */
+  SEE_PREMIUM: "See what Premium keeps",
+  /** Paid membership checkout -- `/signup` forwards to `/pricing`. */
+  JOIN_MEMBERSHIP: "Build my library",
   UPGRADE_TO_PREMIUM: "Upgrade to Premium",
 } as const;
 
 export const PRODUCT_MODEL = {
-  browse: "Browse helps you discover trusted teaching to hear and watch.",
-  bible: "Reading and listening help you keep Scripture beside the rest of life.",
+  browse: "Browse helps people find trusted teaching without falling into endless scrolling.",
+  bible: "Bible reading keeps Scripture beside the sermons, notes, and reflections that shaped the day.",
   library:
-    "Your library pulls saved teaching, video, Scripture, notes, and listening into one place you can study and return to.",
-  worldWatch: "World Watch helps you stay grounded in current events.",
-  premium: "Premium connects what you listen to, watch, and write so your growth compounds instead of drifting.",
+    "Your library keeps saved teachings, curated video, Scripture, notes, bookmarks, and listening progress in one study-ready place.",
+  worldWatch: "World Watch turns current events into a calmer, Scripture-aware weekly reflection.",
+  premium: "Premium is the memory layer: it keeps what moved you so your spiritual growth does not drift away.",
 } as const;
