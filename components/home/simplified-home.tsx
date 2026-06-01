@@ -35,11 +35,11 @@ export function SimplifiedHome({
   const statsLine =
     showCount > 0 && episodeCount > 0
       ? `${showCount} trusted sources · ${episodeCount.toLocaleString()}+ teachings`
-      : "Curated sources · Listen & watch free · No account needed";
+      : "Curated sources · Listen free · Build your library when you are ready";
 
   return (
     <>
-      {/* Daily ritual — Scripture first */}
+      {/* Hero */}
       <section
         className="relative overflow-hidden border-b border-line/45 bg-[rgba(5,8,14,0.42)]"
         aria-labelledby="home-ritual-heading"
@@ -52,28 +52,54 @@ export function SimplifiedHome({
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/70">Deep Well Audio</p>
           <h1
             id="home-ritual-heading"
-            className="mt-4 max-w-[26ch] font-serif text-[1.85rem] font-normal leading-[1.15] tracking-tight text-white sm:text-[2.15rem]"
+            className="mt-4 max-w-[28ch] font-serif text-[1.9rem] font-normal leading-[1.15] tracking-tight text-white sm:text-[2.25rem]"
           >
-            {sessionUser ? "Welcome back" : "Return to Scripture"}
+            {sessionUser ? "Welcome back to your library" : "Stop losing the teaching that shaped you"}
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-400/95">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-400/95">
             {sessionUser
-              ? "Your listening, reads, and saved work stay in one thread—pick up where you left off or dive back into Scripture anytime."
-              : "Listen, watch, read, and study in one calm rhythm. Explore free as a guest—or become a member so everything you do while signed in stays threaded together for study."}
+              ? "Pick up where you left off. Your saved teachings, notes, Scripture, and World Watch reflections stay together so you can return when life gets loud."
+              : "Listen free. Explore trusted Christian teaching. Then become a member when you want one quiet place that remembers the sermons, Scripture, notes, and reflections you actually want to return to."}
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href={"/browse" as Route}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_32px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
+            >
+              {CTA.LISTEN_FREE}
+            </Link>
+            <FunnelLink
+              href={"/pricing" as Route}
+              funnelEvent="view_plans_click"
+              funnelData={{ placement: "home_top_hero" }}
+              className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
+            >
+              {CTA.SEE_PREMIUM}
+            </FunnelLink>
+          </div>
+          <p className="mt-5 text-sm text-slate-500">{statsLine}</p>
           <div className="mt-10 max-w-2xl">
             <HomeDailyScriptureRitual />
           </div>
         </div>
       </section>
 
-      {/* Secondary links — support the habit, don’t compete */}
+      {/* Secondary links */}
       <section className="border-b border-line/40 bg-[rgba(7,10,16,0.32)] py-10 sm:py-12" aria-labelledby="home-more-heading">
         <div className="container-shell">
           <h2 id="home-more-heading" className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-            More
+            Start here
           </h2>
           <ul className="mt-6 flex flex-wrap gap-2.5">
+            <li>
+              <Link
+                href={"/browse" as Route}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/50 bg-[rgba(9,12,18,0.35)] px-4 py-2.5 text-sm font-medium text-amber-100/90 transition hover:border-accent/28"
+              >
+                <Headphones className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Listen free
+              </Link>
+            </li>
             <li>
               <Link
                 href={"/studies" as Route}
@@ -99,14 +125,6 @@ export function SimplifiedHome({
               >
                 <Search className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
                 Search
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/browse" as Route}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-line/45 bg-[rgba(9,12,18,0.28)] px-4 py-2.5 text-sm font-medium text-slate-300/95 transition hover:border-accent/22"
-              >
-                Browse teachings
               </Link>
             </li>
             {sessionUser ? (
@@ -141,7 +159,6 @@ export function SimplifiedHome({
               </>
             ) : null}
           </ul>
-          <p className="mt-8 text-sm text-slate-500">{statsLine}</p>
         </div>
       </section>
 
@@ -165,13 +182,13 @@ export function SimplifiedHome({
       >
         <div className="container-shell">
           <h2 id="home-problem-heading" className="max-w-3xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            You don&apos;t need more content. You need a way to keep what matters.
+            Most Christian content disappears right after it helps you.
           </h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              "You hear something powerful, then lose it",
-              "You mean to go back, but never do",
-              "Your notes, passages, and sermons are scattered",
+              "You hear a sermon you need, then cannot find it later",
+              "Your notes live in one place while the teaching lives somewhere else",
+              "You want a steadier walk, but your spiritual inputs are scattered",
             ].map((t) => (
               <li
                 key={t}
@@ -182,12 +199,12 @@ export function SimplifiedHome({
             ))}
           </ul>
           <p className="mt-10 max-w-2xl text-base leading-relaxed text-slate-400/95">
-            Deep Well gathers what mattered so nothing scatters.
+            Deep Well fixes the part after listening: saving, returning, taking notes, following topics, and keeping Scripture beside what shaped you.
           </p>
         </div>
       </section>
 
-      {/* Brand line — below ritual */}
+      {/* Brand line */}
       <section className="border-b border-line/40 py-14 sm:py-16" aria-labelledby="home-brand-heading">
         <div className="container-shell max-w-3xl">
           <h2 id="home-brand-heading" className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
@@ -205,7 +222,7 @@ export function SimplifiedHome({
             <FunnelLink
               href={"/pricing" as Route}
               funnelEvent="view_plans_click"
-              funnelData={{ placement: "home_hero" }}
+              funnelData={{ placement: "home_positioning" }}
               className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
             >
               {CTA.SEE_PREMIUM}
@@ -218,18 +235,18 @@ export function SimplifiedHome({
       <section className="py-16 sm:py-20" aria-labelledby="home-how-heading">
         <div className="container-shell">
           <h2 id="home-how-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            A simple rhythm for real growth
+            A simple path from listening to lasting growth
           </h2>
           <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 step: "1",
                 title: "Discover",
-                text: "Browse trusted teachers and topics—curated, not chaotic.",
+                text: "Browse trusted teachers, topics, studies, and World Watch reflections without the noise.",
               },
-              { step: "2", title: "Listen & watch", text: "Stream audio and curated video teaching for free." },
-              { step: "3", title: "Keep it together", text: "Become a member—saves, Scripture, notes, and progress land in one ongoing library." },
-              { step: "4", title: "Return", text: "Reopen the same threads—sermons, video, notes, and Scripture in one path." },
+              { step: "2", title: "Listen free", text: "Start with audio and curated video teaching before you ever pay." },
+              { step: "3", title: "Save what hits", text: "Upgrade when you want bookmarks, notes, topics, Scripture, and progress held together." },
+              { step: "4", title: "Return", text: "Open your library and pick up the thread instead of starting from zero again." },
             ].map((s) => (
               <li
                 key={s.step}
@@ -249,9 +266,9 @@ export function SimplifiedHome({
         <div className="container-shell">
           <div className="mb-10 max-w-2xl">
             <h2 id="home-featured-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-              Start with what others keep coming back to
+              Start with teaching worth saving
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted">Teaching worth saving—open a card to listen or watch.</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">Open a card, listen free, and notice what you would want to keep.</p>
           </div>
           {row.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -261,7 +278,7 @@ export function SimplifiedHome({
             </div>
           ) : (
             <p className="rounded-2xl border border-line/60 bg-soft/15 px-5 py-6 text-sm text-muted">
-              Content will appear here after your catalog syncs.{" "}
+              Content will appear here after your catalog syncs. {" "}
               <Link href="/browse" className="font-medium text-amber-200/90 underline-offset-2 hover:underline">
                 Open Browse
               </Link>{" "}
@@ -283,14 +300,14 @@ export function SimplifiedHome({
       <section className="py-16 sm:py-20" aria-labelledby="home-diff-heading">
         <div className="container-shell">
           <h2 id="home-diff-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Built for depth, not endless scrolling
+            Built for return, not endless scrolling
           </h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-2">
             {[
-              "Curated, not chaotic",
-              "Scripture-connected, not surface-level",
-              "Designed for return, not distraction",
-              "Calm by design, but not shallow",
+              "Free discovery without another noisy feed",
+              "Premium memory for sermons, Scripture, notes, and topics",
+              "World Watch for grounded reflection on current events",
+              "A calm library that helps you come back to what mattered",
             ].map((t) => (
               <li
                 key={t}
@@ -311,57 +328,53 @@ export function SimplifiedHome({
       >
         <div className="container-shell">
           <h2 id="home-plans-heading" className="max-w-3xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Free to listen & watch—membership keeps it all unified.
+            Listen for free. Pay when you want Deep Well to remember for you.
           </h2>
           <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="rounded-[22px] border border-line/55 bg-[rgba(10,14,20,0.5)] p-8 backdrop-blur-md sm:p-9">
-              <h3 className="text-xl font-semibold text-white">Listen & watch free</h3>
+              <h3 className="text-xl font-semibold text-white">Free discovery</h3>
               <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-300/95">
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Browse teachings (audio &amp; curated video)
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Listen anytime, watch freely
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Explore topics
-                </li>
+                {[
+                  "Browse trusted audio and curated video",
+                  "Listen without creating an account",
+                  "Explore topics, studies, Scripture, and World Watch previews",
+                ].map((text) => (
+                  <li key={text} className="flex gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                    {text}
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="rounded-[22px] border border-accent/25 bg-gradient-to-br from-[rgba(24,32,48,0.75)] to-[rgba(8,11,18,0.88)] p-8 shadow-[0_24px_56px_-36px_rgba(212,175,55,0.15)] backdrop-blur-md sm:p-9">
-              <h3 className="text-xl font-semibold text-white">Premium — $9/month</h3>
+              <h3 className="text-xl font-semibold text-white">Premium memory — $9/month</h3>
               <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-200/95">
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  One library for everything you do while signed in
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Save teachings
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Keep notes
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Follow topics
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Resume where you left off
-                </li>
-                <li className="flex gap-2">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                  Full World Watch digest
-                </li>
+                {[
+                  "One personal library for teachings, video, Scripture, notes, and bookmarks",
+                  "Resume where life interrupted you",
+                  "Follow topics and seasons you are walking through",
+                  "Keep private study notes beside the teaching that sparked them",
+                  "Unlock the full World Watch digest",
+                ].map((text) => (
+                  <li key={text} className="flex gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+                    {text}
+                  </li>
+                ))}
               </ul>
               <p className="mt-6 text-sm leading-relaxed text-slate-400/95">
-                Stay study-ready—audio, video, notes, and Scripture stay linked as you go.
+                Upgrade when you catch yourself thinking: I need to come back to this.
               </p>
+              <div className="mt-7">
+                <FunnelLink
+                  href={"/pricing#premium" as Route}
+                  funnelEvent="view_plans_click"
+                  funnelData={{ placement: "home_plan_comparison" }}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-7 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
+                >
+                  {CTA.SEE_PREMIUM}
+                </FunnelLink>
+              </div>
             </div>
           </div>
         </div>
@@ -371,8 +384,11 @@ export function SimplifiedHome({
       <section className="border-t border-line/55 bg-[rgba(7,10,16,0.55)] py-16 sm:py-20" aria-labelledby="home-final-heading">
         <div className="container-shell text-center">
           <h2 id="home-final-heading" className="mx-auto max-w-2xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Listen & watch free—join to keep your whole walk in one study-ready place.
+            Start free. Keep what matters when you are ready.
           </h2>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400/95">
+            Deep Well is free to explore. Premium is for the teaching, Scripture, notes, and reflections you do not want to lose.
+          </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link
               href={"/browse" as Route}
