@@ -25,6 +25,11 @@ import {
   touchRecentPlayback,
 } from "@/lib/listening-progress";
 import { PlayerBookmarkControl } from "@/components/premium/player-bookmark-control";
+import {
+  postCatalogMemberSession,
+  useCatalogMemberSession,
+} from "@/hooks/use-catalog-member-session";
+import { useAccountPlanOptional } from "@/components/plan/plan-context";
 
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
@@ -35,6 +40,7 @@ function formatTime(sec: number): string {
 
 export function GlobalPlayer() {
   const { state, dispatch, mediaRef, currentTrack } = usePlayer();
+  const signedIn = (useAccountPlanOptional()?.plan ?? "guest") !== "guest";
   const seekRectRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<PlayerTrack | null>(null);
   const resumeAppliedKeyRef = useRef<string | null>(null);
@@ -42,6 +48,13 @@ export function GlobalPlayer() {
 
   const playbackUrl = currentTrack?.playbackUrl ?? null;
   const visible = state.visible && currentTrack && playbackUrl;
+
+  useCatalogMemberSession({
+    episodeId: currentTrack?.id,
+    isPlaying: state.isPlaying,
+    currentTime: state.currentTime,
+    duration: state.duration,
+  });
 
   useEffect(() => {
     trackRef.current = currentTrack ?? null;
@@ -195,6 +208,9 @@ export function GlobalPlayer() {
       const tr = trackRef.current;
       if (elEnd && tr && Number.isFinite(elEnd.duration) && elEnd.duration > 0) {
         saveListeningProgress(tr, elEnd.duration, elEnd.duration);
+      }
+      if (signedIn && tr?.id) {
+        void postCatalogMemberSession("finish", tr.id);
       }
       dispatch({ type: "MEDIA_ENDED" });
     };

@@ -3,7 +3,7 @@ import type { Route } from "next";
 import { InstallHint } from "@/components/pwa/install-hint";
 import { FooterJoinLink } from "@/components/analytics/footer-join-link";
 import { DeepWellLogo } from "@/components/brand/deep-well-logo";
-import { CTA } from "@/lib/site-messaging";
+import { CTA, SITE_POSITIONING } from "@/lib/site-messaging";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -16,11 +16,11 @@ export function SiteFooter() {
           <DeepWellLogo variant="inline" brandClassName="items-center mx-auto" />
         </div>
         <p className="mx-auto mt-2 max-w-lg text-[13px] leading-relaxed text-slate-500">
-          Listen and watch freely.{" "}
+          {SITE_POSITIONING.headline}{" "}
           <Link href={"/pricing" as Route} className="text-slate-400 underline-offset-2 transition hover:text-amber-100/90 hover:underline">
-            {CTA.SEE_PREMIUM}
-          </Link>{" "}
-          to keep teaching, Scripture, notes, listening, and video stitched into one calm library—everything you do while signed in stays together for study.
+            {CTA.SEE_WHAT_PREMIUM_KEEPS}
+          </Link>
+          .
         </p>
         <p className="mt-5 text-[13px] leading-relaxed text-slate-600">
           © {year}

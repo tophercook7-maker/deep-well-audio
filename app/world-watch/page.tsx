@@ -68,11 +68,11 @@ export default async function WorldWatchPage() {
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">World Watch</h1>
         <p className="max-w-2xl text-base leading-relaxed text-slate-300/95 sm:text-lg">
-          World Watch is a current-events resource from a Christian worldview. Public previews and videos are available
-          here to help listeners stay informed with wisdom and discernment.
+          World Watch helps you process current events through a calmer, Scripture-aware lens. Public previews and video
+          clips stay open for everyone.
         </p>
         <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
-          Go deeper with the full World Watch digest, commentary, and discernment notes with Premium.
+          Premium members receive the complete digest, deeper context, and a permanent archive inside their library.
         </p>
       </header>
 
@@ -98,7 +98,7 @@ export default async function WorldWatchPage() {
           </li>
         </ul>
         <p className="mt-5 text-sm text-slate-500">
-          Premium adds the full written digest, commentary, and discernment notes. The page itself remains public.
+          Premium adds the full written digest, deeper context, and a lasting archive in your faith library. The page itself remains public.
         </p>
       </section>
 
@@ -165,22 +165,23 @@ export default async function WorldWatchPage() {
               <div className="flex items-center gap-3 text-accent">
                 <Lock className="h-6 w-6" aria-hidden />
                 <h2 id="ww-premium-heading" className="text-xl font-semibold text-white">
-                  Go deeper with Premium
+                  Full digest in your library
                 </h2>
               </div>
               <p className="max-w-xl text-base font-medium leading-relaxed text-slate-100/95">
-                Go deeper with the full World Watch digest, commentary, and discernment notes with Premium.
+                World Watch helps you process current events through a calmer, Scripture-aware lens—saved with the rest of
+                your faith library when you&apos;re Premium.
               </p>
               <p className="max-w-xl text-sm leading-relaxed text-slate-400">
-                Public previews and videos stay open. Premium adds the complete written layer for people who want richer context over time.
+                Public previews and videos stay open. Premium adds the complete digest, deeper context, and a permanent archive you can return to.
               </p>
               <FunnelLink
                 href={"/pricing" as Route}
-                funnelEvent="view_plans_click"
+                funnelEvent="pricing_click"
                 funnelData={{ placement: "world_watch_premium_layer" }}
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_28px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
               >
-                {CTA.SEE_PREMIUM}
+                {CTA.BUILD_MY_LIBRARY}
               </FunnelLink>
               <p className="text-xs text-slate-500">
                 Already Premium?{" "}

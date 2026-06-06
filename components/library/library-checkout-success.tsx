@@ -2,13 +2,25 @@
 
 import Link from "next/link";
 import type { Route } from "next";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 
 export function LibraryCheckoutSuccess() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const tracked = useRef(false);
   const upgraded = searchParams.get("upgraded") === "true";
+  const interval = searchParams.get("interval");
+
+  useEffect(() => {
+    if (!upgraded || tracked.current) return;
+    tracked.current = true;
+    trackFunnelEvent("subscription_purchase");
+    if (interval === "yearly") {
+      trackFunnelEvent("annual_plan_purchase");
+    }
+  }, [upgraded, interval]);
 
   useEffect(() => {
     if (!upgraded) return;
@@ -27,26 +39,26 @@ export function LibraryCheckoutSuccess() {
       aria-live="polite"
     >
       <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/75">Welcome</p>
-      <p className="mt-2 text-lg font-semibold text-white">You&apos;re Premium now</p>
+      <p className="mt-2 text-lg font-semibold text-white">Your faith library is ready</p>
       <p className="mt-2 max-w-prose text-slate-400">
-        Bookmarks, notes, topic packs, World Watch, and advanced filters are on this account. Refresh if something looks out of date—thank you for
-        supporting this work.
+        Premium remembers what shaped you—saved teachings, notes beside each sermon, Scripture, bookmarks, World Watch, and listening
+        progress in one calm place.
       </p>
       <p className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium">
         <Link
-          href={"/world-watch" as Route}
-          className="inline-flex min-h-[44px] items-center rounded-full border border-accent/35 bg-accent/[0.08] px-4 py-2 text-amber-100/95 transition hover:border-accent/50"
-        >
-          Open World Watch
-        </Link>
-        <Link
           href={"/library" as Route}
-          className="inline-flex min-h-[44px] items-center text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
+          className="inline-flex min-h-[44px] items-center rounded-full border border-accent/35 bg-accent/[0.08] px-4 py-2 text-amber-100/95 transition hover:border-accent/50"
         >
           Open your library
         </Link>
-        <Link href={"/explore" as Route} className="inline-flex min-h-[44px] items-center text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline">
-          Explore catalog
+        <Link
+          href={"/world-watch" as Route}
+          className="inline-flex min-h-[44px] items-center text-amber-200/85 underline-offset-2 transition hover:text-amber-100 hover:underline"
+        >
+          Open World Watch
+        </Link>
+        <Link href={"/browse" as Route} className="inline-flex min-h-[44px] items-center text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline">
+          Keep listening free
         </Link>
       </p>
     </div>

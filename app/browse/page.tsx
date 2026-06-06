@@ -20,6 +20,7 @@ import { EpisodeRow } from "@/components/episode-row";
 import { ExploreEmptyState } from "@/components/explore/empty-state";
 import { BackButton } from "@/components/buttons/back-button";
 import { getDiscoverTopicCards, getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
+import { getCatalogCycleContextForRequest } from "@/lib/catalog-cycle-context";
 import { getUserPlan } from "@/lib/auth";
 import { ExploreMeatyField } from "@/components/premium/explore-meaty-field";
 import { Search } from "lucide-react";
@@ -96,12 +97,15 @@ export default async function BrowsePage({
 
   const activeTopicMeta = topicSlugResolved ? getTopicDefinition(topicSlugResolved) : null;
 
+  const catalogCycle = await getCatalogCycleContextForRequest();
+
   const filters = {
     q,
     category: category || undefined,
     sourceType: source,
     meatyMin,
     topic: topicParamRaw || undefined,
+    cycleId: catalogCycle.visibleCycleId,
   };
 
   const hasActiveFilters = Boolean(

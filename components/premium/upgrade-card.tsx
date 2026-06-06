@@ -1,6 +1,8 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
+import { PREMIUM_MONTHLY_LABEL, PREMIUM_YEARLY_LABEL } from "@/lib/pricing-display";
+import { SITE_POSITIONING } from "@/lib/site-messaging";
 import { PremiumUpgradeActions } from "@/components/premium/premium-upgrade-actions";
 
 export function UpgradeCard({ className = "", showJoinLink = true }: { className?: string; showJoinLink?: boolean }) {
@@ -14,9 +16,9 @@ export function UpgradeCard({ className = "", showJoinLink = true }: { className
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/75">Premium</p>
-          <p className="mt-1.5 text-lg font-semibold leading-snug text-white">Premium adds tools to stay with what you hear.</p>
+          <p className="mt-1.5 text-lg font-semibold leading-snug text-white">{SITE_POSITIONING.headline}</p>
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            <span className="text-slate-300">$9/month</span> or <span className="text-slate-300">$90/year</span> through Stripe. Cancel anytime
+            <span className="text-slate-300">{PREMIUM_MONTHLY_LABEL}</span> or <span className="text-slate-300">{PREMIUM_YEARLY_LABEL}</span> through Stripe. Cancel anytime
             through Stripe—use links in your subscription emails from Stripe, or reach out for billing help.
           </p>
           <PremiumUpgradeActions className="mt-5" align="start" showJoinLink={showJoinLink} />

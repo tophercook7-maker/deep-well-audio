@@ -1,7 +1,9 @@
+import { getCatalogCycleContextForRequest } from "@/lib/catalog-cycle-context";
 import { getHomeRecentEpisodes, getActiveShowCount, getPublicEpisodeCount } from "@/lib/queries";
 import { HomeSetupStatusPanel } from "@/components/home-setup-status";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import type { EpisodeWithShow } from "@/lib/types";
+import { ConversionPageBeacon } from "@/components/analytics/conversion-page-beacon";
 import { SimplifiedHome } from "@/components/home/simplified-home";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { fetchWorldWatchTeaserForRetention } from "@/lib/world-watch/teaser-for-retention";
@@ -15,9 +17,11 @@ export default async function HomePage() {
   const user = await getSessionUser();
   const plan = await getUserPlan();
   let wwTeaser: Awaited<ReturnType<typeof fetchWorldWatchTeaserForRetention>> = null;
+  const catalogCycle = await getCatalogCycleContextForRequest();
+
   try {
     const [recentPoolRes, showCountRes, episodeCountRes, wwRes] = await Promise.all([
-      getHomeRecentEpisodes(HOMEPAGE_RECENT_SAMPLES),
+      getHomeRecentEpisodes(HOMEPAGE_RECENT_SAMPLES, catalogCycle.visibleCycleId),
       getActiveShowCount(),
       getPublicEpisodeCount(),
       user ? fetchWorldWatchTeaserForRetention() : Promise.resolve(null),
@@ -35,6 +39,7 @@ export default async function HomePage() {
 
   return (
     <main>
+      <ConversionPageBeacon page="home" />
       <SimplifiedHome
         startListening={recentPool}
         showCount={showCount}

@@ -30,10 +30,10 @@ This repository **is** the Next.js app (no nested `starter` folder). Clone, open
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Public | Enables Stripe Checkout buttons in the UI |
 | `STRIPE_SECRET_KEY` | Server | Stripe API secret |
 | `STRIPE_WEBHOOK_SECRET` | Server | Webhook signing secret (`whsec_…`) |
-| `STRIPE_PRICE_MONTHLY` | Server | Price ID for $9/mo |
-| `STRIPE_PRICE_YEARLY` | Server | Price ID for $90/yr |
+| `STRIPE_PRICE_MONTHLY` | Server | Price ID for $1.99/mo |
+| `STRIPE_PRICE_YEARLY` | Server | Price ID for $20/yr |
 | `WORLD_WATCH_WEEKLY_DIGEST_ENABLED` | Server | Optional; must be `1` to allow World Watch email cron (see `.env.example`) |
-| `CRON_SECRET` | Server | Optional; Bearer secret for digest route when email is enabled |
+| `CRON_SECRET` | Server | Bearer secret for Vercel Cron routes (`/api/cron/sync-all`, World Watch ingest, curated YouTube); also weekly digest when enabled |
 | `RESEND_API_KEY` / `RESEND_FROM_WORLD_WATCH` | Server | Optional; Resend when digest is enabled |
 | `FEEDBACK_ADMIN_EMAILS` | Server | Comma-separated emails that may open `/admin/feedback` (uses `site_feedback` migration) |
 
@@ -77,7 +77,7 @@ The **Premium UI and gating are live**. **Stripe Checkout** (monthly/yearly) upg
 - **Env:** `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY`, plus `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (enables client checkout buttons), and **`NEXT_PUBLIC_SITE_URL`** (absolute URLs for Checkout success/cancel). See `.env.example`.
 - **Checkout:** `POST /api/stripe/create-checkout-session` with `{ "price": "monthly" | "yearly" }` (signed-in users only). Redirects to Stripe Checkout; success returns to `/library?upgraded=true`.
 - **Webhooks:** `POST /api/stripe/webhook` — raw body + signature verification. Uses **`SUPABASE_SERVICE_ROLE_KEY`** to set `profiles.plan` / `subscription_status` / `stripe_customer_id`. Handle **`checkout.session.completed`**, **`invoice.payment_succeeded`**, **`customer.subscription.deleted`**.
-- **Dashboard:** Create product “Deep Well Premium” with $9/mo and $90/yr recurring prices; copy Price IDs into `STRIPE_PRICE_*`. Add webhook endpoint URL (production) with the signing secret as `STRIPE_WEBHOOK_SECRET`. Metadata `user_id` is set on Checkout and subscription for reliable account linking.
+- **Dashboard:** Create product “Deep Well Premium” with $1.99/mo and $20/yr recurring prices; copy Price IDs (not Payment Link URLs) into `STRIPE_PRICE_*`. Add webhook endpoint URL (production) with the signing secret as `STRIPE_WEBHOOK_SECRET`. Metadata `user_id` is set on Checkout and subscription for reliable account linking.
 
 ## Persistent global player / background playback
 

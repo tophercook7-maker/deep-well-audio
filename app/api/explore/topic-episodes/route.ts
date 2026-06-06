@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
+import { getSessionUser } from "@/lib/auth";
+import { resolveCatalogCycleForViewer } from "@/lib/catalog-cycles";
 import { getEpisodesByTopicTag } from "@/lib/queries";
+import { createClient } from "@/lib/supabase/server";
 import { normalizeTopicSlug } from "@/lib/topics";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +17,15 @@ export async function GET(req: Request) {
     return NextResponse.json({ episodes: [], dataOk: true });
   }
 
-  const { episodes, dataOk } = await getEpisodesByTopicTag(slug, limit);
+  const user = await getSessionUser();
+  const supabase = await createClient();
+  let cycleId: string | null = null;
+  if (supabase) {
+    const ctx = await resolveCatalogCycleForViewer(supabase, user?.id ?? null);
+    cycleId = ctx.visibleCycleId;
+  }
+
+  const { episodes, dataOk } = await getEpisodesByTopicTag(slug, limit, cycleId);
   const slim = episodes.map((e) => ({
     id: e.id,
     title: e.title,

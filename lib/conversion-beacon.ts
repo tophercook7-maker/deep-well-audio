@@ -1,5 +1,6 @@
 /** Keys sent from ConversionPageBeacon and stored in conversion_beacon_events.page */
 export const CONVERSION_BEACON_PAGES = [
+  "home",
   "pricing",
   "join",
   "world_watch",

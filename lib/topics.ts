@@ -51,7 +51,7 @@ export type TopicDefinition = {
  * Default topic hub footer body for `TopicSeoCta` — free listening/watching vs Premium keeping work unified and study-ready.
  */
 export const DEFAULT_TOPIC_HUB_CTA_SUPPORT =
-  "Listening and curated teaching video are free without an account. Become a member to keep sermon audio, rewatches, Scripture highlights, notes, and listening progress threaded together in one study-ready library.";
+  "Listen free on Browse. Premium remembers what shaped you—sermons, Scripture, notes, and reflections in one personal faith library.";
 
 /** Default heading above the topic hub `TopicSeoCta` strip. */
 export const DEFAULT_TOPIC_HUB_CTA_HEADING = "Start listening & watching free";

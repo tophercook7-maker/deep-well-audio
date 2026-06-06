@@ -1,4 +1,10 @@
 export type FunnelEventName =
+  | "homepage_visit"
+  | "pricing_page_visit"
+  | "pricing_click"
+  | "checkout_start"
+  | "subscription_purchase"
+  | "annual_plan_purchase"
   | "start_listening_click"
   | "explore_teaching_click"
   | "view_plans_click"

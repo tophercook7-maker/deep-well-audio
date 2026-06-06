@@ -1,6 +1,8 @@
 /**
  * Curated ingestion sources only. Sync reads active entries with `rssUrl` and/or YouTube channel IDs.
  * Add rows here (no admin UI). Set `active: false` to skip a feed without deleting it.
+ * Set `stableCatalog: true` for growing archives (e.g. Grace Church YouTube) that append by video ID
+ * and stay visible outside rotating catalog cycles.
  */
 
 export type SourceFeedSeed = {
@@ -20,6 +22,11 @@ export type SourceFeedSeed = {
   meatyScore?: number;
   /** Set false to skip this source during sync (broken feed, pause ministry, etc.). */
   active?: boolean;
+  /**
+   * Stable catalog show: sync appends/updates episodes by YouTube/RSS ID; never part of rotating
+   * catalog cycle snapshots. Use for church channels with a growing sermon archive.
+   */
+  stableCatalog?: boolean;
 };
 
 export const sourceFeeds: SourceFeedSeed[] = [
@@ -84,6 +91,7 @@ export const sourceFeeds: SourceFeedSeed[] = [
     featured: true,
     meatyScore: 8,
     active: true,
+    stableCatalog: true,
   },
 
   /* ─── Bible teaching ─── */

@@ -28,6 +28,7 @@ export function StartCheckoutButton({ interval, children, className, disabled = 
 
   const onClick = useCallback(async () => {
     if (isDisabled || busyRef.current) return;
+    trackFunnelEvent("checkout_start", { interval });
     trackFunnelEvent("premium_feature_click", { intent: "checkout", interval });
     busyRef.current = true;
     setError(null);

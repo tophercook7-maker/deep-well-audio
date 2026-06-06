@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { Suspense } from "react";
 import { BookOpen, Sparkles } from "lucide-react";
+import { LibraryCheckoutSuccess } from "@/components/library/library-checkout-success";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { BackButton } from "@/components/buttons/back-button";
 import { StudyDashboardSection } from "@/components/study/study-dashboard-section";
@@ -33,6 +35,10 @@ export default async function LibraryPage() {
       <div className="border-b border-line/50 pb-5">
         <BackButton fallbackHref="/" label="Home" />
       </div>
+
+      <Suspense fallback={null}>
+        <LibraryCheckoutSuccess />
+      </Suspense>
 
       <header className="max-w-2xl">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-200/85">Library</p>

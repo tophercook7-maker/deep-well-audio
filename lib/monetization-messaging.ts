@@ -32,5 +32,5 @@ export const CONTEXTUAL_PREMIUM = {
 } as const;
 
 export function contextualCtaLabel(): string {
-  return CTA.SEE_PREMIUM;
+  return CTA.SEE_WHAT_PREMIUM_KEEPS;
 }

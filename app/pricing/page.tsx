@@ -5,8 +5,9 @@ import { BackButton } from "@/components/buttons/back-button";
 import { PricingPremiumCheckout } from "@/components/pricing/pricing-premium-checkout";
 import { getUserPlan } from "@/lib/auth";
 import { hasStripeBillingConfigured } from "@/lib/env";
+import { PREMIUM_MONTHLY_LABEL } from "@/lib/pricing-display";
+import { CTA, SITE_POSITIONING } from "@/lib/site-messaging";
 import { Check } from "lucide-react";
-import { CTA } from "@/lib/site-messaging";
 
 const PREMIUM_MEMORY_HOOKS = [
   {
@@ -44,7 +45,7 @@ const PREMIUM_PROOF_NOTES = [
 export const metadata = {
   title: "Pricing · Deep Well Audio",
   description:
-    "Listen and watch curated teaching free. Premium weaves sermon audio, video where available, notes, Scripture, and listening progress together so you never lose traction.",
+    "Listen free. Premium is memory—save sermons, Scripture, notes, and reflections in one personal faith library.",
 };
 
 export default async function PricingPage() {
@@ -65,7 +66,7 @@ export default async function PricingPage() {
               Your personal faith library
             </p>
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.35rem]">
-              Free to listen & watch together. Premium remembers what moved you.
+              Free to listen &amp; watch together. Premium remembers what moved you.
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300/95 sm:text-[1.0625rem]">
               Exploring stays open on us. Become a Premium member when you want one quiet place for teachings, Scripture,
@@ -77,30 +78,52 @@ export default async function PricingPage() {
 
       <section className="container-shell max-w-3xl py-12 sm:py-14" aria-labelledby="pricing-why-heading">
         <h2 id="pricing-why-heading" className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-          Most people don&apos;t need more sermons. They need to stop losing the ones that mattered.
+          Most people don&apos;t need more sermons.
         </h2>
-        <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-400/95">
-          {["Keep teachings that shaped you", "Store your notes in one place", "Return to what helped you grow", "Build a steady rhythm of listening and study"].map((text) => (
-            <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
-              <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-              <span>{text}</span>
-            </li>
-          ))}
-        </ul>
+        <p className="mt-3 text-lg font-medium text-slate-200/95">They need to stop losing the ones that mattered.</p>
+        <p className="mt-6 text-base leading-relaxed text-slate-400/95">
+          Premium keeps your notes, Scripture, bookmarks, listening history, and reflections together so growth compounds
+          instead of disappearing.
+        </p>
       </section>
 
-      <section className="container-shell max-w-5xl pb-6 sm:pb-8" aria-labelledby="pricing-plans-heading">
+      <section className="container-shell max-w-3xl pb-4 sm:pb-6" aria-labelledby="pricing-objection-heading">
+        <div className="rounded-[22px] border border-line/50 bg-[rgba(9,12,18,0.45)] p-6 backdrop-blur-md sm:p-8">
+          <h2 id="pricing-objection-heading" className="text-lg font-semibold text-white sm:text-xl">
+            Why pay when listening is free?
+          </h2>
+          <p className="mt-4 text-sm leading-relaxed text-slate-300/95 sm:text-base">
+            Because Premium is not charging for content.
+          </p>
+          <p className="mt-3 text-sm font-medium leading-relaxed text-amber-100/90 sm:text-base">Premium is paying for memory.</p>
+          <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-400/95">
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+              <span>The sermon is free.</span>
+            </li>
+            <li className="flex gap-3">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+              <span>
+                The ability to save it, return to it, connect notes to it, follow its themes, and build a lasting spiritual
+                library is what Premium provides.
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="container-shell max-w-5xl py-8 pb-6 sm:pb-8" aria-labelledby="pricing-plans-heading">
         <h2 id="pricing-plans-heading" className="sr-only">
           Plans
         </h2>
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="flex flex-col rounded-[26px] border border-line/50 bg-[rgba(10,14,20,0.55)] p-8 shadow-[0_24px_56px_-36px_rgba(0,0,0,0.55)] backdrop-blur-md sm:p-9">
-            <h3 className="text-xl font-semibold text-white sm:text-2xl">Listen & watch free</h3>
+            <h3 className="text-xl font-semibold text-white sm:text-2xl">Free Discovery</h3>
             <ul className="mt-8 flex-1 space-y-3">
               {[
-                "Browse audio & curated video teaching",
-                "Stream without signing in",
-                "Explore topical pathways",
+                "Browse trusted audio and video",
+                "Listen without an account",
+                "Explore studies and topics",
                 "Preview World Watch",
               ].map((text) => (
                 <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
@@ -114,7 +137,7 @@ export default async function PricingPage() {
                 href={"/browse" as Route}
                 className="inline-flex min-h-[48px] w-full items-center justify-center rounded-[22px] border border-line/90 bg-[rgba(12,16,24,0.4)] px-6 py-3 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
               >
-                {CTA.LISTEN_FREE}
+                {CTA.START_LISTENING_FREE}
               </Link>
             </div>
           </div>
@@ -129,15 +152,15 @@ export default async function PricingPage() {
                 Built for return visits
               </p>
               <h3 className="text-xl font-semibold text-white sm:text-2xl">Deep Well Premium</h3>
-              <p className="mt-2 text-sm text-slate-500">$9/month or save with annual billing</p>
+              <p className="mt-2 text-sm text-slate-500">{PREMIUM_MONTHLY_LABEL}</p>
               <ul className="mt-8 flex-1 space-y-3">
                 {[
-                  "Unified library for Scripture, listens, rewatches, notes, and bookmarks",
-                  "Save teachings across audio & curated video",
-                  "Study notes that stay tethered to the teaching that sparked them",
-                  "Resume sermons exactly where life interrupted",
-                  "Follow topics worth returning to",
-                  "Full World Watch digest",
+                  "Save sermons and teachings",
+                  "Private notes beside each teaching",
+                  "Resume exactly where you left off",
+                  "Bookmarks and topic collections",
+                  "Full World Watch access",
+                  "One unified faith library",
                 ].map((text) => (
                   <li key={text} className="flex gap-3 text-sm leading-relaxed text-slate-300/95">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
@@ -146,7 +169,12 @@ export default async function PricingPage() {
                 ))}
               </ul>
               <p className="mt-6 text-sm leading-relaxed text-slate-400/95">
-                Annual is for people who want a steadier rhythm, not another month of starting over.
+                {SITE_POSITIONING.plansPositioning.split("\n").map((line, i) => (
+                  <span key={line}>
+                    {i > 0 ? <br /> : null}
+                    {line}
+                  </span>
+                ))}
               </p>
               <div className="mt-8">
                 <PricingPremiumCheckout stripeReady={stripeReady} plan={plan} />
@@ -305,8 +333,7 @@ export default async function PricingPage() {
 
       <section className="container-shell max-w-3xl pb-8 pt-4 text-center sm:pt-6" aria-labelledby="pricing-reassurance-heading">
         <p id="pricing-reassurance-heading" className="text-sm text-slate-500">
-          Cancel anytime through Stripe. No pressure—your sign-in unlocks saves and study tools when you upgrade; listening stays free
-          without a separate step.
+          Cancel anytime through Stripe. Listening stays free—Premium is for when you want Deep Well to remember for you.
         </p>
       </section>
     </main>

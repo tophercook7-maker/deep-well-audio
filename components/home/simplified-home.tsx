@@ -6,7 +6,10 @@ import type { UserPlan } from "@/lib/permissions";
 import { FunnelLink } from "@/components/analytics/funnel-link";
 import { HomeStartListeningCard } from "@/components/home/home-start-listening-card";
 import { HomeDailyScriptureRitual } from "@/components/home/home-daily-scripture-ritual";
-import { CTA, SITE_POSITIONING } from "@/lib/site-messaging";
+import {
+  PREMIUM_MONTHLY_LABEL,
+} from "@/lib/pricing-display";
+import { CTA, SITE_POSITIONING, SOCIAL_PROOF_PLACEHOLDERS } from "@/lib/site-messaging";
 import { SignedInHabitBand } from "@/components/retention/signed-in-habit-band";
 
 const START_LISTENING_MAX = 8;
@@ -54,29 +57,31 @@ export function SimplifiedHome({
             id="home-ritual-heading"
             className="mt-4 max-w-[28ch] font-serif text-[1.9rem] font-normal leading-[1.15] tracking-tight text-white sm:text-[2.25rem]"
           >
-            {sessionUser ? "Welcome back to your library" : "Stop losing the teaching that shaped you"}
+            {sessionUser ? "Welcome back to your library" : SITE_POSITIONING.headline}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-400/95">
             {sessionUser
               ? "Pick up where you left off. Your saved teachings, notes, Scripture, and World Watch reflections stay together so you can return when life gets loud."
-              : "Listen free. Explore trusted Christian teaching. Then become a member when you want one quiet place that remembers the sermons, Scripture, notes, and reflections you actually want to return to."}
+              : SITE_POSITIONING.subhead}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={"/browse" as Route}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_32px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
-            >
-              {CTA.LISTEN_FREE}
-            </Link>
-            <FunnelLink
-              href={"/pricing" as Route}
-              funnelEvent="view_plans_click"
-              funnelData={{ placement: "home_top_hero" }}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
-            >
-              {CTA.SEE_PREMIUM}
-            </FunnelLink>
-          </div>
+          {!sessionUser ? (
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href={"/browse" as Route}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_32px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
+              >
+                {CTA.START_LISTENING_FREE}
+              </Link>
+              <FunnelLink
+                href={"/pricing" as Route}
+                funnelEvent="pricing_click"
+                funnelData={{ placement: "home_hero" }}
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
+              >
+                {CTA.SEE_WHAT_PREMIUM_KEEPS}
+              </FunnelLink>
+            </div>
+          ) : null}
           <p className="mt-5 text-sm text-slate-500">{statsLine}</p>
           <div className="mt-10 max-w-2xl">
             <HomeDailyScriptureRitual />
@@ -182,14 +187,10 @@ export function SimplifiedHome({
       >
         <div className="container-shell">
           <h2 id="home-problem-heading" className="max-w-3xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Most Christian content disappears right after it helps you.
+            {SITE_POSITIONING.problemTitle}
           </h2>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              "You hear a sermon you need, then cannot find it later",
-              "Your notes live in one place while the teaching lives somewhere else",
-              "You want a steadier walk, but your spiritual inputs are scattered",
-            ].map((t) => (
+            {SITE_POSITIONING.problemBullets.map((t) => (
               <li
                 key={t}
                 className="rounded-[20px] border border-line/45 bg-[rgba(10,14,20,0.5)] px-5 py-5 text-sm leading-relaxed text-slate-300/95"
@@ -199,35 +200,8 @@ export function SimplifiedHome({
             ))}
           </ul>
           <p className="mt-10 max-w-2xl text-base leading-relaxed text-slate-400/95">
-            Deep Well fixes the part after listening: saving, returning, taking notes, following topics, and keeping Scripture beside what shaped you.
+            {SITE_POSITIONING.problemClosing}
           </p>
-        </div>
-      </section>
-
-      {/* Brand line */}
-      <section className="border-b border-line/40 py-14 sm:py-16" aria-labelledby="home-brand-heading">
-        <div className="container-shell max-w-3xl">
-          <h2 id="home-brand-heading" className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-            {SITE_POSITIONING.headline}
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate-400/95 sm:text-lg">{SITE_POSITIONING.subhead}</p>
-          <p className="mt-4 text-sm leading-relaxed text-slate-500">{SITE_POSITIONING.problem}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={"/browse" as Route}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_32px_-10px_rgba(212,175,55,0.45)] transition hover:opacity-95"
-            >
-              {CTA.LISTEN_FREE}
-            </Link>
-            <FunnelLink
-              href={"/pricing" as Route}
-              funnelEvent="view_plans_click"
-              funnelData={{ placement: "home_positioning" }}
-              className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 bg-[rgba(12,16,24,0.45)] px-7 py-3 text-sm font-medium text-slate-100 backdrop-blur-sm transition hover:border-accent/35 hover:text-white"
-            >
-              {CTA.SEE_PREMIUM}
-            </FunnelLink>
-          </div>
         </div>
       </section>
 
@@ -290,7 +264,7 @@ export function SimplifiedHome({
               href={"/browse" as Route}
               className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-line/90 px-6 py-2.5 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
             >
-              {CTA.LISTEN_FREE}
+              {CTA.START_LISTENING_FREE}
             </Link>
           </div>
         </div>
@@ -328,7 +302,12 @@ export function SimplifiedHome({
       >
         <div className="container-shell">
           <h2 id="home-plans-heading" className="max-w-3xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-            Listen for free. Pay when you want Deep Well to remember for you.
+            {SITE_POSITIONING.plansPositioning.split("\n").map((line, i) => (
+              <span key={line}>
+                {i > 0 ? <br /> : null}
+                {line}
+              </span>
+            ))}
           </h2>
           <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="rounded-[22px] border border-line/55 bg-[rgba(10,14,20,0.5)] p-8 backdrop-blur-md sm:p-9">
@@ -347,7 +326,7 @@ export function SimplifiedHome({
               </ul>
             </div>
             <div className="rounded-[22px] border border-accent/25 bg-gradient-to-br from-[rgba(24,32,48,0.75)] to-[rgba(8,11,18,0.88)] p-8 shadow-[0_24px_56px_-36px_rgba(212,175,55,0.15)] backdrop-blur-md sm:p-9">
-              <h3 className="text-xl font-semibold text-white">Premium memory — $9/month</h3>
+              <h3 className="text-xl font-semibold text-white">Premium memory ({PREMIUM_MONTHLY_LABEL})</h3>
               <ul className="mt-6 space-y-3 text-sm leading-relaxed text-slate-200/95">
                 {[
                   "One personal library for teachings, video, Scripture, notes, and bookmarks",
@@ -368,15 +347,40 @@ export function SimplifiedHome({
               <div className="mt-7">
                 <FunnelLink
                   href={"/pricing#premium" as Route}
-                  funnelEvent="view_plans_click"
+                  funnelEvent="pricing_click"
                   funnelData={{ placement: "home_plan_comparison" }}
                   className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-7 py-3 text-sm font-semibold text-slate-950 transition hover:opacity-90"
                 >
-                  {CTA.SEE_PREMIUM}
+                  {CTA.SEE_WHAT_PREMIUM_KEEPS}
                 </FunnelLink>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Social proof */}
+      <section className="border-t border-line/45 py-16 sm:py-20" aria-labelledby="home-proof-heading">
+        <div className="container-shell">
+          <h2 id="home-proof-heading" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+            A calmer rhythm—not another content feed
+          </h2>
+          <ul className="mt-10 grid gap-5 sm:grid-cols-3">
+            {SOCIAL_PROOF_PLACEHOLDERS.map((quote) => (
+              <li
+                key={quote}
+                className="rounded-[20px] border border-line/45 bg-[rgba(10,14,20,0.45)] px-5 py-6 text-sm leading-relaxed text-slate-300/95"
+              >
+                <span className="text-amber-200/70" aria-hidden>
+                  &ldquo;
+                </span>
+                {quote}
+                <span className="text-amber-200/70" aria-hidden>
+                  &rdquo;
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -386,23 +390,23 @@ export function SimplifiedHome({
           <h2 id="home-final-heading" className="mx-auto max-w-2xl text-2xl font-semibold tracking-tight text-white sm:text-3xl">
             Start free. Keep what matters when you are ready.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400/95">
-            Deep Well is free to explore. Premium is for the teaching, Scripture, notes, and reflections you do not want to lose.
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400/95 sm:text-base">
+            {SITE_POSITIONING.productDefinition}
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Link
               href={"/browse" as Route}
               className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-accent px-8 py-3 text-sm font-semibold text-slate-950 shadow-[0_12px_32px_-12px_rgba(212,175,55,0.5)] transition hover:opacity-95"
             >
-              {CTA.LISTEN_FREE}
+              {CTA.START_LISTENING_FREE}
             </Link>
             <FunnelLink
               href={"/pricing" as Route}
-              funnelEvent="view_plans_click"
+              funnelEvent="pricing_click"
               funnelData={{ placement: "home_footer" }}
               className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-line/90 px-8 py-3 text-sm font-medium text-slate-100 transition hover:border-accent/35 hover:text-white"
             >
-              {CTA.SEE_PREMIUM}
+              {CTA.BUILD_MY_LIBRARY}
             </FunnelLink>
           </div>
         </div>

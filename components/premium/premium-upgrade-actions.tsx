@@ -6,6 +6,7 @@ import { useAccountPlanOptional } from "@/components/plan/plan-context";
 import { PremiumActiveState } from "@/components/premium/premium-active-state";
 import { StartCheckoutButton } from "@/components/stripe/start-checkout-button";
 import { isClientCheckoutConfigured } from "@/lib/stripe-checkout-client";
+import { PREMIUM_MONTHLY_LABEL } from "@/lib/pricing-display";
 import { CTA } from "@/lib/site-messaging";
 
 const btnPrimary =
@@ -47,15 +48,15 @@ export function PremiumUpgradeActions({
     <div className={className.trim()}>
       <div className={`flex flex-wrap gap-3 sm:gap-3.5 ${justify}`}>
         <StartCheckoutButton interval="monthly" disabled={!checkoutOk} className={btnPrimary}>
-          {CTA.UPGRADE_TO_PREMIUM} — $9/mo
+          {CTA.BUILD_MY_LIBRARY} — {PREMIUM_MONTHLY_LABEL}
         </StartCheckoutButton>
         <FunnelLink
           href={"/pricing#subscribe" as Route}
-          funnelEvent="view_plans_click"
+          funnelEvent="pricing_click"
           funnelData={funnelPlacement}
           className={btnGhost}
         >
-          {CTA.SEE_PREMIUM}
+          {CTA.SEE_WHAT_PREMIUM_KEEPS}
         </FunnelLink>
       </div>
       <p className={`mt-3 max-w-md text-xs leading-relaxed text-slate-500 ${hintAlign}`}>

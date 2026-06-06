@@ -6,6 +6,12 @@ import { isCategoryKey } from "@/lib/normalizers";
 import { getTopicDefinition, normalizeTopicSlug } from "@/lib/topics";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
 import { utcMondayWeekStartIso } from "@/lib/week-boundaries";
+import { loadCycleEpisodeIds } from "@/lib/catalog-cycles";
+import {
+  isStableCatalogShowSlug,
+  loadStableCatalogShowIds,
+  mergeCycleAndStableEpisodeIds,
+} from "@/lib/stable-catalog-shows";
 import {
   filterEpisodesExcludingRetired,
   sortEpisodesForFeaturedPool,
@@ -86,18 +92,51 @@ export async function getPublicEpisodeCount(): Promise<number> {
   }
 }
 
-export async function getFeaturedShows(limit = 9): Promise<ShowWithMeta[]> {
+export async function getFeaturedShows(limit = 9, cycleId?: string | null): Promise<ShowWithMeta[]> {
   if (!hasPublicSupabaseEnv()) return [];
   const supabase = await createClient();
   if (!supabase) return [];
   try {
-    const { data, error } = await supabase
+    let cycleShowIds: string[] | null = null;
+    if (cycleId) {
+      const episodeIds = await mergeCycleAndStableEpisodeIds(
+        supabase,
+        await loadCycleEpisodeIds(supabase, cycleId)
+      );
+      const stableShowIds = await loadStableCatalogShowIds(supabase);
+      if (!episodeIds.length && !stableShowIds.length) return [];
+
+      const showIdSet = new Set<string>(stableShowIds);
+      if (episodeIds.length) {
+        const { data: epRows, error: epErr } = await supabase
+          .from("episodes")
+          .select("show_id")
+          .in("id", episodeIds);
+        if (epErr) {
+          logQueryError("getFeaturedShows:cycleShows", epErr);
+          if (!stableShowIds.length) return [];
+        } else {
+          for (const row of epRows ?? []) showIdSet.add(row.show_id as string);
+        }
+      }
+
+      cycleShowIds = [...showIdSet];
+      if (!cycleShowIds.length) return [];
+    }
+
+    let q = supabase
       .from("shows")
       .select("*, episodes(count)")
       .eq("is_active", true)
       .eq("featured", true)
       .order("title")
       .limit(limit);
+
+    if (cycleShowIds) {
+      q = q.in("id", cycleShowIds);
+    }
+
+    const { data, error } = await q;
 
     if (error) {
       logQueryError("getFeaturedShows", error);
@@ -112,11 +151,57 @@ export async function getFeaturedShows(limit = 9): Promise<ShowWithMeta[]> {
   }
 }
 
-export async function getHomeRecentEpisodes(limit = 8): Promise<EpisodeWithShow[]> {
+export async function getHomeRecentEpisodes(limit = 8, cycleId?: string | null): Promise<EpisodeWithShow[]> {
   if (!hasPublicSupabaseEnv()) return [];
   const supabase = await createClient();
   if (!supabase) return [];
   try {
+    if (cycleId) {
+      const { data, error } = await supabase
+        .from("catalog_cycle_episodes")
+        .select(
+          "position, episode:episodes!inner(*, show:shows!inner(slug,title,host,summary,description,artwork_url,category,official_url,tags))"
+        )
+        .eq("cycle_id", cycleId)
+        .order("position", { ascending: true })
+        .limit(Math.max(limit, 48));
+
+      if (error) {
+        logQueryError("getHomeRecentEpisodes:cycle", error);
+        return [];
+      }
+
+      const cycleRows = (data ?? [])
+        .map((row) => row.episode as EpisodeWithShow | null)
+        .filter((ep): ep is EpisodeWithShow => ep != null);
+
+      const stableShowIds = await loadStableCatalogShowIds(supabase);
+      let stableRows: EpisodeWithShow[] = [];
+      if (stableShowIds.length) {
+        const { data: stableData, error: stableErr } = await supabase
+          .from("episodes")
+          .select(
+            "*, show:shows!inner(slug,title,host,summary,description,artwork_url,category,official_url,tags)"
+          )
+          .in("show_id", stableShowIds)
+          .neq("lifecycle_status", "retired")
+          .order("published_at", { ascending: false, nullsFirst: false })
+          .limit(Math.max(limit, 8));
+
+        if (stableErr) {
+          logQueryError("getHomeRecentEpisodes:stable", stableErr);
+        } else {
+          stableRows = filterEpisodesExcludingRetired((stableData ?? []) as EpisodeWithShow[]);
+        }
+      }
+
+      const stableSlots = Math.min(2, limit, stableRows.length);
+      const stablePick = stableRows.slice(0, stableSlots);
+      const stableIds = new Set(stablePick.map((ep) => ep.id));
+      const cyclePick = cycleRows.filter((ep) => !stableIds.has(ep.id));
+      return [...stablePick, ...cyclePick].slice(0, limit);
+    }
+
     const pool = Math.min(120, Math.max(limit * 12, 48));
     const { data, error } = await supabase
       .from("episodes")
@@ -146,6 +231,8 @@ export type ExploreFilters = {
   meatyMin?: number;
   /** Episode `topic_tags` slug when `getTopicDefinition(slug)` exists (e.g. end-times). */
   topic?: string;
+  /** When set, restrict browse/explore results to this catalog cycle snapshot. */
+  cycleId?: string | null;
 };
 
 /** Resolve a catalog topic slug from filters, or "" if absent/invalid. */
@@ -234,12 +321,24 @@ async function fetchShowIdsFromEpisodeOrShowText(
   return [...new Set((data ?? []).map((r: { show_id: string }) => r.show_id))];
 }
 
+async function resolveCycleEpisodeIds(
+  supabase: SupabaseClient,
+  cycleId?: string | null
+): Promise<string[] | null> {
+  if (!cycleId) return null;
+  const ids = await loadCycleEpisodeIds(supabase, cycleId);
+  const merged = await mergeCycleAndStableEpisodeIds(supabase, ids);
+  return merged.length ? merged : [];
+}
+
 export async function exploreShows(filters: ExploreFilters): Promise<ShowWithMeta[]> {
   if (!hasPublicSupabaseEnv()) return [];
   const supabase = await createClient();
   if (!supabase) return [];
   try {
     const topicSlug = resolveExploreTopicSlug(filters);
+    const cycleEpisodeIds = await resolveCycleEpisodeIds(supabase, filters.cycleId);
+    if (cycleEpisodeIds && !cycleEpisodeIds.length) return [];
 
     let topicShowIds: string[] | null = null;
     if (topicSlug) {
@@ -269,6 +368,20 @@ export async function exploreShows(filters: ExploreFilters): Promise<ShowWithMet
 
     if (topicShowIds) {
       q = q.in("id", topicShowIds);
+    }
+
+    if (cycleEpisodeIds) {
+      const { data: cycleShowRows, error: cycleShowErr } = await supabase
+        .from("episodes")
+        .select("show_id")
+        .in("id", cycleEpisodeIds);
+      if (cycleShowErr) {
+        logQueryError("exploreShows:cycleShowIds", cycleShowErr);
+        return [];
+      }
+      const cycleShowIds = [...new Set((cycleShowRows ?? []).map((r) => r.show_id as string))];
+      if (!cycleShowIds.length) return [];
+      q = q.in("id", cycleShowIds);
     }
 
     const term = filters.q?.trim();
@@ -309,7 +422,8 @@ export async function exploreShows(filters: ExploreFilters): Promise<ShowWithMet
 /** Episodes whose `topic_tags` array contains the slug (e.g. end-times). Newest first. */
 export async function getEpisodesByTopicTag(
   tagSlug: string,
-  limit = 80
+  limit = 80,
+  cycleId?: string | null
 ): Promise<{ episodes: EpisodeWithShow[]; dataOk: boolean }> {
   const clean = normalizeTopicSlug(tagSlug);
   if (!clean) return { episodes: [], dataOk: true };
@@ -320,13 +434,24 @@ export async function getEpisodesByTopicTag(
   if (!supabase) return { episodes: [], dataOk: false };
 
   try {
-    const { data, error } = await supabase
+    const cycleEpisodeIds = await resolveCycleEpisodeIds(supabase, cycleId);
+    if (cycleEpisodeIds && !cycleEpisodeIds.length) {
+      return { episodes: [], dataOk: true };
+    }
+
+    let q = supabase
       .from("episodes")
       .select("*, show:shows!inner(slug,title,host,artwork_url,category,official_url)")
       .contains("topic_tags", [clean])
       .neq("lifecycle_status", "retired")
       .order("published_at", { ascending: false, nullsFirst: false })
       .limit(limit);
+
+    if (cycleEpisodeIds) {
+      q = q.in("id", cycleEpisodeIds);
+    }
+
+    const { data, error } = await q;
 
     if (error) {
       logQueryError(`getEpisodesByTopicTag:${clean}`, error);
@@ -351,6 +476,7 @@ function episodePublishedTs(ep: EpisodeWithShow): number {
 export type EpisodesByTopicTagsOptions = {
   /** When set (e.g. study topic slug), prioritizes study-support and evergreen over timely-only rows. */
   studyTopicSlug?: string | null;
+  cycleId?: string | null;
 };
 
 /** Episodes tagged with any of the given catalog tags — deduped, newest first (or study-aware sort). */
@@ -362,7 +488,7 @@ export async function getEpisodesByTopicTags(
   const tags = [...new Set(tagSlugs.map((s) => normalizeTopicSlug(s)).filter(Boolean))];
   if (tags.length === 0) return { episodes: [], dataOk: true };
   if (tags.length === 1) {
-    const one = await getEpisodesByTopicTag(tags[0]!, Math.min(200, limit * 3));
+    const one = await getEpisodesByTopicTag(tags[0]!, Math.min(200, limit * 3), options?.cycleId);
     let eps = filterEpisodesExcludingRetired(one.episodes);
     if (options?.studyTopicSlug) eps = sortEpisodesForStudySupport(eps, options.studyTopicSlug);
     else eps = [...eps].sort((a, b) => episodePublishedTs(b) - episodePublishedTs(a));
@@ -374,7 +500,7 @@ export async function getEpisodesByTopicTags(
   const perTag = Math.min(200, Math.max(limit, Math.ceil(limit / tags.length) + 20));
 
   for (const tag of tags) {
-    const { episodes, dataOk: ok } = await getEpisodesByTopicTag(tag, perTag);
+    const { episodes, dataOk: ok } = await getEpisodesByTopicTag(tag, perTag, options?.cycleId);
     if (!ok) dataOk = false;
     for (const ep of episodes) {
       if (!byId.has(ep.id)) byId.set(ep.id, ep);
@@ -456,6 +582,8 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
   if (!supabase) return [];
   try {
     const topicSlug = resolveExploreTopicSlug(filters);
+    const cycleEpisodeIds = await resolveCycleEpisodeIds(supabase, filters.cycleId);
+    if (cycleEpisodeIds && !cycleEpisodeIds.length) return [];
 
     let showIds: string[] | null = null;
     if (filters.category && isCategoryKey(filters.category)) {
@@ -480,6 +608,7 @@ export async function exploreEpisodes(filters: ExploreFilters): Promise<EpisodeW
       let q = base;
       q = q.neq("lifecycle_status", "retired");
       if (showIds) q = q.in("show_id", showIds);
+      if (cycleEpisodeIds) q = q.in("id", cycleEpisodeIds);
       if (typeof meatyMin === "number" && !Number.isNaN(meatyMin)) {
         q = q.gte("meaty_score", meatyMin);
       }
@@ -604,13 +733,14 @@ export async function getShowBySlug(slug: string): Promise<{
 
     if (!show) return { show: null, episodes: [], dataOk: true };
 
+    const episodeLimit = isStableCatalogShowSlug(clean) ? 500 : 120;
     const { data: episodes, error: epErr } = await supabase
       .from("episodes")
       .select("*")
       .eq("show_id", show.id)
       .neq("lifecycle_status", "retired")
       .order("published_at", { ascending: false, nullsFirst: false })
-      .limit(120);
+      .limit(episodeLimit);
 
     if (epErr) {
       logQueryError(`getShowBySlug:episodes:${clean}`, epErr);

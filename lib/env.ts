@@ -189,11 +189,20 @@ export function isWorldWatchWeeklyDigestEnabled(): boolean {
 }
 
 /**
- * Bearer for cron routes: `/api/cron/world-watch-weekly` (digest), `/api/cron/world-watch-ingest` (RSS pull).
+ * Bearer for cron routes: `/api/cron/sync-all`, `/api/cron/world-watch-ingest`, `/api/cron/curated-youtube`, `/api/cron/world-watch-weekly`.
  * Set `CRON_SECRET` in the project environment. Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` when this var is defined.
  */
 export function getCronSecret(): string | null {
   return trimStr(process.env.CRON_SECRET);
+}
+
+/** Abandoned member listening sessions expire after this many hours (default 48). */
+export function getCatalogSessionTimeoutHours(): number {
+  const raw = trimStr(process.env.CATALOG_SESSION_TIMEOUT_HOURS);
+  if (!raw) return 48;
+  const n = Number.parseInt(raw, 10);
+  if (!Number.isFinite(n) || n < 1) return 48;
+  return Math.min(n, 168);
 }
 
 /**

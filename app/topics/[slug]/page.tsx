@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Route } from "next";
 import type { Metadata } from "next";
+import { getCatalogCycleContextForRequest } from "@/lib/catalog-cycle-context";
 import { getFavoriteEpisodeIds, countEpisodesByTopicTags, getEpisodesByTopicTags } from "@/lib/queries";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
 import { EpisodeRow } from "@/components/episode-row";
@@ -83,9 +84,10 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   if (!meta) notFound();
 
   const catalogTags = getTopicCatalogTags(meta);
+  const catalogCycle = await getCatalogCycleContextForRequest();
 
   const [{ episodes, dataOk }, totalCount] = await Promise.all([
-    getEpisodesByTopicTags(catalogTags, EP_PAGE_LIMIT),
+    getEpisodesByTopicTags(catalogTags, EP_PAGE_LIMIT, { cycleId: catalogCycle.visibleCycleId }),
     countEpisodesByTopicTags(catalogTags),
   ]);
 

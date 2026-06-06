@@ -84,6 +84,7 @@ export async function persistIngest(supabase: SupabaseClient, payload: IngestPay
       const outcome = await upsertEpisode(supabase, showId, ep);
       if (outcome === "insert") episodesInserted += 1;
       else if (outcome === "update") episodesUpdated += 1;
+      /* unchanged: matched by external_id (e.g. YouTube video ID), metadata already current */
     } catch (epErr) {
       const msg = epErr instanceof Error ? epErr.message : String(epErr);
       console.error("PERSIST EPISODE FAIL:", payload.slug, ep.external_id, ep.title, msg);
@@ -101,14 +102,35 @@ export async function persistIngest(supabase: SupabaseClient, payload: IngestPay
   };
 }
 
+type ExistingEpisodeRow = {
+  id: string;
+  title: string;
+  description: string | null;
+  published_at: string | null;
+  artwork_url: string | null;
+  duration_seconds: number | null;
+  video_url: string | null;
+};
+
+function episodeMetadataChanged(existing: ExistingEpisodeRow, ep: NormalizedEpisodeInput): boolean {
+  return (
+    existing.title !== ep.title ||
+    (existing.description ?? null) !== (ep.description ?? null) ||
+    (existing.published_at ?? null) !== (ep.published_at ?? null) ||
+    (existing.artwork_url ?? null) !== (ep.artwork_url ?? null) ||
+    (existing.duration_seconds ?? null) !== (ep.duration_seconds ?? null) ||
+    (existing.video_url ?? null) !== (ep.video_url ?? null)
+  );
+}
+
 async function upsertEpisode(
   supabase: SupabaseClient,
   showId: string,
   ep: NormalizedEpisodeInput
-): Promise<"insert" | "update"> {
+): Promise<"insert" | "update" | "unchanged"> {
   const { data: found } = await supabase
     .from("episodes")
-    .select("id")
+    .select("id, title, description, published_at, artwork_url, duration_seconds, video_url")
     .eq("show_id", showId)
     .eq("external_id", ep.external_id)
     .maybeSingle();
@@ -145,6 +167,9 @@ async function upsertEpisode(
   };
 
   if (found?.id) {
+    if (!episodeMetadataChanged(found as ExistingEpisodeRow, ep)) {
+      return "unchanged";
+    }
     const { error } = await supabase.from("episodes").update(payload).eq("id", found.id);
     if (error) {
       console.error("PERSIST EPISODE UPDATE FAIL:", showId, found.id, error.message);
