@@ -27,6 +27,16 @@ function rethrowIfDynamic(e: unknown) {
   if (isNextDynamicUsageError(e)) throw e;
 }
 
+function normalizeEpisodeRelation(
+  value: EpisodeWithShow | EpisodeWithShow[] | null | undefined
+): EpisodeWithShow | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value ?? null;
+}
+
 function mapShowWithCount(raw: ShowRow & { episodes?: { count: number }[] }): ShowWithMeta {
   const { episodes, ...rest } = raw;
   const count = episodes?.[0]?.count;
@@ -172,7 +182,9 @@ export async function getHomeRecentEpisodes(limit = 8, cycleId?: string | null):
       }
 
       const cycleRows = (data ?? [])
-        .map((row) => row.episode as EpisodeWithShow | null)
+        .map((row) =>
+          normalizeEpisodeRelation(row.episode as unknown as EpisodeWithShow | EpisodeWithShow[] | null)
+        )
         .filter((ep): ep is EpisodeWithShow => ep != null);
 
       const stableShowIds = await loadStableCatalogShowIds(supabase);

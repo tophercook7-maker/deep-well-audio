@@ -44,3 +44,7 @@ Scheduled and manual full syncs now use a **staged → active** promotion pipeli
 - Episodes match on **YouTube video ID** (`external_id`); new videos insert, existing rows update only when title, description, thumbnail, or publish date changes.
 - Older Grace Church episodes stay in the catalog; the show page lists **newest first**.
 - Stable shows are always included in **Browse** and topic search surfaces regardless of active catalog cycle.
+
+### Homepage cycle query fix
+
+- `getHomeRecentEpisodes` now normalizes Supabase `episode` relation shapes (single object or array) when merging **catalog cycle** and **stable catalog** rows for the homepage—fixes production TypeScript/build failures on nested join results.
