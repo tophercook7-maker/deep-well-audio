@@ -4,7 +4,7 @@ import {
   sortEpisodesForFeaturedPool,
 } from "@/lib/content-lifecycle";
 import { getCatalogSessionTimeoutHours } from "@/lib/env";
-import { isStableCatalogShowSlug } from "@/lib/stable-catalog-shows";
+import { isStableCatalogShowSlug, loadStableCatalogShowIds } from "@/lib/stable-catalog-shows";
 import type { EpisodeWithShow } from "@/lib/types";
 
 export type CatalogCycleStatus = "active" | "staged" | "superseded";
@@ -46,8 +46,12 @@ export type CatalogCycleViewerContext = {
 };
 
 /** Episodes in the featured/home rotation snapshot for a staged rebuild. */
-export const CATALOG_CYCLE_SNAPSHOT_POOL = 500;
 export const CATALOG_CYCLE_SNAPSHOT_SIZE = 120;
+/** Recent episodes fetched per rotating show when building a balanced snapshot. */
+export const CATALOG_CYCLE_PER_SHOW_POOL = 12;
+
+const EPISODE_WITH_SHOW_SELECT =
+  "*, show:shows!inner(slug,title,host,summary,description,artwork_url,category,official_url,tags,is_active)";
 
 export type MemberSessionAction = "start" | "heartbeat" | "finish";
 
@@ -163,27 +167,100 @@ export async function expireStaleMemberSessions(supabase: SupabaseClient): Promi
   return data?.length ?? 0;
 }
 
-async function fetchFeaturedPoolCandidates(
-  supabase: SupabaseClient
-): Promise<EpisodeWithShow[]> {
-  const { data, error } = await supabase
-    .from("episodes")
-    .select(
-      "*, show:shows!inner(slug,title,host,summary,description,artwork_url,category,official_url,tags,is_active)"
-    )
-    .neq("lifecycle_status", "retired")
-    .order("published_at", { ascending: false, nullsFirst: false })
-    .limit(CATALOG_CYCLE_SNAPSHOT_POOL);
+async function loadRotatingShowIds(supabase: SupabaseClient): Promise<string[]> {
+  const stableShowIds = await loadStableCatalogShowIds(supabase);
+  let query = supabase.from("shows").select("id").eq("is_active", true);
+  if (stableShowIds.length) {
+    query = query.not("id", "in", `(${stableShowIds.join(",")})`);
+  }
 
+  const { data, error } = await query;
   if (error) {
-    console.error("catalog-cycles:fetchFeaturedPoolCandidates", error.message);
+    console.error("catalog-cycles:loadRotatingShowIds", error.message);
     return [];
   }
 
-  const rows = filterEpisodesExcludingRetired((data ?? []) as EpisodeWithShow[]).filter(
-    (ep) => !isStableCatalogShowSlug(ep.show?.slug)
+  return (data ?? []).map((row) => row.id as string);
+}
+
+/** Round-robin across shows so every source contributes before any show dominates the snapshot. */
+function buildBalancedCycleSnapshot(
+  episodesByShow: Map<string, EpisodeWithShow[]>,
+  size: number
+): EpisodeWithShow[] {
+  const queues = [...episodesByShow.entries()]
+    .map(([showId, eps]) => [showId, sortEpisodesForFeaturedPool(eps)] as const)
+    .filter(([, eps]) => eps.length > 0)
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  const result: EpisodeWithShow[] = [];
+  const seen = new Set<string>();
+  const indices = new Map(queues.map(([showId]) => [showId, 0]));
+
+  while (result.length < size) {
+    let added = false;
+    for (const [showId, eps] of queues) {
+      if (result.length >= size) break;
+      let idx = indices.get(showId) ?? 0;
+      while (idx < eps.length && seen.has(eps[idx]!.id)) idx++;
+      if (idx < eps.length) {
+        const ep = eps[idx]!;
+        result.push(ep);
+        seen.add(ep.id);
+        indices.set(showId, idx + 1);
+        added = true;
+      }
+    }
+    if (!added) break;
+  }
+
+  if (result.length < size) {
+    const rest = sortEpisodesForFeaturedPool(
+      [...episodesByShow.values()]
+        .flat()
+        .filter((ep) => !seen.has(ep.id))
+    );
+    for (const ep of rest) {
+      if (result.length >= size) break;
+      result.push(ep);
+      seen.add(ep.id);
+    }
+  }
+
+  return result;
+}
+
+async function fetchFeaturedPoolCandidates(
+  supabase: SupabaseClient
+): Promise<EpisodeWithShow[]> {
+  const showIds = await loadRotatingShowIds(supabase);
+  if (!showIds.length) return [];
+
+  const episodesByShow = new Map<string, EpisodeWithShow[]>();
+
+  await Promise.all(
+    showIds.map(async (showId) => {
+      const { data, error } = await supabase
+        .from("episodes")
+        .select(EPISODE_WITH_SHOW_SELECT)
+        .eq("show_id", showId)
+        .neq("lifecycle_status", "retired")
+        .order("published_at", { ascending: false, nullsFirst: false })
+        .limit(CATALOG_CYCLE_PER_SHOW_POOL);
+
+      if (error) {
+        console.error(`catalog-cycles:fetchFeaturedPoolCandidates:${showId}`, error.message);
+        return;
+      }
+
+      const rows = filterEpisodesExcludingRetired((data ?? []) as EpisodeWithShow[]).filter(
+        (ep) => !isStableCatalogShowSlug(ep.show?.slug)
+      );
+      if (rows.length) episodesByShow.set(showId, rows);
+    })
   );
-  return sortEpisodesForFeaturedPool(rows).slice(0, CATALOG_CYCLE_SNAPSHOT_SIZE);
+
+  return buildBalancedCycleSnapshot(episodesByShow, CATALOG_CYCLE_SNAPSHOT_SIZE);
 }
 
 /** Rebuild the staged cycle snapshot from the current catalog (post-sync). */

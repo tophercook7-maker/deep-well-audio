@@ -155,8 +155,8 @@ export default async function BrowsePage({
       getPublicEpisodeCount(),
       view === "shows" ? exploreShows(filters) : Promise.resolve([]),
       view === "episodes" ? exploreEpisodes(filters) : Promise.resolve([]),
-      view === "shows" && !hasActiveFilters ? getFeaturedShows(12) : Promise.resolve([]),
-      view === "shows" && !hasActiveFilters ? getHomeRecentEpisodes(8) : Promise.resolve([]),
+      view === "shows" && !hasActiveFilters ? getFeaturedShows(12, catalogCycle.visibleCycleId) : Promise.resolve([]),
+      view === "shows" && !hasActiveFilters ? getHomeRecentEpisodes(8, catalogCycle.visibleCycleId) : Promise.resolve([]),
     ]);
   } catch (e) {
     if (isNextDynamicUsageError(e)) throw e;

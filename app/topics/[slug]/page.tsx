@@ -88,7 +88,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
 
   const [{ episodes, dataOk }, totalCount] = await Promise.all([
     getEpisodesByTopicTags(catalogTags, EP_PAGE_LIMIT, { cycleId: catalogCycle.visibleCycleId }),
-    countEpisodesByTopicTags(catalogTags),
+    countEpisodesByTopicTags(catalogTags, catalogCycle.visibleCycleId),
   ]);
 
   const discoverOthers = getDiscoverTopicCards()

@@ -41,7 +41,7 @@ export type RunSyncAllOptions = {
   slugFilter?: string;
   maxRssItems?: number;
   maxYoutubeItems?: number;
-  /** When false, skip staged-cycle rebuild / promotion (manual slug-only sync). */
+  /** When false, skip staged-cycle rebuild / promotion (rare manual override only). */
   runCyclePipeline?: boolean;
 };
 

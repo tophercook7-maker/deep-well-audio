@@ -11,6 +11,7 @@ import {
 } from "@/lib/guided-paths";
 import { getUserPlan } from "@/lib/auth";
 import { isNextDynamicUsageError } from "@/lib/next-runtime";
+import { getCatalogCycleContextForRequest } from "@/lib/catalog-cycle-context";
 import { getEpisodesByTopicTag } from "@/lib/queries";
 import { GuidedPathPremiumPrompt } from "@/components/paths/guided-path-premium-prompt";
 
@@ -46,7 +47,8 @@ export default async function GuidedPathPage({ params }: Props) {
   let pool = [] as Awaited<ReturnType<typeof getEpisodesByTopicTag>>["episodes"];
   let dataOk = true;
   try {
-    const res = await getEpisodesByTopicTag(def.topicSlug, 120);
+    const catalogCycle = await getCatalogCycleContextForRequest();
+    const res = await getEpisodesByTopicTag(def.topicSlug, 120, catalogCycle.visibleCycleId);
     pool = res.episodes;
     dataOk = res.dataOk;
   } catch (e) {

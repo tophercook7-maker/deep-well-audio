@@ -19,7 +19,6 @@ export async function POST(request: Request) {
 
   const result = await runSyncAllWithServiceClient({
     slugFilter,
-    runCyclePipeline: !slugFilter,
   });
 
   if (result.error === "Database not configured for ingestion") {

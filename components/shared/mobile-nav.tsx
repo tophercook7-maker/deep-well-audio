@@ -9,6 +9,7 @@ import {
   BookOpen,
   CircleDollarSign,
   Globe,
+  Handshake,
   Headphones,
   Home,
   Library,
@@ -29,6 +30,7 @@ const primaryIcon: Record<string, LucideIcon> = {
 
 const secondaryIcon: Record<string, LucideIcon> = {
   "/browse": Headphones,
+  "/creators": Handshake,
   "/world-watch": Globe,
   "/library": Library,
   "/pricing": CircleDollarSign,

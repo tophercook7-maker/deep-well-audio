@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, CircleDollarSign, Globe, Headphones, Home, Library, ScrollText, Search } from "lucide-react";
+import { BookOpen, CircleDollarSign, Globe, Handshake, Headphones, Home, Library, ScrollText, Search } from "lucide-react";
 import { ME_NAV, PRIMARY_NAV, SECONDARY_NAV, isNavActive } from "@/components/shared/nav-config";
 
 const primaryIcon: Record<string, LucideIcon> = {
@@ -15,6 +15,7 @@ const primaryIcon: Record<string, LucideIcon> = {
 
 const secondaryIcon: Record<string, LucideIcon> = {
   "/browse": Headphones,
+  "/creators": Handshake,
   "/world-watch": Globe,
   "/library": Library,
   "/pricing": CircleDollarSign,

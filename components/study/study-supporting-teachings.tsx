@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { EpisodeRow } from "@/components/episode-row";
+import { getCatalogCycleContextForRequest } from "@/lib/catalog-cycle-context";
 import { resolveStudyTagsToCatalogTags } from "@/content/study/resolve-catalog-tags";
 import { getEpisodesByTopicTags, getFavoriteEpisodeIds, type EpisodesByTopicTagsOptions } from "@/lib/queries";
 import { getSessionUser, getUserPlan } from "@/lib/auth";
@@ -28,8 +29,13 @@ export async function StudySupportingTeachings({
   const catalogTags = resolveStudyTagsToCatalogTags(tags);
   if (catalogTags.length === 0) return null;
 
-  const opts: EpisodesByTopicTagsOptions | undefined =
-    studyTopicSlug && studyTopicSlug.trim() ? { studyTopicSlug: studyTopicSlug.trim() } : undefined;
+  const catalogCycle = await getCatalogCycleContextForRequest();
+  const opts: EpisodesByTopicTagsOptions = {
+    cycleId: catalogCycle.visibleCycleId,
+    ...(studyTopicSlug && studyTopicSlug.trim()
+      ? { studyTopicSlug: studyTopicSlug.trim() }
+      : {}),
+  };
   const { episodes, dataOk } = await getEpisodesByTopicTags(catalogTags, LIMIT, opts);
   if (!dataOk || episodes.length === 0) return null;
 

@@ -9,6 +9,7 @@ export const PRIMARY_NAV = [
 /** Secondary catalog / monetization — still global, slightly de-emphasized in UI. */
 export const SECONDARY_NAV = [
   { href: "/browse", label: "Browse", key: "browse" as const },
+  { href: "/creators", label: "Creators", key: "creators" as const },
   { href: "/world-watch", label: "World Watch", key: "worldWatch" as const },
   { href: "/library", label: "Library", key: "library" as const },
   { href: "/pricing", label: "Pricing", key: "pricing" as const },

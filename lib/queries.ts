@@ -526,16 +526,23 @@ export async function getEpisodesByTopicTags(
 }
 
 /** Distinct episodes matching any catalog tag (for counts on multi-tag topic pages). */
-export async function countEpisodesByTopicTags(tagSlugs: string[]): Promise<number> {
+export async function countEpisodesByTopicTags(
+  tagSlugs: string[],
+  cycleId?: string | null
+): Promise<number> {
   const tags = [...new Set(tagSlugs.map((s) => normalizeTopicSlug(s)).filter(Boolean))];
   if (tags.length === 0) return 0;
-  if (tags.length === 1) return countEpisodesByTopicTag(tags[0]!);
+  if (tags.length === 1) return countEpisodesByTopicTag(tags[0]!, cycleId);
 
   if (!hasPublicSupabaseEnv()) return 0;
   const supabase = await createClient();
   if (!supabase) return 0;
 
   try {
+    const cycleEpisodeIds = await resolveCycleEpisodeIds(supabase, cycleId);
+    if (cycleEpisodeIds && !cycleEpisodeIds.length) return 0;
+    const allowed = cycleEpisodeIds ? new Set(cycleEpisodeIds) : null;
+
     const ids = new Set<string>();
     for (const tag of tags) {
       const { data, error } = await supabase
@@ -549,7 +556,9 @@ export async function countEpisodesByTopicTags(tagSlugs: string[]): Promise<numb
       }
       for (const row of data ?? []) {
         const id = typeof (row as { id?: string }).id === "string" ? (row as { id: string }).id : "";
-        if (id) ids.add(id);
+        if (!id) continue;
+        if (allowed && !allowed.has(id)) continue;
+        ids.add(id);
       }
     }
     return ids.size;
@@ -560,7 +569,10 @@ export async function countEpisodesByTopicTags(tagSlugs: string[]): Promise<numb
   }
 }
 
-export async function countEpisodesByTopicTag(tagSlug: string): Promise<number> {
+export async function countEpisodesByTopicTag(
+  tagSlug: string,
+  cycleId?: string | null
+): Promise<number> {
   const clean = normalizeTopicSlug(tagSlug);
   if (!clean) return 0;
 
@@ -570,11 +582,17 @@ export async function countEpisodesByTopicTag(tagSlug: string): Promise<number> 
   if (!supabase) return 0;
 
   try {
-    const { count, error } = await supabase
+    const cycleEpisodeIds = await resolveCycleEpisodeIds(supabase, cycleId);
+    if (cycleEpisodeIds && !cycleEpisodeIds.length) return 0;
+
+    let query = supabase
       .from("episodes")
       .select("id", { count: "exact", head: true })
       .contains("topic_tags", [clean])
       .neq("lifecycle_status", "retired");
+    if (cycleEpisodeIds) query = query.in("id", cycleEpisodeIds);
+
+    const { count, error } = await query;
 
     if (error) {
       logQueryError(`countEpisodesByTopicTag:${clean}`, error);

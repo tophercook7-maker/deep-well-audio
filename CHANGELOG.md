@@ -48,3 +48,9 @@ Scheduled and manual full syncs now use a **staged → active** promotion pipeli
 ### Homepage cycle query fix
 
 - `getHomeRecentEpisodes` now normalizes Supabase `episode` relation shapes (single object or array) when merging **catalog cycle** and **stable catalog** rows for the homepage—fixes production TypeScript/build failures on nested join results.
+
+### Catalog cycle rotation improvements
+
+- Staged snapshots now pull recent episodes **per rotating show** (excluding stable-catalog and inactive shows), then **round-robin** across sources so every feed contributes before any one show fills the batch.
+- Browse default previews, topic counts, study supporting audio, and guided paths now respect the viewer’s **active catalog cycle** (same as filtered browse/home).
+- Slug-targeted `/api/sync/all` runs still rebuild the staged snapshot and attempt promotion so **new ingest enters the next cycle** without waiting for the 6-hour cron.
